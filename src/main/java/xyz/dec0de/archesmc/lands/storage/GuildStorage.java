@@ -46,9 +46,20 @@ public class GuildStorage {
      *
      * @param name
      */
-    public GuildStorage(String name) throws IOException {
+    public GuildStorage(String name, UUID owner) throws IOException {
         this(UUID.randomUUID());
         setName(name);
+
+        config.set("members." + owner.toString() + ".role", "OWNER");
+        config.save(file);
+    }
+
+    /**
+     * Get uuid of guild
+     * @return
+     */
+    public UUID getUuid(){
+        return uuid;
     }
 
     /**
@@ -116,6 +127,28 @@ public class GuildStorage {
     public void setName(String name) throws IOException {
         config.set("name", name);
         config.save(file);
+    }
+
+    /**
+     * Get the name of the guild
+     * @return
+     */
+    public String getName(){
+        return config.getString("name");
+    }
+
+    public boolean addChunk(World world, Chunk chunk) throws IOException {
+        ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
+        if(Main.allowedWorlds().contains(world.getName())){
+            List<String> list = config.getStringList("chunks");
+            list.add(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
+
+            config.set("chunks", list);
+            config.save(file);
+            return true;
+        }
+
+        return false;
     }
 
 }

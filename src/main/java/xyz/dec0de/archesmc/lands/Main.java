@@ -3,6 +3,7 @@ package xyz.dec0de.archesmc.lands;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.dec0de.archesmc.lands.commands.GuildsCommand;
 import xyz.dec0de.archesmc.lands.commands.LandsCommand;
 import xyz.dec0de.archesmc.lands.events.ChunkEvents;
 import xyz.dec0de.archesmc.lands.events.PlayerEvents;
@@ -30,6 +31,7 @@ public class Main extends JavaPlugin{
         plugin.saveDefaultConfig();
 
         plugin.getCommand("lands").setExecutor(new LandsCommand());
+        plugin.getCommand("guilds").setExecutor(new GuildsCommand());
 
         Bukkit.getPluginManager().registerEvents(new PlayerEvents(), plugin);
         Bukkit.getPluginManager().registerEvents(new ChunkEvents(), plugin);

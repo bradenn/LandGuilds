@@ -31,6 +31,8 @@ public class LandsCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.RED + "This chunk has already been claimed.");
                     }
 
+                    //TODO check if they are allowed to claim chunks / have enough unused chunk claims
+
                     PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
                     try {
                         player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");

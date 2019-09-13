@@ -52,7 +52,6 @@ public class PlayerStorage {
     }
 
     public boolean addChunk(World world, Chunk chunk) throws IOException {
-        ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
         if(Main.allowedWorlds().contains(world.getName())){
             List<String> list = config.getStringList("chunks");
             list.add(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
@@ -66,7 +65,15 @@ public class PlayerStorage {
     }
 
     public void setGuild(UUID uuid) throws IOException {
-        config.set("guild", uuid);
+        config.set("guild", uuid.toString());
         config.save(file);
+    }
+
+    public GuildStorage getGuild(){
+        if(config.isSet("guild")){
+            return new GuildStorage(UUID.fromString(config.getString("guild")));
+        }
+
+        return null;
     }
 }

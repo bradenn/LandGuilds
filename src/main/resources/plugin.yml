@@ -2,7 +2,12 @@ name: ArchesLands
 main: xyz.dec0de.archesmc.lands.Main
 version: 1.0
 api-version: 1.13
-description: Land Claiming
+website: https://dec0de.xyz
+description: Land Claiming & Guilds
 commands:
   lands:
-    description: Main Lands Command
+    aliases: [l, land, ll]
+    description: Lands Command
+  guilds:
+    aliases: [g, guild, gg]
+    description: Guilds Command

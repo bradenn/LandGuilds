@@ -21,33 +21,41 @@ public class ChunkEvents implements Listener {
 
     private HashMap<UUID, String> playersInChunk = new HashMap<>();
 
+    // Chunk entry / exit action bar
     @EventHandler
     public void moveEvent(PlayerMoveEvent e){
+        //TODO chunk particles?
+
         Player player = e.getPlayer();
         if(Main.allowedWorlds().contains(player.getWorld().getName())){
             ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
             if(chunkStorage.isClaimed()){
-                if(!chunkStorage.isGuild()){
-                    PlayerStorage playerStorage = new PlayerStorage(chunkStorage.getOwner());
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
-                            ChatColor.GREEN + playerStorage.getUsername() + "'s Land"));
+                if(playersInChunk.containsKey(player.getUniqueId())){
+                    playersInChunk.remove(player.getUniqueId());
                 }
 
-                GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
-                        ChatColor.GREEN + guildStorage + "'s Land"));
+                String landOwner = "UNKNOWN";
 
-                if(!playersInChunk.contains(player.getUniqueId())){
-                    playersInChunk.add(player.getUniqueId());
+                if(chunkStorage.isGuild()){
+                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                    landOwner = guildStorage.getName();
+                }else{
+                    PlayerStorage playerStorage = new PlayerStorage(chunkStorage.getOwner());
+                    landOwner = playerStorage.getUsername();
+                }
+
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
+                        ChatColor.GREEN + "Entering " + landOwner + "'s Land"));
+
+                if(!playersInChunk.containsKey(player.getUniqueId())){
+                    playersInChunk.put(player.getUniqueId(), landOwner);
                 }
             }else{
-                if(playersInChunk.contains(player.getUniqueId())){
+                if(playersInChunk.containsKey(player.getUniqueId())){
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
-                            ChatColor.GREEN + playerStorage.getUsername() + "'s Land"));
-                    return;
+                            ChatColor.RED + "Leaving " + playersInChunk.get(player.getUniqueId()) + "'s Land"));
+                    playersInChunk.remove(player.getUniqueId());
                 }
-
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(""));
             }
         }
     }
