@@ -27,36 +27,36 @@ public class ChunkEvents implements Listener {
 
     // Chunk entry / exit action bar
     @EventHandler
-    public void moveEvent(PlayerMoveEvent e){
+    public void moveEvent(PlayerMoveEvent e) {
         //TODO chunk particles?
 
         Player player = e.getPlayer();
-        if(Main.allowedWorlds().contains(player.getWorld().getName())){
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
             ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
-            if(chunkStorage.isClaimed()){
+            if (chunkStorage.isClaimed()) {
                 String landOwner;
 
-                if(chunkStorage.isGuild()){
+                if (chunkStorage.isGuild()) {
                     GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                     landOwner = guildStorage.getTag();
-                }else{
+                } else {
                     PlayerStorage playerStorage = new PlayerStorage(chunkStorage.getOwner());
                     landOwner = playerStorage.getUsername();
                 }
 
-                if(playersInChunk.containsKey(player.getUniqueId())){
-                    if(!playersInChunk.get(player.getUniqueId()).equalsIgnoreCase(landOwner)){
+                if (playersInChunk.containsKey(player.getUniqueId())) {
+                    if (!playersInChunk.get(player.getUniqueId()).equalsIgnoreCase(landOwner)) {
                         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
                                 ChatColor.GREEN + "Entering " + landOwner + ChatColor.GREEN + "'s Land..."));
                         playersInChunk.put(player.getUniqueId(), landOwner);
                     }
-                }else{
+                } else {
                     playersInChunk.put(player.getUniqueId(), landOwner);
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
                             ChatColor.GREEN + "Entering " + landOwner + ChatColor.GREEN + "'s Land..."));
                 }
-            }else{
-                if(playersInChunk.containsKey(player.getUniqueId())){
+            } else {
+                if (playersInChunk.containsKey(player.getUniqueId())) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
                             ChatColor.RED + "Leaving " + playersInChunk.get(player.getUniqueId()) + ChatColor.RED + "'s Land..."));
                     playersInChunk.remove(player.getUniqueId());
@@ -66,62 +66,50 @@ public class ChunkEvents implements Listener {
     }
 
     @EventHandler
-    public void breakBlock(BlockBreakEvent e){
+    public void breakBlock(BlockBreakEvent e) {
         Player player = e.getPlayer();
-        if(Main.allowedWorlds().contains(player.getWorld().getName())){
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
             ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
-            if(chunkStorage.isClaimed()) {
+            if (chunkStorage.isClaimed()) {
                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if(chunkStorage.isGuild()){
+                if (chunkStorage.isGuild()) {
                     GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                    if(playerStorage.getGuild().getUuid() == null){
+                    if (!guildStorage.getMembers().contains(player.getUniqueId())) {
                         player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
                         e.setCancelled(true);
                         return;
-                    }else{
-                        if(playerStorage.getGuild().getUuid() != chunkStorage.getOwner()){
-                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
-                            e.setCancelled(true);
-                            return;
-                        }
                     }
-                }
-
-                if(!chunkStorage.getMembers().contains(player.getUniqueId())){
-                    player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
-                    e.setCancelled(true);
-                    return;
+                } else {
+                    if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
+                        e.setCancelled(true);
+                        return;
+                    }
                 }
             }
         }
     }
 
     @EventHandler
-    public void placeBlock(BlockPlaceEvent e){
+    public void placeBlock(BlockPlaceEvent e) {
         Player player = e.getPlayer();
-        if(Main.allowedWorlds().contains(player.getWorld().getName())){
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
             ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
-            if(chunkStorage.isClaimed()) {
+            if (chunkStorage.isClaimed()) {
                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if(chunkStorage.isGuild()){
+                if (chunkStorage.isGuild()) {
                     GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                    if(playerStorage.getGuild().getUuid() == null){
+                    if (!guildStorage.getMembers().contains(player.getUniqueId())) {
                         player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
                         e.setCancelled(true);
                         return;
-                    }else{
-                        if(playerStorage.getGuild().getUuid() != chunkStorage.getOwner()){
-                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
-                            e.setCancelled(true);
-                            return;
-                        }
                     }
-                }
-
-                if(!chunkStorage.getMembers().contains(player.getUniqueId())){
-                    player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
-                    e.setCancelled(true);
-                    return;
+                } else {
+                    if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
+                        e.setCancelled(true);
+                        return;
+                    }
                 }
             }
         }

@@ -37,7 +37,7 @@ public class GuildStorage {
                 configuration.set("money", 0.00);
                 configuration.set("tokens", 0);
                 configuration.set("created_timestamp", System.currentTimeMillis());
-                configuration.set("color", ChatColor.GRAY.toString());
+                configuration.set("color", ChatColor.GRAY.name());
                 configuration.set("level", 1);
                 configuration.save(file);
             } catch (Exception e) {

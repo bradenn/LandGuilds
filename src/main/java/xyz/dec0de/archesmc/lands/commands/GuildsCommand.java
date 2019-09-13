@@ -32,6 +32,8 @@ public class GuildsCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length == 1) {
+
+                // CLAIM
                 if (args[0].equalsIgnoreCase("claim")) {
                     PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
                     if (playerStorage.getGuild() != null) {
@@ -62,8 +64,32 @@ public class GuildsCommand implements CommandExecutor {
                         player.sendMessage(noGuildError);
                         return false;
                     }
+
+                    // JOIN
+                }else if(args[0].equalsIgnoreCase("join")){
+                    if(pendingGuildInvites.containsKey(player.getUniqueId())){
+                        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                        if(playerStorage.getGuild() == null){
+                            UUID guildUuid = UUID.fromString(pendingGuildInvites.get(
+                                    player.getUniqueId()).split("\\_")[1]);
+                            try {
+                                playerStorage.setGuild(guildUuid);
+                                GuildStorage guildStorage = new GuildStorage(guildUuid);
+                                guildStorage.addMember(player.getUniqueId());
+
+                                player.sendMessage(ChatColor.GREEN + "You have joined the guild "
+                                        + guildStorage.getTag() + ChatColor.GREEN + ".");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            player.sendMessage(inGuildError);
+                        }
+                    }
                 }
         }else if(args.length == 2){
+
+            // CREATE
             if(args[0].equalsIgnoreCase("create")){
                 String name = args[1];
 
@@ -78,6 +104,7 @@ public class GuildsCommand implements CommandExecutor {
 
                 if(m.find()){
                     player.sendMessage(ChatColor.RED + "You cannot have any special characters in your guild name.");
+                    return false;
                 }
 
                 if(name.length() > 6){
@@ -94,6 +121,8 @@ public class GuildsCommand implements CommandExecutor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                // INVITE
             }else if(args[0].equalsIgnoreCase("invite")){
                 String username = args[1];
 
@@ -116,7 +145,10 @@ public class GuildsCommand implements CommandExecutor {
                     GuildStorage guildStorage = playerStorage.getGuild();
                     String guildToken = guildStorage.getName()+"_"+guildStorage.getUuid().toString();
                     pendingGuildInvites.put(toInvite.getUniqueId(), guildToken);
-                    player.sendMessage(ChatColor.GREEN + "You have been invited to join " +
+
+                    player.sendMessage(ChatColor.GREEN + "You have invited " + toInvite.getName() + " to join your guild.");
+
+                    toInvite.sendMessage(ChatColor.GREEN + "You have been invited to join " +
                             guildStorage.getTag() + ChatColor.GREEN + ". Expires in 30 seconds. Type /guilds join");
 
                     Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
@@ -131,22 +163,6 @@ public class GuildsCommand implements CommandExecutor {
                 }else{
                     player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
                     return false;
-                }
-            }else if(args[0].equalsIgnoreCase("join")){
-                if(pendingGuildInvites.containsKey(player.getUniqueId())){
-                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                    if(playerStorage.getGuild() == null){
-                        UUID guildUuid = UUID.fromString(pendingGuildInvites.get(player.getUniqueId()).split("\\_")[1]);
-                        try {
-                            playerStorage.setGuild(guildUuid);
-                            GuildStorage guildStorage = new GuildStorage(guildUuid);
-                            guildStorage.addMember(player.getUniqueId());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }else{
-                        player.sendMessage(inGuildError);
-                    }
                 }
             }
         }
