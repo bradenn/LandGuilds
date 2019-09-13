@@ -1,5 +1,6 @@
 package xyz.dec0de.archesmc.lands.storage;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -33,6 +34,11 @@ public class GuildStorage {
         if (!(file.exists())) {
             try {
                 YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+                configuration.set("money", 0.00);
+                configuration.set("tokens", 0);
+                configuration.set("created_timestamp", System.currentTimeMillis());
+                configuration.set("color", ChatColor.GRAY.toString());
+                configuration.set("level", 1);
                 configuration.save(file);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -135,6 +141,24 @@ public class GuildStorage {
      */
     public String getName(){
         return config.getString("name");
+    }
+
+    /**
+     * Get the guild tag
+     *
+     * @return
+     */
+    public String getTag(){
+        return getColor() + "[" + getName().toUpperCase() + "]";
+    }
+
+    public ChatColor getColor(){
+        return ChatColor.valueOf(config.getString("color"));
+    }
+
+    public void setColor(ChatColor color) throws IOException {
+        config.set("color", color.toString());
+        config.save(file);
     }
 
     public boolean addChunk(World world, Chunk chunk) throws IOException {
