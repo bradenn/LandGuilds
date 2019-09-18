@@ -66,6 +66,43 @@ public class GuildsCommand implements CommandExecutor {
                     }
 
                     // JOIN
+                }else if (args[0].equalsIgnoreCase("unclaim")) {
+                    if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+                        ChunkStorage chunkStorage = new ChunkStorage(
+                                player.getWorld(),
+                                player.getWorld().getChunkAt(player.getLocation()));
+
+                        if(!chunkStorage.isClaimed()){
+                            player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
+                            return false;
+                        }
+
+                        if(chunkStorage.isGuild()){
+                            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                            if(guildStorage.getOwner() == player.getUniqueId()) {
+                                player.sendMessage(ChatColor.GREEN +
+                                        "You have unclaimed this chunk from your guild.");
+                                try {
+                                    guildStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
+                                    chunkStorage.unclaim();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                return false;
+
+                            }else{
+                                player.sendMessage(
+                                        ChatColor.RED +
+                                                "You do not have enough permissions " +
+                                                "in your guild to do this.");
+                            }
+                            return false;
+                        }else{
+                            player.sendMessage(ChatColor.RED + "This land was not claimed by a guild.");
+                            return false;
+                        }
+                    }
                 }else if(args[0].equalsIgnoreCase("join")){
                     if(pendingGuildInvites.containsKey(player.getUniqueId())){
                         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());

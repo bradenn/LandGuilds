@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.archesmc.lands.Main;
 import xyz.dec0de.archesmc.lands.storage.ChunkStorage;
+import xyz.dec0de.archesmc.lands.storage.GuildStorage;
 import xyz.dec0de.archesmc.lands.storage.PlayerStorage;
 
 import java.io.IOException;
@@ -41,6 +42,42 @@ public class LandsCommand implements CommandExecutor {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+            }else if (args[0].equalsIgnoreCase("unclaim")) {
+                if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+                    ChunkStorage chunkStorage = new ChunkStorage(
+                            player.getWorld(),
+                            player.getWorld().getChunkAt(player.getLocation()));
+
+                    if(!chunkStorage.isClaimed()){
+                        player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
+                        return false;
+                    }
+
+                    if(!chunkStorage.isGuild()){
+                        if(chunkStorage.getOwner() == player.getUniqueId()) {
+                            player.sendMessage(ChatColor.GREEN +
+                                    "You have unclaimed this chunk from your guild.");
+                            try {
+                                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                                playerStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
+                                chunkStorage.unclaim();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }else{
+                            player.sendMessage(
+                                    ChatColor.RED +
+                                    "You do not have enough permissions " +
+                                    "in your guild to do this.");
+                        }
+                        return false;
+                    }else{
+                        player.sendMessage(ChatColor.RED + "This land was claimed by a guild.");
+                    }
+
+
                 }
             }
         }
