@@ -17,10 +17,18 @@ public class Main extends JavaPlugin{
 
     /**
      * TODO
-     *  - Check chunk if it's a "guild" chunk, and store a boolean for guild
-     *  - Instead of storing the members of a chunk in the guilds, it will be stored in guilds and refer back and forth
-     *  - For storing which guild they're apart of, there will be a variable set in each player's config files
-     *  with the guild's UUID?
+     *   Guilds:
+     *  - Disbanding Guilds (only for owners)
+     *  - Leaving guilds
+     *  - Transfering ownership
+     *  - Roles
+     *  - Levels
+     *  - Vault
+     *  - GUIs
+     *   Lands:
+     *  - Unclaiming
+     *  - Homes
+     *  - Permissions for claims and such
      */
 
     @Override

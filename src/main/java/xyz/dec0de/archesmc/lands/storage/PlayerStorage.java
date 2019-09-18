@@ -64,6 +64,22 @@ public class PlayerStorage {
         return false;
     }
 
+    public boolean removeChunk(World world, Chunk chunk) throws IOException {
+        if(Main.allowedWorlds().contains(world.getName())){
+            List<String> list = config.getStringList("chunks");
+
+            if(list.contains(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ())) {
+                list.remove(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
+            }
+
+            config.set("chunks", list);
+            config.save(file);
+            return true;
+        }
+
+        return false;
+    }
+
     public void setGuild(UUID uuid) throws IOException {
         config.set("guild", uuid.toString());
         config.save(file);
