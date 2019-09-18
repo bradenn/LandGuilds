@@ -48,7 +48,7 @@ public class PlayerStorage {
         config.save(file);
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return config.getString("username");
     }
 
@@ -59,15 +59,15 @@ public class PlayerStorage {
      * @throws NullPointerException
      */
 
-    public List<String> getChunks() throws NullPointerException{
+    public List<String> getChunks() throws NullPointerException {
         ConfigurationSection section = config.getConfigurationSection("members");
-        List<String> chunks = config.getStringList("chunks");;
+        List<String> chunks = config.getStringList("chunks");
 
         return chunks;
     }
 
     public boolean addChunk(World world, Chunk chunk) throws IOException {
-        if(Main.allowedWorlds().contains(world.getName())){
+        if (Main.allowedWorlds().contains(world.getName())) {
             List<String> list = config.getStringList("chunks");
             list.add(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
 
@@ -80,12 +80,10 @@ public class PlayerStorage {
     }
 
     public boolean removeChunk(World world, Chunk chunk) throws IOException {
-        if(Main.allowedWorlds().contains(world.getName())){
+        if (Main.allowedWorlds().contains(world.getName())) {
             List<String> list = config.getStringList("chunks");
 
-            if(list.contains(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ())) {
-                list.remove(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
-            }
+            list.remove(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
 
             config.set("chunks", list);
             config.save(file);
@@ -95,21 +93,21 @@ public class PlayerStorage {
         return false;
     }
 
-    public void setGuild(UUID uuid) throws IOException {
-        config.set("guild", uuid.toString());
-        config.save(file);
-    }
-
     public void removeGuild(UUID uuid) throws IOException {
         config.set("guild", null);
         config.save(file);
     }
 
-    public GuildStorage getGuild(){
-        if(config.isSet("guild")){
+    public GuildStorage getGuild() {
+        if (config.isSet("guild")) {
             return new GuildStorage(UUID.fromString(config.getString("guild")));
         }
 
         return null;
+    }
+
+    public void setGuild(UUID uuid) throws IOException {
+        config.set("guild", uuid.toString());
+        config.save(file);
     }
 }

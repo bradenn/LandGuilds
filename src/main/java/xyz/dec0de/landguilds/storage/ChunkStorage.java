@@ -41,6 +41,7 @@ public class ChunkStorage {
 
     /**
      * Get the world
+     *
      * @return
      */
     public World getWorld() {
@@ -49,6 +50,7 @@ public class ChunkStorage {
 
     /**
      * Get the chunk
+     *
      * @return
      */
     public Chunk getChunk() {
@@ -60,11 +62,8 @@ public class ChunkStorage {
      *
      * @return
      */
-    public boolean isClaimed(){
-        if(getMembers().size() >= 1){
-            return true;
-        }
-        return false;
+    public boolean isClaimed() {
+        return getMembers().size() >= 1;
     }
 
     /**
@@ -74,11 +73,11 @@ public class ChunkStorage {
      * @throws NullPointerException
      */
 
-    public List<UUID> getMembers() throws NullPointerException{
+    public List<UUID> getMembers() throws NullPointerException {
         ConfigurationSection section = config.getConfigurationSection("members");
         List<UUID> members = new ArrayList<>();
 
-        if(config.getConfigurationSection("members") != null) {
+        if (config.getConfigurationSection("members") != null) {
             for (String uuids : section.getKeys(false)) {
                 members.add(UUID.fromString(uuids));
             }
@@ -89,14 +88,15 @@ public class ChunkStorage {
 
     /**
      * Get the owner of the chunk
+     *
      * @return
      */
 
-    public UUID getOwner(){
+    public UUID getOwner() {
         UUID owner = null;
 
         for (UUID member : getMembers()) {
-            if(config.getString("members." + member.toString() + ".role").equalsIgnoreCase("OWNER")){
+            if (config.getString("members." + member.toString() + ".role").equalsIgnoreCase("OWNER")) {
                 owner = member;
                 break;
             }
@@ -113,7 +113,7 @@ public class ChunkStorage {
      */
 
     public boolean addMember(UUID uuid) throws IOException {
-        if(!getMembers().contains(uuid) && isClaimed()){
+        if (!getMembers().contains(uuid) && isClaimed()) {
             config.set("members." + uuid.toString() + ".role", "MEMBER");
             config.save(file);
 
@@ -132,7 +132,7 @@ public class ChunkStorage {
      */
 
     public boolean removeMember(UUID uuid) throws IOException {
-        if(getMembers().contains(uuid)){
+        if (getMembers().contains(uuid)) {
             config.set("members." + uuid.toString(), null);
             config.save(file);
 
@@ -144,16 +144,17 @@ public class ChunkStorage {
 
     /**
      * Claim a chunk
+     *
      * @param uuid
      * @return
      * @throws IOException
      */
 
     public boolean claim(UUID uuid, boolean guild) throws IOException {
-        if(!isClaimed() && Main.allowedWorlds().contains(world.getName())){
+        if (!isClaimed() && Main.allowedWorlds().contains(world.getName())) {
             config.set("members." + uuid.toString() + ".role", "OWNER");
 
-            if(guild){
+            if (guild) {
                 config.set("guild", true);
             }
 
@@ -170,14 +171,10 @@ public class ChunkStorage {
      * @param uuid
      * @return
      */
-    public Roles getRole(UUID uuid){
+    public Roles getRole(UUID uuid) {
         Roles roles = Roles.valueOf(config.getString("members." + uuid.toString() + ".role"));
 
-        if(roles != null) {
-            return roles;
-        }
-
-        return null;
+        return roles;
     }
 
     /**
@@ -188,12 +185,12 @@ public class ChunkStorage {
      */
 
     public boolean unclaim() throws IOException {
-        if(isClaimed() && Main.allowedWorlds().contains(world.getName())){
-            for(UUID uuids : getMembers()){
+        if (isClaimed() && Main.allowedWorlds().contains(world.getName())) {
+            for (UUID uuids : getMembers()) {
                 config.set("members." + uuids.toString(), null);
             }
 
-            if(isGuild()){
+            if (isGuild()) {
                 config.set("guild", null);
             }
 
@@ -205,8 +202,8 @@ public class ChunkStorage {
         return false;
     }
 
-    public boolean isGuild(){
-        if(config.isSet("guild")){
+    public boolean isGuild() {
+        if (config.isSet("guild")) {
             return config.getBoolean("guild");
         }
         return false;

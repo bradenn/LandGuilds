@@ -63,9 +63,10 @@ public class GuildStorage {
 
     /**
      * Get uuid of guild
+     *
      * @return
      */
-    public UUID getUuid(){
+    public UUID getUuid() {
         return uuid;
     }
 
@@ -76,11 +77,11 @@ public class GuildStorage {
      * @throws NullPointerException
      */
 
-    public List<UUID> getMembers() throws NullPointerException{
+    public List<UUID> getMembers() throws NullPointerException {
         ConfigurationSection section = config.getConfigurationSection("members");
         List<UUID> members = new ArrayList<>();
 
-        if(config.getConfigurationSection("members") != null) {
+        if (config.getConfigurationSection("members") != null) {
             for (String uuids : section.getKeys(false)) {
                 members.add(UUID.fromString(uuids));
             }
@@ -96,26 +97,23 @@ public class GuildStorage {
      * @param uuid
      * @return
      */
-    public Roles getRole(UUID uuid){
+    public Roles getRole(UUID uuid) {
         Roles roles = Roles.valueOf(config.getString("members." + uuid.toString() + ".role"));
 
-        if(roles != null) {
-            return roles;
-        }
-
-        return null;
+        return roles;
     }
 
     /**
      * Get the owner of the chunk
+     *
      * @return
      */
 
-    public UUID getOwner(){
+    public UUID getOwner() {
         UUID owner = null;
 
         for (UUID member : getMembers()) {
-            if(config.getString("members." + member.toString() + ".role").equalsIgnoreCase("OWNER")){
+            if (config.getString("members." + member.toString() + ".role").equalsIgnoreCase("OWNER")) {
                 owner = member;
                 break;
             }
@@ -132,7 +130,7 @@ public class GuildStorage {
      */
 
     public boolean addMember(UUID uuid) throws IOException {
-        if(!getMembers().contains(uuid)){
+        if (!getMembers().contains(uuid)) {
             config.set("members." + uuid.toString() + ".role", "MEMBER");
             config.save(file);
 
@@ -151,7 +149,7 @@ public class GuildStorage {
      */
 
     public boolean removeMember(UUID uuid) throws IOException {
-        if(getMembers().contains(uuid)){
+        if (getMembers().contains(uuid)) {
             config.set("members." + uuid.toString(), null);
             config.save(file);
 
@@ -159,6 +157,15 @@ public class GuildStorage {
         }
 
         return false;
+    }
+
+    /**
+     * Get the name of the guild
+     *
+     * @return
+     */
+    public String getName() {
+        return config.getString("name");
     }
 
     /**
@@ -173,23 +180,15 @@ public class GuildStorage {
     }
 
     /**
-     * Get the name of the guild
-     * @return
-     */
-    public String getName(){
-        return config.getString("name");
-    }
-
-    /**
      * Get the guild tag
      *
      * @return
      */
-    public String getTag(){
+    public String getTag() {
         return getColor() + "[" + getName().toUpperCase() + "]";
     }
 
-    public ChatColor getColor(){
+    public ChatColor getColor() {
         return ChatColor.valueOf(config.getString("color"));
     }
 
@@ -200,7 +199,7 @@ public class GuildStorage {
 
     public boolean addChunk(World world, Chunk chunk) throws IOException {
         ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
-        if(Main.allowedWorlds().contains(world.getName())){
+        if (Main.allowedWorlds().contains(world.getName())) {
             List<String> list = config.getStringList("chunks");
             list.add(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
 
@@ -213,12 +212,10 @@ public class GuildStorage {
     }
 
     public boolean removeChunk(World world, Chunk chunk) throws IOException {
-        if(Main.allowedWorlds().contains(world.getName())){
+        if (Main.allowedWorlds().contains(world.getName())) {
             List<String> list = config.getStringList("chunks");
 
-            if(list.contains(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ())) {
-                list.remove(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
-            }
+            list.remove(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
 
             config.set("chunks", list);
             config.save(file);

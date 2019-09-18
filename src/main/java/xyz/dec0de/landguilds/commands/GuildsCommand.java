@@ -25,8 +25,8 @@ public class GuildsCommand implements CommandExecutor {
     private String noGuildError = ChatColor.RED + "You are not apart of a guild. Please create or join one.";
     private String inGuildError = ChatColor.RED + "You are already apart of a guild, you must leave or disband your current one.";
     private String noGuildPermissionsRole = ChatColor.RED +
-                    "You do not have enough permissions " +
-                    "in your guild to do this.";
+            "You do not have enough permissions " +
+            "in your guild to do this.";
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -37,10 +37,10 @@ public class GuildsCommand implements CommandExecutor {
 
         if (args.length == 1) {
 
-                // CLAIM
-                if (args[0].equalsIgnoreCase("claim")) {
-                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                    if (playerStorage.getGuild() != null) {
+            // CLAIM
+            if (args[0].equalsIgnoreCase("claim")) {
+                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                if (playerStorage.getGuild() != null) {
                     if (Main.allowedWorlds().contains(player.getWorld().getName())) {
                         ChunkStorage chunkStorage = new ChunkStorage(
                                 player.getWorld(),
@@ -53,7 +53,7 @@ public class GuildsCommand implements CommandExecutor {
 
                         GuildStorage guildStorage = playerStorage.getGuild();
 
-                        if(guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
+                        if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
                             try {
                                 player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");
                                 guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
@@ -62,77 +62,77 @@ public class GuildsCommand implements CommandExecutor {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        }else{
+                        } else {
                             player.sendMessage(noGuildPermissionsRole);
                         }
                     }
-                    }else{
-                        player.sendMessage(noGuildError);
+                } else {
+                    player.sendMessage(noGuildError);
+                    return false;
+                }
+
+                // JOIN
+            } else if (args[0].equalsIgnoreCase("unclaim")) {
+                if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+                    ChunkStorage chunkStorage = new ChunkStorage(
+                            player.getWorld(),
+                            player.getWorld().getChunkAt(player.getLocation()));
+
+                    if (!chunkStorage.isClaimed()) {
+                        player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
                         return false;
                     }
 
-                    // JOIN
-                }else if (args[0].equalsIgnoreCase("unclaim")) {
-                    if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                        ChunkStorage chunkStorage = new ChunkStorage(
-                                player.getWorld(),
-                                player.getWorld().getChunkAt(player.getLocation()));
-
-                        if(!chunkStorage.isClaimed()){
-                            player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
-                            return false;
-                        }
-
-                        if(chunkStorage.isGuild()){
-                            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                            if(guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
-                                player.sendMessage(ChatColor.GREEN +
-                                        "You have unclaimed this chunk from your guild.");
-                                try {
-                                    guildStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
-                                    chunkStorage.unclaim();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                                return false;
-
-                            }else{
-                                player.sendMessage(noGuildPermissionsRole);
-                            }
-                            return false;
-                        }else{
-                            player.sendMessage(ChatColor.RED + "This land was not claimed by a guild.");
-                            return false;
-                        }
-                    }
-                }else if(args[0].equalsIgnoreCase("join")){
-                    if(pendingGuildInvites.containsKey(player.getUniqueId())){
-                        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                        if(playerStorage.getGuild() == null){
-                            UUID guildUuid = UUID.fromString(pendingGuildInvites.get(
-                                    player.getUniqueId()).split("\\_")[1]);
+                    if (chunkStorage.isGuild()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                            player.sendMessage(ChatColor.GREEN +
+                                    "You have unclaimed this chunk from your guild.");
                             try {
-                                playerStorage.setGuild(guildUuid);
-                                GuildStorage guildStorage = new GuildStorage(guildUuid);
-                                guildStorage.addMember(player.getUniqueId());
-
-                                player.sendMessage(ChatColor.GREEN + "You have joined the guild "
-                                        + guildStorage.getTag() + ChatColor.GREEN + ".");
-
-                                pendingGuildInvites.remove(player.getUniqueId());
+                                guildStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
+                                chunkStorage.unclaim();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                        }else{
-                            player.sendMessage(inGuildError);
+
+                            return false;
+
+                        } else {
+                            player.sendMessage(noGuildPermissionsRole);
                         }
-                    }else{
-                        player.sendMessage(ChatColor.RED + "You do not have any pending invites.");
+                        return false;
+                    } else {
+                        player.sendMessage(ChatColor.RED + "This land was not claimed by a guild.");
                         return false;
                     }
                 }
-        }else if(args.length == 2) {
+            } else if (args[0].equalsIgnoreCase("join")) {
+                if (pendingGuildInvites.containsKey(player.getUniqueId())) {
+                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                    if (playerStorage.getGuild() == null) {
+                        UUID guildUuid = UUID.fromString(pendingGuildInvites.get(
+                                player.getUniqueId()).split("\\_")[1]);
+                        try {
+                            playerStorage.setGuild(guildUuid);
+                            GuildStorage guildStorage = new GuildStorage(guildUuid);
+                            guildStorage.addMember(player.getUniqueId());
+
+                            player.sendMessage(ChatColor.GREEN + "You have joined the guild "
+                                    + guildStorage.getTag() + ChatColor.GREEN + ".");
+
+                            pendingGuildInvites.remove(player.getUniqueId());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        player.sendMessage(inGuildError);
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "You do not have any pending invites.");
+                    return false;
+                }
+            }
+        } else if (args.length == 2) {
 
             // CREATE
             if (args[0].equalsIgnoreCase("create")) {
@@ -230,24 +230,24 @@ public class GuildsCommand implements CommandExecutor {
 
                     if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
                         if (guildStorage.getMembers().contains(toKick.getUniqueId())) {
-                            if(username.equalsIgnoreCase(player.getName())){
+                            if (username.equalsIgnoreCase(player.getName())) {
                                 player.sendMessage(ChatColor.RED + "You cannot kick yourself.");
                                 return false;
                             }
 
-                            if(guildStorage.getOwner() == toKick.getUniqueId()){
+                            if (guildStorage.getOwner() == toKick.getUniqueId()) {
                                 player.sendMessage(ChatColor.RED + "You cannot kick the owner! They must disband or transfer the guild.");
                                 return false;
                             }
 
                             player.sendMessage(ChatColor.GREEN + "Successfully removed " + toKick.getName() + " from the guild.");
 
-                        try {
-                            toKickPlayerStorage.removeGuild(toKick.getUniqueId());
-                            guildStorage.removeMember(toKick.getUniqueId());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                            try {
+                                toKickPlayerStorage.removeGuild(toKick.getUniqueId());
+                                guildStorage.removeMember(toKick.getUniqueId());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             player.sendMessage(ChatColor.RED + "This player is not in the guild.");
                             return false;

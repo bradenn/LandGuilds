@@ -10,29 +10,36 @@ import xyz.dec0de.landguilds.events.PlayerEvents;
 
 import java.util.List;
 
-public class Main extends JavaPlugin{
+public class Main extends JavaPlugin {
 
-    private static Main plugin;
     public static FileConfiguration config;
+    private static Main plugin;
+
+    public static Main getPlugin() {
+        return plugin;
+    }
+
+    public static List<String> allowedWorlds() {
+        return config.getStringList("worlds");
+    }
 
     /**
      * TODO
-     *   Guilds:
-     *  - Disbanding Guilds (only for owners)
-     *  - Leaving guilds
-     *  - Transfering ownership
-     *  - Roles
-     *  - Levels
-     *  - Vault
-     *  - GUIs
-     *   Lands:
-     *  - Unclaiming
-     *  - Homes
-     *  - Permissions for claims and such
+     * Guilds:
+     * - Disbanding Guilds (only for owners)
+     * - Leaving guilds
+     * - Transfering ownership
+     * - Roles
+     * - Levels
+     * - Vault
+     * - GUIs
+     * Lands:
+     * - Homes
+     * - Permissions for claims and such
      */
 
     @Override
-    public void onEnable(){
+    public void onEnable() {
         plugin = this;
         config = this.getConfig();
 
@@ -46,15 +53,7 @@ public class Main extends JavaPlugin{
     }
 
     @Override
-    public void onDisable(){
+    public void onDisable() {
 
-    }
-
-    public static Main getPlugin(){
-        return plugin;
-    }
-
-    public static List<String> allowedWorlds(){
-        return config.getStringList("worlds");
     }
 }

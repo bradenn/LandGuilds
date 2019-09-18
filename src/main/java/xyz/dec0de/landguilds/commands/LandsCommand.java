@@ -2,8 +2,6 @@ package xyz.dec0de.landguilds.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,12 +9,9 @@ import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Roles;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
-import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LandsCommand implements CommandExecutor {
 
@@ -34,7 +29,7 @@ public class LandsCommand implements CommandExecutor {
                             player.getWorld(),
                             player.getWorld().getChunkAt(player.getLocation()));
 
-                    if(chunkStorage.isClaimed()){
+                    if (chunkStorage.isClaimed()) {
                         player.sendMessage(ChatColor.RED + "This chunk has already been claimed.");
                     }
 
@@ -50,19 +45,19 @@ public class LandsCommand implements CommandExecutor {
                         e.printStackTrace();
                     }
                 }
-            }else if (args[0].equalsIgnoreCase("unclaim")) {
+            } else if (args[0].equalsIgnoreCase("unclaim")) {
                 if (Main.allowedWorlds().contains(player.getWorld().getName())) {
                     ChunkStorage chunkStorage = new ChunkStorage(
                             player.getWorld(),
                             player.getWorld().getChunkAt(player.getLocation()));
 
-                    if(!chunkStorage.isClaimed()){
+                    if (!chunkStorage.isClaimed()) {
                         player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
                         return false;
                     }
 
-                    if(!chunkStorage.isGuild()){
-                        if(chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
+                    if (!chunkStorage.isGuild()) {
+                        if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
                             player.sendMessage(ChatColor.GREEN +
                                     "You have unclaimed this chunk.");
                             try {
@@ -73,20 +68,20 @@ public class LandsCommand implements CommandExecutor {
                                 e.printStackTrace();
                             }
 
-                        }else{
+                        } else {
                             player.sendMessage(
                                     ChatColor.RED +
-                                    "You do not own this land.");
+                                            "You do not own this land.");
                             return false;
                         }
                         return false;
-                    }else{
+                    } else {
                         player.sendMessage(ChatColor.RED + "This land was claimed by a guild.");
                         return false;
                     }
                 }
             }
-        }else if(args.length == 2) {
+        } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("kick")) {
                 String username = args[1];
 
@@ -97,19 +92,19 @@ public class LandsCommand implements CommandExecutor {
                     PlayerStorage toKickPlayerStorage = new PlayerStorage(toKick.getUniqueId());
 
                     ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
-                    if(!chunkStorage.isClaimed()){
+                    if (!chunkStorage.isClaimed()) {
                         player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
                         return false;
                     }
 
-                    if(chunkStorage.isGuild()){
+                    if (chunkStorage.isGuild()) {
                         player.sendMessage(ChatColor.RED + "This chunk is claimed by a guild.");
                         return false;
                     }
 
-                    if(chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
-                        if(chunkStorage.getMembers().contains(toKick.getUniqueId())){
-                            if(username.equalsIgnoreCase(player.getName())){
+                    if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
+                        if (chunkStorage.getMembers().contains(toKick.getUniqueId())) {
+                            if (username.equalsIgnoreCase(player.getName())) {
                                 player.sendMessage(ChatColor.RED + "You cannot kick yourself.");
                                 return false;
                             }
@@ -122,11 +117,11 @@ public class LandsCommand implements CommandExecutor {
                                 e.printStackTrace();
                             }
                             return false;
-                        }else{
+                        } else {
                             player.sendMessage(ChatColor.RED + "This player has not been added to this land.");
                             return false;
                         }
-                    }else{
+                    } else {
                         player.sendMessage(ChatColor.RED + "You are not the owner of this land.");
                         return false;
                     }
@@ -134,25 +129,25 @@ public class LandsCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
                     return false;
                 }
-            }else if (args[0].equalsIgnoreCase("add")) {
+            } else if (args[0].equalsIgnoreCase("add")) {
                 String username = args[1];
 
                 if (Bukkit.getServer().getPlayer(username) != null) {
                     Player toAdd = Bukkit.getPlayer(username);
 
                     ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
-                    if(!chunkStorage.isClaimed()){
+                    if (!chunkStorage.isClaimed()) {
                         player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
                         return false;
                     }
 
-                    if(chunkStorage.isGuild()){
+                    if (chunkStorage.isGuild()) {
                         player.sendMessage(ChatColor.RED + "This chunk is claimed by a guild.");
                         return false;
                     }
 
-                    if(chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
-                        if(!chunkStorage.getMembers().contains(toAdd)){
+                    if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
+                        if (!chunkStorage.getMembers().contains(toAdd)) {
                             player.sendMessage(ChatColor.GREEN + "You have successfully added " + toAdd.getName() + " to this chunk.");
 
                             try {
@@ -161,7 +156,7 @@ public class LandsCommand implements CommandExecutor {
                                 e.printStackTrace();
                             }
                         }
-                    }else{
+                    } else {
                         player.sendMessage(ChatColor.RED + "You are not the owner of this land.");
                         return false;
                     }

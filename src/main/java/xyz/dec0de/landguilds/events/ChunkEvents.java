@@ -135,10 +135,10 @@ public class ChunkEvents implements Listener {
 
 
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            if(blockedBlocks.contains(e.getClickedBlock().getType())) {
-            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
-            if (chunkStorage.isClaimed()) {
-                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+            if (blockedBlocks.contains(e.getClickedBlock().getType())) {
+                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
+                if (chunkStorage.isClaimed()) {
+                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                         if (!guildStorage.getMembers().contains(player.getUniqueId())) {
