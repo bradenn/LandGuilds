@@ -1,10 +1,10 @@
-package xyz.dec0de.archesmc.lands.events;
+package xyz.dec0de.landguilds.events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import xyz.dec0de.archesmc.lands.storage.PlayerStorage;
+import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.io.IOException;
 

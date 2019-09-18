@@ -1,12 +1,12 @@
-package xyz.dec0de.archesmc.lands;
+package xyz.dec0de.landguilds;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import xyz.dec0de.archesmc.lands.commands.GuildsCommand;
-import xyz.dec0de.archesmc.lands.commands.LandsCommand;
-import xyz.dec0de.archesmc.lands.events.ChunkEvents;
-import xyz.dec0de.archesmc.lands.events.PlayerEvents;
+import xyz.dec0de.landguilds.commands.GuildsCommand;
+import xyz.dec0de.landguilds.commands.LandsCommand;
+import xyz.dec0de.landguilds.events.ChunkEvents;
+import xyz.dec0de.landguilds.events.PlayerEvents;
 
 import java.util.List;
 

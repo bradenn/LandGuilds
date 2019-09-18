@@ -1,11 +1,12 @@
-package xyz.dec0de.archesmc.lands.storage;
+package xyz.dec0de.landguilds.storage;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import xyz.dec0de.archesmc.lands.Main;
+import xyz.dec0de.landguilds.Main;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,20 @@ public class PlayerStorage {
 
     public String getUsername(){
         return config.getString("username");
+    }
+
+    /**
+     * Get the claimed chunks
+     *
+     * @return
+     * @throws NullPointerException
+     */
+
+    public List<String> getChunks() throws NullPointerException{
+        ConfigurationSection section = config.getConfigurationSection("members");
+        List<String> chunks = config.getStringList("chunks");;
+
+        return chunks;
     }
 
     public boolean addChunk(World world, Chunk chunk) throws IOException {

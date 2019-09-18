@@ -1,4 +1,4 @@
-package xyz.dec0de.archesmc.lands.commands;
+package xyz.dec0de.landguilds.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -6,10 +6,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import xyz.dec0de.archesmc.lands.Main;
-import xyz.dec0de.archesmc.lands.storage.ChunkStorage;
-import xyz.dec0de.archesmc.lands.storage.GuildStorage;
-import xyz.dec0de.archesmc.lands.storage.PlayerStorage;
+import xyz.dec0de.landguilds.Main;
+import xyz.dec0de.landguilds.storage.ChunkStorage;
+import xyz.dec0de.landguilds.storage.GuildStorage;
+import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,6 +23,9 @@ public class GuildsCommand implements CommandExecutor {
 
     private String noGuildError = ChatColor.RED + "You are not apart of a guild. Please create or join one.";
     private String inGuildError = ChatColor.RED + "You are already apart of a guild, you must leave or disband your current one.";
+    private String noGuildPermissionsRole = ChatColor.RED +
+                    "You do not have enough permissions " +
+                    "in your guild to do this.";
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
@@ -49,15 +52,18 @@ public class GuildsCommand implements CommandExecutor {
 
                         GuildStorage guildStorage = playerStorage.getGuild();
 
-                        //TODO check if they have the proper role in their guild
+                        if(guildStorage.getOwner() == player.getUniqueId()) {
 
-                        try {
-                            player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");
-                            guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
-                            chunkStorage.claim(guildStorage.getUuid(), true);
-                            return false;
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            try {
+                                player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");
+                                guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
+                                chunkStorage.claim(guildStorage.getUuid(), true);
+                                return false;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            player.sendMessage(noGuildPermissionsRole);
                         }
                     }
                     }else{
@@ -92,10 +98,7 @@ public class GuildsCommand implements CommandExecutor {
                                 return false;
 
                             }else{
-                                player.sendMessage(
-                                        ChatColor.RED +
-                                                "You do not have enough permissions " +
-                                                "in your guild to do this.");
+                                player.sendMessage(noGuildPermissionsRole);
                             }
                             return false;
                         }else{
@@ -177,30 +180,68 @@ public class GuildsCommand implements CommandExecutor {
                         return false;
                     }
 
-                    //TODO check if they're a high enough role in the guild
 
                     GuildStorage guildStorage = playerStorage.getGuild();
-                    String guildToken = guildStorage.getName()+"_"+guildStorage.getUuid().toString();
-                    pendingGuildInvites.put(toInvite.getUniqueId(), guildToken);
 
-                    player.sendMessage(ChatColor.GREEN + "You have invited " + toInvite.getName() + " to join your guild.");
+                    if(guildStorage.getOwner() == player.getUniqueId()) {
+                        String guildToken = guildStorage.getName() + "_" + guildStorage.getUuid().toString();
+                        pendingGuildInvites.put(toInvite.getUniqueId(), guildToken);
 
-                    toInvite.sendMessage(ChatColor.GREEN + "You have been invited to join " +
-                            guildStorage.getTag() + ChatColor.GREEN + ". Expires in 30 seconds. Type /guilds join");
+                        player.sendMessage(ChatColor.GREEN + "You have invited " + toInvite.getName() + " to join your guild.");
 
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
-                        public void run() {
-                            if(pendingGuildInvites.containsKey(toInvite.getUniqueId()) &&
-                                    pendingGuildInvites.get(toInvite.getUniqueId()) == guildToken) {
-                                toInvite.sendMessage(ChatColor.RED + "The invite has expired!");
-                                pendingGuildInvites.remove(toInvite.getUniqueId());
+                        toInvite.sendMessage(ChatColor.GREEN + "You have been invited to join " +
+                                guildStorage.getTag() + ChatColor.GREEN + ". Expires in 30 seconds. Type /guilds join");
+
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+                            public void run() {
+                                if (pendingGuildInvites.containsKey(toInvite.getUniqueId()) &&
+                                        pendingGuildInvites.get(toInvite.getUniqueId()) == guildToken) {
+                                    toInvite.sendMessage(ChatColor.RED + "The invite has expired!");
+                                    pendingGuildInvites.remove(toInvite.getUniqueId());
+                                }
                             }
-                        }
-                    },  30 * 20L); // 20 ticks = 1 second. So 100 ticks = 5 seconds.
+                        }, 30 * 20L); // 20 ticks = 1 second. So 100 ticks = 5 seconds.
+                    }else{
+                        player.sendMessage(noGuildPermissionsRole);
+                    }
                 }else{
                     player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
                     return false;
                 }
+            }// KICK
+        }else if(args[0].equalsIgnoreCase("kick")){
+            String username = args[1];
+
+            PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+            if(playerStorage.getGuild() == null){
+                player.sendMessage(noGuildError);
+                return false;
+            }
+
+            if(Bukkit.getServer().getPlayer(username).isOnline()){
+                Player toKick = Bukkit.getPlayer(username);
+                PlayerStorage toKickPlayerStorage = new PlayerStorage(toKick.getUniqueId());
+
+
+                GuildStorage guildStorage = playerStorage.getGuild();
+
+                if(guildStorage.getOwner() == player.getUniqueId()) {
+                    if(guildStorage.getMembers().contains(toKick.getUniqueId())) {
+                        player.sendMessage(ChatColor.GREEN + "Successfully removed " + toKick.getName() + " from the guild.");
+
+                        try {
+                            toKickPlayerStorage.setGuild(null);
+                            guildStorage.removeMember(toKick.getUniqueId());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }else{
+                    player.sendMessage(noGuildPermissionsRole);
+                }
+            }else{
+                player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
+                return false;
             }
         }
         return false;

@@ -1,11 +1,11 @@
-package xyz.dec0de.archesmc.lands.storage;
+package xyz.dec0de.landguilds.storage;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import xyz.dec0de.archesmc.lands.Main;
+import xyz.dec0de.landguilds.Main;
 
 import java.io.File;
 import java.io.IOException;
@@ -114,6 +114,25 @@ public class ChunkStorage {
     public boolean addMember(UUID uuid) throws IOException {
         if(!getMembers().contains(uuid) && isClaimed()){
             config.set("members." + uuid.toString() + ".role", "MEMBER");
+            config.save(file);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Remove another player from the chunk
+     *
+     * @param uuid
+     * @return
+     * @throws IOException
+     */
+
+    public boolean removeMember(UUID uuid) throws IOException {
+        if(getMembers().contains(uuid)){
+            config.set("members." + uuid.toString(), null);
             config.save(file);
 
             return true;

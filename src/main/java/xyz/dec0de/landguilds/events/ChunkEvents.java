@@ -1,4 +1,4 @@
-package xyz.dec0de.archesmc.lands.events;
+package xyz.dec0de.landguilds.events;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -9,10 +9,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import xyz.dec0de.archesmc.lands.Main;
-import xyz.dec0de.archesmc.lands.storage.ChunkStorage;
-import xyz.dec0de.archesmc.lands.storage.GuildStorage;
-import xyz.dec0de.archesmc.lands.storage.PlayerStorage;
+import xyz.dec0de.landguilds.Main;
+import xyz.dec0de.landguilds.storage.ChunkStorage;
+import xyz.dec0de.landguilds.storage.GuildStorage;
+import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.util.HashMap;
 import java.util.UUID;
