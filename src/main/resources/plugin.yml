@@ -1,5 +1,5 @@
 name: LandGuilds
-main: xyz.dec0de.archesmc.landguilds.Main
+main: xyz.dec0de.landguilds.Main
 version: 1.0
 api-version: 1.13
 website: https://dec0de.xyz

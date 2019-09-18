@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
+import xyz.dec0de.landguilds.enums.Roles;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -44,6 +45,7 @@ public class LandsCommand implements CommandExecutor {
                         player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");
                         playerStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
                         chunkStorage.claim(player.getUniqueId(), false);
+                        return false;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -60,9 +62,9 @@ public class LandsCommand implements CommandExecutor {
                     }
 
                     if(!chunkStorage.isGuild()){
-                        if(chunkStorage.getOwner() == player.getUniqueId()) {
+                        if(chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
                             player.sendMessage(ChatColor.GREEN +
-                                    "You have unclaimed this chunk from your guild.");
+                                    "You have unclaimed this chunk.");
                             try {
                                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
                                 playerStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
@@ -74,12 +76,13 @@ public class LandsCommand implements CommandExecutor {
                         }else{
                             player.sendMessage(
                                     ChatColor.RED +
-                                    "You do not have enough permissions " +
-                                    "in your guild to do this.");
+                                    "You do not own this land.");
+                            return false;
                         }
                         return false;
                     }else{
                         player.sendMessage(ChatColor.RED + "This land was claimed by a guild.");
+                        return false;
                     }
                 }
             }
@@ -89,7 +92,7 @@ public class LandsCommand implements CommandExecutor {
 
                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
 
-                if (Bukkit.getServer().getPlayer(username).isOnline()) {
+                if (Bukkit.getServer().getPlayer(username) != null) {
                     Player toKick = Bukkit.getPlayer(username);
                     PlayerStorage toKickPlayerStorage = new PlayerStorage(toKick.getUniqueId());
 
@@ -104,8 +107,13 @@ public class LandsCommand implements CommandExecutor {
                         return false;
                     }
 
-                    if(chunkStorage.getOwner() == player.getUniqueId()){
-                        if(chunkStorage.getMembers().contains(toKick)){
+                    if(chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
+                        if(chunkStorage.getMembers().contains(toKick.getUniqueId())){
+                            if(username.equalsIgnoreCase(player.getName())){
+                                player.sendMessage(ChatColor.RED + "You cannot kick yourself.");
+                                return false;
+                            }
+
                             player.sendMessage(ChatColor.GREEN + "You have successfully kicked " + toKick.getName() + " from this chunk.");
 
                             try {
@@ -113,9 +121,14 @@ public class LandsCommand implements CommandExecutor {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            return false;
+                        }else{
+                            player.sendMessage(ChatColor.RED + "This player has not been added to this land.");
+                            return false;
                         }
                     }else{
                         player.sendMessage(ChatColor.RED + "You are not the owner of this land.");
+                        return false;
                     }
                 } else {
                     player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
@@ -124,7 +137,7 @@ public class LandsCommand implements CommandExecutor {
             }else if (args[0].equalsIgnoreCase("add")) {
                 String username = args[1];
 
-                if (Bukkit.getServer().getPlayer(username).isOnline()) {
+                if (Bukkit.getServer().getPlayer(username) != null) {
                     Player toAdd = Bukkit.getPlayer(username);
 
                     ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
@@ -138,7 +151,7 @@ public class LandsCommand implements CommandExecutor {
                         return false;
                     }
 
-                    if(chunkStorage.getOwner() == player.getUniqueId()){
+                    if(chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
                         if(!chunkStorage.getMembers().contains(toAdd)){
                             player.sendMessage(ChatColor.GREEN + "You have successfully added " + toAdd.getName() + " to this chunk.");
 
@@ -150,6 +163,7 @@ public class LandsCommand implements CommandExecutor {
                         }
                     }else{
                         player.sendMessage(ChatColor.RED + "You are not the owner of this land.");
+                        return false;
                     }
                 } else {
                     player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");

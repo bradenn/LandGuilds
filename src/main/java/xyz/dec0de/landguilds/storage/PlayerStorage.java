@@ -100,6 +100,11 @@ public class PlayerStorage {
         config.save(file);
     }
 
+    public void removeGuild(UUID uuid) throws IOException {
+        config.set("guild", null);
+        config.save(file);
+    }
+
     public GuildStorage getGuild(){
         if(config.isSet("guild")){
             return new GuildStorage(UUID.fromString(config.getString("guild")));

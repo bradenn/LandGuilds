@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
+import xyz.dec0de.landguilds.enums.Roles;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -52,8 +53,7 @@ public class GuildsCommand implements CommandExecutor {
 
                         GuildStorage guildStorage = playerStorage.getGuild();
 
-                        if(guildStorage.getOwner() == player.getUniqueId()) {
-
+                        if(guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
                             try {
                                 player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");
                                 guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
@@ -85,7 +85,7 @@ public class GuildsCommand implements CommandExecutor {
 
                         if(chunkStorage.isGuild()){
                             GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                            if(guildStorage.getOwner() == player.getUniqueId()) {
+                            if(guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
                                 player.sendMessage(ChatColor.GREEN +
                                         "You have unclaimed this chunk from your guild.");
                                 try {
@@ -119,22 +119,27 @@ public class GuildsCommand implements CommandExecutor {
 
                                 player.sendMessage(ChatColor.GREEN + "You have joined the guild "
                                         + guildStorage.getTag() + ChatColor.GREEN + ".");
+
+                                pendingGuildInvites.remove(player.getUniqueId());
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }else{
                             player.sendMessage(inGuildError);
                         }
+                    }else{
+                        player.sendMessage(ChatColor.RED + "You do not have any pending invites.");
+                        return false;
                     }
                 }
-        }else if(args.length == 2){
+        }else if(args.length == 2) {
 
             // CREATE
-            if(args[0].equalsIgnoreCase("create")){
+            if (args[0].equalsIgnoreCase("create")) {
                 String name = args[1];
 
                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if(playerStorage.getGuild() != null){
+                if (playerStorage.getGuild() != null) {
                     player.sendMessage(inGuildError);
                     return false;
                 }
@@ -142,12 +147,12 @@ public class GuildsCommand implements CommandExecutor {
                 Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
                 Matcher m = p.matcher(name);
 
-                if(m.find()){
+                if (m.find()) {
                     player.sendMessage(ChatColor.RED + "You cannot have any special characters in your guild name.");
                     return false;
                 }
 
-                if(name.length() > 6){
+                if (name.length() > 6) {
                     player.sendMessage(ChatColor.RED + "Your guild name cannot be longer than 6 characters.");
                     return false;
                 }
@@ -163,19 +168,19 @@ public class GuildsCommand implements CommandExecutor {
                 }
 
                 // INVITE
-            }else if(args[0].equalsIgnoreCase("invite")){
+            } else if (args[0].equalsIgnoreCase("invite")) {
                 String username = args[1];
 
                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if(playerStorage.getGuild() == null){
+                if (playerStorage.getGuild() == null) {
                     player.sendMessage(noGuildError);
                     return false;
                 }
-                if(Bukkit.getServer().getPlayer(username).isOnline()){
+                if (Bukkit.getServer().getPlayer(username) != null) {
                     Player toInvite = Bukkit.getPlayer(username);
                     PlayerStorage invitePlayerStorage = new PlayerStorage(toInvite.getUniqueId());
 
-                    if(pendingGuildInvites.containsKey(toInvite.getUniqueId())){
+                    if (pendingGuildInvites.containsKey(toInvite.getUniqueId())) {
                         player.sendMessage(ChatColor.RED + "This player already has a pending invite, try again in a little bit.");
                         return false;
                     }
@@ -183,7 +188,7 @@ public class GuildsCommand implements CommandExecutor {
 
                     GuildStorage guildStorage = playerStorage.getGuild();
 
-                    if(guildStorage.getOwner() == player.getUniqueId()) {
+                    if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
                         String guildToken = guildStorage.getName() + "_" + guildStorage.getUuid().toString();
                         pendingGuildInvites.put(toInvite.getUniqueId(), guildToken);
 
@@ -201,47 +206,60 @@ public class GuildsCommand implements CommandExecutor {
                                 }
                             }
                         }, 30 * 20L); // 20 ticks = 1 second. So 100 ticks = 5 seconds.
-                    }else{
+                    } else {
                         player.sendMessage(noGuildPermissionsRole);
                     }
-                }else{
+                } else {
                     player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
                     return false;
                 }
-            }// KICK
-        }else if(args[0].equalsIgnoreCase("kick")){
-            String username = args[1];
+            } else if (args[0].equalsIgnoreCase("kick")) {
+                String username = args[1];
 
-            PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-            if(playerStorage.getGuild() == null){
-                player.sendMessage(noGuildError);
-                return false;
-            }
+                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                if (playerStorage.getGuild() == null) {
+                    player.sendMessage(noGuildError);
+                    return false;
+                }
 
-            if(Bukkit.getServer().getPlayer(username).isOnline()){
-                Player toKick = Bukkit.getPlayer(username);
-                PlayerStorage toKickPlayerStorage = new PlayerStorage(toKick.getUniqueId());
+                if (Bukkit.getServer().getPlayer(username) != null) {
+                    Player toKick = Bukkit.getPlayer(username);
+                    PlayerStorage toKickPlayerStorage = new PlayerStorage(toKick.getUniqueId());
 
+                    GuildStorage guildStorage = playerStorage.getGuild();
 
-                GuildStorage guildStorage = playerStorage.getGuild();
+                    if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                        if (guildStorage.getMembers().contains(toKick.getUniqueId())) {
+                            if(username.equalsIgnoreCase(player.getName())){
+                                player.sendMessage(ChatColor.RED + "You cannot kick yourself.");
+                                return false;
+                            }
 
-                if(guildStorage.getOwner() == player.getUniqueId()) {
-                    if(guildStorage.getMembers().contains(toKick.getUniqueId())) {
-                        player.sendMessage(ChatColor.GREEN + "Successfully removed " + toKick.getName() + " from the guild.");
+                            if(guildStorage.getOwner() == toKick.getUniqueId()){
+                                player.sendMessage(ChatColor.RED + "You cannot kick the owner! They must disband or transfer the guild.");
+                                return false;
+                            }
+
+                            player.sendMessage(ChatColor.GREEN + "Successfully removed " + toKick.getName() + " from the guild.");
 
                         try {
-                            toKickPlayerStorage.setGuild(null);
+                            toKickPlayerStorage.removeGuild(toKick.getUniqueId());
                             guildStorage.removeMember(toKick.getUniqueId());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        } else {
+                            player.sendMessage(ChatColor.RED + "This player is not in the guild.");
+                            return false;
+                        }
+                    } else {
+                        player.sendMessage(noGuildPermissionsRole);
+                        return false;
                     }
-                }else{
-                    player.sendMessage(noGuildPermissionsRole);
+                } else {
+                    player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
+                    return false;
                 }
-            }else{
-                player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
-                return false;
             }
         }
         return false;

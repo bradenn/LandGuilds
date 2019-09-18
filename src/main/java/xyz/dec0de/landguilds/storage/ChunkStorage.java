@@ -6,6 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import xyz.dec0de.landguilds.Main;
+import xyz.dec0de.landguilds.enums.Roles;
 
 import java.io.File;
 import java.io.IOException;
@@ -161,6 +162,22 @@ public class ChunkStorage {
         }
 
         return false;
+    }
+
+    /**
+     * Get the role of a player in a chunk.
+     *
+     * @param uuid
+     * @return
+     */
+    public Roles getRole(UUID uuid){
+        Roles roles = Roles.valueOf(config.getString("members." + uuid.toString() + ".role"));
+
+        if(roles != null) {
+            return roles;
+        }
+
+        return null;
     }
 
     /**
