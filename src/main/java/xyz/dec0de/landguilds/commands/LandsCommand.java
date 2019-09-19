@@ -24,13 +24,7 @@ public class LandsCommand implements CommandExecutor {
 
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
-                player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Lands Help -*-*-*-*-*-");
-                player.sendMessage(ChatColor.GRAY + "/l help " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Displays help");
-                player.sendMessage(ChatColor.GRAY + "/l claim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Claim a personal chunk");
-                player.sendMessage(ChatColor.GRAY + "/l unclaim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Unclaim a personal chunk");
-                player.sendMessage(ChatColor.GRAY + "/l add [player name]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Add a player to your chunk");
-                player.sendMessage(ChatColor.GRAY + "/l kick [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Kick a player from your personal chunk");
-                player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Lands Help -*-*-*-*-*-");
+                help(player);
             } else if (args[0].equalsIgnoreCase("claim")) {
                 if (Main.allowedWorlds().contains(player.getWorld().getName())) {
                     ChunkStorage chunkStorage = new ChunkStorage(
@@ -173,7 +167,19 @@ public class LandsCommand implements CommandExecutor {
                     return false;
                 }
             }
+        } else {
+            help(player);
         }
         return false;
+    }
+
+    public void help(Player player) {
+        player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Lands Help -*-*-*-*-*-");
+        player.sendMessage(ChatColor.GRAY + "/l help " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Displays help");
+        player.sendMessage(ChatColor.GRAY + "/l claim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Claim a personal chunk");
+        player.sendMessage(ChatColor.GRAY + "/l unclaim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Unclaim a personal chunk");
+        player.sendMessage(ChatColor.GRAY + "/l add [player name]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Add a player to your chunk");
+        player.sendMessage(ChatColor.GRAY + "/l kick [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Kick a player from your personal chunk");
+        player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Lands Help -*-*-*-*-*-");
     }
 }
