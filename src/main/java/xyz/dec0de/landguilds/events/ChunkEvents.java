@@ -119,7 +119,7 @@ public class ChunkEvents implements Listener {
     public void playerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
 
-        if (e.getClickedBlock().getType() == null) return;
+        if (e.getClickedBlock() == null) return;
 
         List<Material> blockedBlocks = new ArrayList<>();
         blockedBlocks.add(Material.BLAST_FURNACE);
