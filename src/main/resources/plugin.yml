@@ -4,6 +4,7 @@ version: 1.0
 api-version: 1.13
 website: https://dec0de.xyz
 description: Land Claiming & Guilds
+authors: [Nyarrth]
 commands:
   lands:
     aliases: [l, land, ll]
