@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.io.IOException;
@@ -15,5 +16,8 @@ public class PlayerEvents implements Listener {
         Player player = e.getPlayer();
 
         PlayerStorage playerStorage = new PlayerStorage(player);
+        if (playerStorage.getGuild() != null) {
+            Main.getChat().setPlayerPrefix(player, playerStorage.getGuild().getTag());
+        }
     }
 }
