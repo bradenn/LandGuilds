@@ -142,6 +142,7 @@ public class GuildsCommand implements CommandExecutor {
                             try {
                                 player.sendMessage(ChatColor.GREEN + "Successfully disbanded your guild!");
                                 guildStorage.disbandGuild();
+                                playerStorage.removeGuild();
                                 return false;
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -268,7 +269,7 @@ public class GuildsCommand implements CommandExecutor {
                             player.sendMessage(ChatColor.GREEN + "Successfully removed " + toKick.getName() + " from the guild.");
 
                             try {
-                                toKickPlayerStorage.removeGuild(toKick.getUniqueId());
+                                toKickPlayerStorage.removeGuild();
                                 guildStorage.removeMember(toKick.getUniqueId());
                             } catch (IOException e) {
                                 e.printStackTrace();

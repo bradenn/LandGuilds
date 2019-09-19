@@ -93,7 +93,7 @@ public class PlayerStorage {
         return false;
     }
 
-    public void removeGuild(UUID uuid) throws IOException {
+    public void removeGuild() throws IOException {
         config.set("guild", null);
         config.save(file);
     }
