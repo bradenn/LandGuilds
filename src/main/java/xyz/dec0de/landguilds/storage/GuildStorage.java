@@ -198,6 +198,7 @@ public class GuildStorage {
         config.save(file);
     }
 
+    //TODO Make it claim the chunk or remove it too
     public boolean addChunk(World world, Chunk chunk) throws IOException {
         ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
         if (Main.allowedWorlds().contains(world.getName())) {

@@ -66,6 +66,7 @@ public class PlayerStorage {
         return chunks;
     }
 
+    //TODO Make it claim the chunk or remove it too
     public boolean addChunk(World world, Chunk chunk) throws IOException {
         if (Main.allowedWorlds().contains(world.getName())) {
             List<String> list = config.getStringList("chunks");

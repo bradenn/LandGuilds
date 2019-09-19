@@ -199,6 +199,8 @@ public class ChunkStorage {
             return true;
         }
 
+        //TODO make it straight up delete the file on unclaim?
+
         return false;
     }
 
