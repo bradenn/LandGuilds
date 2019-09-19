@@ -36,9 +36,17 @@ public class GuildsCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length == 1) {
-
+            if (args[0].equalsIgnoreCase("help")) {
+                player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Guilds Help -*-*-*-*-*-");
+                player.sendMessage(ChatColor.GRAY + "/g help " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Displays help");
+                player.sendMessage(ChatColor.GRAY + "/g create [name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Create a guild");
+                player.sendMessage(ChatColor.GRAY + "/g claim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Claim a chunk for your guild");
+                player.sendMessage(ChatColor.GRAY + "/g unclaim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Unclaim a chunk from your guild");
+                player.sendMessage(ChatColor.GRAY + "/g invite [player name]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Invite a player to your guild");
+                player.sendMessage(ChatColor.GRAY + "/g kick [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Kick a player from your guild");
+                player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Guilds Help -*-*-*-*-*-");
             // CLAIM
-            if (args[0].equalsIgnoreCase("claim")) {
+            } else if (args[0].equalsIgnoreCase("claim")) {
                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
                 if (playerStorage.getGuild() != null) {
                     if (Main.allowedWorlds().contains(player.getWorld().getName())) {

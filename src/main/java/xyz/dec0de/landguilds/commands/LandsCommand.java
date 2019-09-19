@@ -23,7 +23,15 @@ public class LandsCommand implements CommandExecutor {
         Player player = (Player) sender;
 
         if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("claim")) {
+            if (args[0].equalsIgnoreCase("help")) {
+                player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Lands Help -*-*-*-*-*-");
+                player.sendMessage(ChatColor.GRAY + "/l help " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Displays help");
+                player.sendMessage(ChatColor.GRAY + "/l claim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Claim a personal chunk");
+                player.sendMessage(ChatColor.GRAY + "/l unclaim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Unclaim a personal chunk");
+                player.sendMessage(ChatColor.GRAY + "/l add [player name]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Add a player to your chunk");
+                player.sendMessage(ChatColor.GRAY + "/l kick [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Kick a player from your personal chunk");
+                player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Lands Help -*-*-*-*-*-");
+            } else if (args[0].equalsIgnoreCase("claim")) {
                 if (Main.allowedWorlds().contains(player.getWorld().getName())) {
                     ChunkStorage chunkStorage = new ChunkStorage(
                             player.getWorld(),
