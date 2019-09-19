@@ -33,6 +33,7 @@ public class LandsCommand implements CommandExecutor {
 
                     if (chunkStorage.isClaimed()) {
                         player.sendMessage(ChatColor.RED + "This chunk has already been claimed.");
+                        return false;
                     }
 
                     //TODO check if they are allowed to claim chunks / have enough unused chunk claims
