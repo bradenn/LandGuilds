@@ -73,52 +73,48 @@ public class ChunkEvents implements Listener {
 
     @EventHandler
     public void breakBlock(BlockBreakEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), () -> {
-            Player player = e.getPlayer();
-            if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
-                if (chunkStorage.isClaimed()) {
-                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                    if (chunkStorage.isGuild()) {
-                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
-                            e.setCancelled(true);
-                        }
-                    } else {
-                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
-                            e.setCancelled(true);
-                        }
+        Player player = e.getPlayer();
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
+            if (chunkStorage.isClaimed()) {
+                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                if (chunkStorage.isGuild()) {
+                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                    if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
+                        e.setCancelled(true);
+                    }
+                } else {
+                    if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
+                        e.setCancelled(true);
                     }
                 }
             }
-        });
+        }
     }
 
     @EventHandler
     public void placeBlock(BlockPlaceEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), () -> {
-            Player player = e.getPlayer();
-            if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
-                if (chunkStorage.isClaimed()) {
-                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                    if (chunkStorage.isGuild()) {
-                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
-                            e.setCancelled(true);
-                        }
-                    } else {
-                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
-                            e.setCancelled(true);
-                        }
+        Player player = e.getPlayer();
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
+            if (chunkStorage.isClaimed()) {
+                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                if (chunkStorage.isGuild()) {
+                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                    if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
+                        e.setCancelled(true);
+                    }
+                } else {
+                    if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
+                        e.setCancelled(true);
                     }
                 }
             }
-        });
+        }
     }
 
     @EventHandler
@@ -140,28 +136,25 @@ public class ChunkEvents implements Listener {
         blockedBlocks.add(Material.FURNACE_MINECART);
         blockedBlocks.add(Material.DISPENSER);
         blockedBlocks.add(Material.DROPPER);
-
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), () -> {
-            if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                if (blockedBlocks.contains(e.getClickedBlock().getType())) {
-                    ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
-                    if (chunkStorage.isClaimed()) {
-                        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                        if (chunkStorage.isGuild()) {
-                            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                            if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                                player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot interact here.");
-                                e.setCancelled(true);
-                            }
-                        } else {
-                            if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                                player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot interact here.");
-                                e.setCancelled(true);
-                            }
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+            if (blockedBlocks.contains(e.getClickedBlock().getType())) {
+                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
+                if (chunkStorage.isClaimed()) {
+                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                    if (chunkStorage.isGuild()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot interact here.");
+                            e.setCancelled(true);
+                        }
+                    } else {
+                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot interact here.");
+                            e.setCancelled(true);
                         }
                     }
                 }
             }
-        });
+        }
     }
 }
