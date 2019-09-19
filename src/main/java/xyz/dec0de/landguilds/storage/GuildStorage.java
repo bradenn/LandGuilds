@@ -1,5 +1,6 @@
 package xyz.dec0de.landguilds.storage;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -223,6 +224,20 @@ public class GuildStorage {
         }
 
         return false;
+    }
+
+    public boolean disbandGuild() throws IOException {
+        List<String> chunks = config.getStringList("chunks");
+        for (String chnk : chunks) {
+            World world = Bukkit.getWorld(chnk.split(";")[0]);
+            Chunk chunk = world.getChunkAt(Integer.parseInt(chnk.split(";")[1]), Integer.parseInt(chnk.split(";")[2]));
+
+            ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
+            chunkStorage.unclaim();
+        }
+
+        file.delete();
+        return true;
     }
 
 }

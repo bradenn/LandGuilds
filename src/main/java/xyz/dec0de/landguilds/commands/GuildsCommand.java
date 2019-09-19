@@ -54,7 +54,7 @@ public class GuildsCommand implements CommandExecutor {
 
                         GuildStorage guildStorage = playerStorage.getGuild();
 
-                        if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
+                        if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
                             try {
                                 player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");
                                 guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
@@ -132,6 +132,30 @@ public class GuildsCommand implements CommandExecutor {
                     player.sendMessage(ChatColor.RED + "You do not have any pending invites.");
                     return false;
                 }
+            } else if (args[0].equalsIgnoreCase("disband")) {
+                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                if (playerStorage.getGuild() != null) {
+                    if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+                        GuildStorage guildStorage = playerStorage.getGuild();
+
+                        if (guildStorage.getRole(player.getUniqueId()) == Roles.OWNER && guildStorage.getRole(player.getUniqueId()) != null) {
+                            try {
+                                player.sendMessage(ChatColor.GREEN + "Successfully disbanded your guild!");
+                                guildStorage.disbandGuild();
+                                return false;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            player.sendMessage(noGuildPermissionsRole);
+                        }
+                    }
+                } else {
+                    player.sendMessage(noGuildError);
+                    return false;
+                }
+
+                // JOIN
             }
         } else if (args.length == 2) {
 
@@ -272,6 +296,7 @@ public class GuildsCommand implements CommandExecutor {
         player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Guilds Help -*-*-*-*-*-");
         player.sendMessage(ChatColor.GRAY + "/g help " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Displays help");
         player.sendMessage(ChatColor.GRAY + "/g create [name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Create a guild");
+        player.sendMessage(ChatColor.GRAY + "/g disband [name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Disband your guild");
         player.sendMessage(ChatColor.GRAY + "/g claim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Claim a chunk for your guild");
         player.sendMessage(ChatColor.GRAY + "/g unclaim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Unclaim a chunk from your guild");
         player.sendMessage(ChatColor.GRAY + "/g invite [player name]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Invite a player to your guild");
