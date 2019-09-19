@@ -236,6 +236,11 @@ public class GuildStorage {
             chunkStorage.unclaim();
         }
 
+        for (UUID uuid : getMembers()) {
+            PlayerStorage playerStorage = new PlayerStorage(uuid);
+            playerStorage.removeGuild();
+        }
+
         file.delete();
         return true;
     }
