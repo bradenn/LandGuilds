@@ -119,6 +119,8 @@ public class ChunkEvents implements Listener {
     public void playerInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
 
+        if (e.getClickedBlock().getType() == null) return;
+
         List<Material> blockedBlocks = new ArrayList<>();
         blockedBlocks.add(Material.BLAST_FURNACE);
         blockedBlocks.add(Material.FURNACE);
@@ -133,9 +135,8 @@ public class ChunkEvents implements Listener {
         blockedBlocks.add(Material.DISPENSER);
         blockedBlocks.add(Material.DROPPER);
 
-
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            if (e.getClickedBlock().getType() != null && blockedBlocks.contains(e.getClickedBlock().getType())) {
+            if (blockedBlocks.contains(e.getClickedBlock().getType())) {
                 ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
                 if (chunkStorage.isClaimed()) {
                     PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
