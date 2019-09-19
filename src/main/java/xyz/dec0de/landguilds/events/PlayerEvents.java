@@ -19,9 +19,14 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent e) throws IOException {
-        PlayerStorage playerStorage = new PlayerStorage(e.getPlayer());
-        if (playerStorage.getGuild() != null)
-            e.getFormat().replace("{guild_name}", playerStorage.getGuild().getTag());
+    public void onChat(AsyncPlayerChatEvent e) {
+        try {
+            PlayerStorage playerStorage = new PlayerStorage(e.getPlayer());
+            if (playerStorage.getGuild() != null) {
+                e.setFormat(e.getFormat().replace("{GUILD}", playerStorage.getGuild().getTag()));
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
