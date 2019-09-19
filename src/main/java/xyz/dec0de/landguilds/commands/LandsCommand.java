@@ -60,24 +60,30 @@ public class LandsCommand implements CommandExecutor {
                     }
 
                     if (!chunkStorage.isGuild()) {
-                        if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
-                            player.sendMessage(ChatColor.GREEN +
-                                    "You have unclaimed this chunk.");
-                            try {
-                                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                                playerStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
-                                chunkStorage.unclaim();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                        if (chunkStorage.getMembers().contains(player.getUniqueId())) {
+                            if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
+                                player.sendMessage(ChatColor.GREEN +
+                                        "You have unclaimed this chunk.");
+                                try {
+                                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                                    playerStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
+                                    chunkStorage.unclaim();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
+                            } else {
+                                player.sendMessage(
+                                        ChatColor.RED +
+                                                "You do not own this land.");
+                                return false;
+                            }
+                            return false;
                         } else {
                             player.sendMessage(
                                     ChatColor.RED +
                                             "You do not own this land.");
-                            return false;
                         }
-                        return false;
                     } else {
                         player.sendMessage(ChatColor.RED + "This land was claimed by a guild.");
                         return false;

@@ -86,20 +86,26 @@ public class GuildsCommand implements CommandExecutor {
 
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
-                            player.sendMessage(ChatColor.GREEN +
-                                    "You have unclaimed this chunk from your guild.");
-                            try {
-                                guildStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
-                                chunkStorage.unclaim();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                        if (guildStorage.getMembers().contains(player.getUniqueId())) {
+                            if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                                player.sendMessage(ChatColor.GREEN +
+                                        "You have unclaimed this chunk from your guild.");
+                                try {
+                                    guildStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
+                                    chunkStorage.unclaim();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                return false;
+
+                            } else {
+                                player.sendMessage(noGuildPermissionsRole);
                             }
-
-                            return false;
-
                         } else {
-                            player.sendMessage(noGuildPermissionsRole);
+                            player.sendMessage(
+                                    ChatColor.RED +
+                                            "You do not own this land.");
                         }
                         return false;
                     } else {
