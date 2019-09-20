@@ -167,7 +167,7 @@ public class GuildsCommand implements CommandExecutor {
 
                         if (guildStorage.getRole(player.getUniqueId()) != Roles.OWNER && guildStorage.getRole(player.getUniqueId()) != null) {
                             try {
-                                player.sendMessage(ChatColor.GREEN + "Successfully disbanded your guild!");
+                                player.sendMessage(ChatColor.GREEN + "You have left your current guild.");
                                 playerStorage.removeGuild();
                                 guildStorage.removeMember(player.getUniqueId());
                                 return false;
