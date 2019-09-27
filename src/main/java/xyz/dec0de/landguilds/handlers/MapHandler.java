@@ -48,12 +48,12 @@ public class MapHandler {
 
             HashMap<String, ChatColor> landOwners = new HashMap<>();
 
-            for (int z = centerZ - 7; z < centerZ + 7; z++) {
+            for (int z = centerZ - 4; z < centerZ + 4; z++) {
                 String currentLine = "";
-                for (int x = centerX - 7; x < centerX + 7; x++) {
+                for (int x = centerX - 4; x < centerX + 4; x++) {
 
                     Chunk currentChunk = world.getChunkAt(x, z);
-                    ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
+                    ChunkStorage chunkStorage = new ChunkStorage(world, currentChunk);
 
                     if (chunkStorage.isClaimed()) {
                         //check if it is guild, if guild, return GUILD-UUID
@@ -67,17 +67,18 @@ public class MapHandler {
                             while (landOwners.containsValue(color)) {
                                 color = ChatColor.getByChar(Integer.toHexString(new Random().nextInt(16)));
                             }
-                        } else {
                             landOwners.put(owner, color);
+                        } else {
+                            color = landOwners.get(owner);
                         }
 
-                        if (x != centerX && z != centerZ) {
-                            currentLine = currentLine + color + BLOCK_CHAR;
+                        if (x == centerX && z == centerZ) {
+                            currentLine = currentLine + color + STAR_CHAR + " ";
                         } else {
-                            currentLine = currentLine + color + STAR_CHAR;
+                            currentLine = currentLine + color + BLOCK_CHAR + " ";
                         }
                     } else {
-                        currentLine = currentLine + ChatColor.WHITE + BLOCK_CHAR;
+                        currentLine = currentLine + ChatColor.WHITE + BLOCK_CHAR + " ";
                     }
                 }
 
