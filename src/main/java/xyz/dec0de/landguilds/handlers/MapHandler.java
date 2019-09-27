@@ -7,13 +7,18 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
+import xyz.dec0de.landguilds.storage.GuildStorage;
+import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 public class MapHandler {
 
     private static char BLOCK_CHAR = '■';
+    private static char STAR_CHAR = '☆';
 
     public static void showMap(Player player) {
         /*
@@ -51,22 +56,52 @@ public class MapHandler {
                     ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
 
                     if (chunkStorage.isClaimed()) {
-                        //check if land is claimed
+                        //check if it is guild, if guild, return GUILD-UUID
+                        //if player put player UUID
+                        String owner = chunkStorage.isGuild() ?
+                                "GUILD_" + chunkStorage.getOwner().toString()
+                                : chunkStorage.getOwner().toString();
+
                         ChatColor color = ChatColor.getByChar(Integer.toHexString(new Random().nextInt(16)));
-                        while (landOwners.containsValue(color)) {
-                            color = ChatColor.getByChar(Integer.toHexString(new Random().nextInt(16)));
+                        if (!landOwners.containsKey(owner)) {
+                            while (landOwners.containsValue(color)) {
+                                color = ChatColor.getByChar(Integer.toHexString(new Random().nextInt(16)));
+                            }
+                        } else {
+                            landOwners.put(owner, color);
                         }
 
                         if (x != centerX && z != centerZ) {
-
+                            currentLine = currentLine + color + BLOCK_CHAR;
                         } else {
-                            currentLine = currentLine;
+                            currentLine = currentLine + color + STAR_CHAR;
                         }
                     } else {
                         currentLine = currentLine + ChatColor.WHITE + BLOCK_CHAR;
                     }
                 }
+
+                player.sendMessage(currentLine);
             }
+
+            String landOwnerList = "";
+
+            for (Map.Entry<String, ChatColor> land : landOwners.entrySet()) {
+                String ownerTag = "";
+
+                if (land.getKey().startsWith("GUILD_")) {
+                    GuildStorage guild = new GuildStorage(UUID.fromString(land.getKey().replace("GUILD_", "")));
+                    ownerTag = guild.getName();
+                } else {
+                    PlayerStorage playerStorage = new PlayerStorage(UUID.fromString(land.getKey()));
+                    ownerTag = playerStorage.getUsername();
+                }
+
+
+                landOwnerList = landOwnerList + ChatColor.GRAY + ", " + land.getValue() + ownerTag;
+            }
+
+            player.sendMessage(landOwnerList);
         }
     }
 }
