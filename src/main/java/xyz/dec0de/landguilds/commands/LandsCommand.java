@@ -92,7 +92,7 @@ public class LandsCommand implements CommandExecutor {
                     }
                 }
             } else if (args[0].equalsIgnoreCase("map")) {
-                if (Main.allowedWorlds().contains(player.getWorld())) {
+                if (Main.allowedWorlds().contains(player.getWorld().getName())) {
                     MapHandler.showMap(player);
                 }
             }
