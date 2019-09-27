@@ -92,14 +92,14 @@ public class MapHandler {
 
                 if (land.getKey().startsWith("GUILD_")) {
                     GuildStorage guild = new GuildStorage(UUID.fromString(land.getKey().replace("GUILD_", "")));
-                    ownerTag = guild.getName();
+                    ownerTag = guild.getTag();
                 } else {
                     PlayerStorage playerStorage = new PlayerStorage(UUID.fromString(land.getKey()));
                     ownerTag = playerStorage.getUsername();
                 }
 
 
-                landOwnerList = landOwnerList + ChatColor.GRAY + ", " + land.getValue() + ownerTag;
+                landOwnerList = landOwnerList + ChatColor.GRAY + land.getValue() + ownerTag;
             }
 
             player.sendMessage(landOwnerList);
