@@ -61,7 +61,8 @@ public class LandsCommand implements CommandExecutor {
 
                     if (!chunkStorage.isGuild()) {
                         if (chunkStorage.getMembers().contains(player.getUniqueId())) {
-                            if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
+                            if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER
+                                    && chunkStorage.getRole(player.getUniqueId()) != null) {
                                 player.sendMessage(ChatColor.GREEN +
                                         "You have unclaimed this chunk.");
                                 try {
@@ -89,6 +90,8 @@ public class LandsCommand implements CommandExecutor {
                         return false;
                     }
                 }
+            } else if (args[0].equalsIgnoreCase("map")) {
+
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("kick")) {
@@ -111,14 +114,16 @@ public class LandsCommand implements CommandExecutor {
                         return false;
                     }
 
-                    if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER && chunkStorage.getRole(player.getUniqueId()) != null) {
+                    if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER
+                            && chunkStorage.getRole(player.getUniqueId()) != null) {
                         if (chunkStorage.getMembers().contains(toKick.getUniqueId())) {
                             if (username.equalsIgnoreCase(player.getName())) {
                                 player.sendMessage(ChatColor.RED + "You cannot kick yourself.");
                                 return false;
                             }
 
-                            player.sendMessage(ChatColor.GREEN + "You have successfully kicked " + toKick.getName() + " from this chunk.");
+                            player.sendMessage(ChatColor.GREEN + "You have successfully kicked " +
+                                    toKick.getName() + " from this chunk.");
 
                             try {
                                 chunkStorage.removeMember(toKick.getUniqueId());
@@ -144,7 +149,8 @@ public class LandsCommand implements CommandExecutor {
                 if (Bukkit.getServer().getPlayer(username) != null) {
                     Player toAdd = Bukkit.getPlayer(username);
 
-                    ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
+                    ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(),
+                            player.getWorld().getChunkAt(player.getLocation()));
                     if (!chunkStorage.isClaimed()) {
                         player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
                         return false;
@@ -157,7 +163,8 @@ public class LandsCommand implements CommandExecutor {
 
                     if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
                         if (!chunkStorage.getMembers().contains(toAdd)) {
-                            player.sendMessage(ChatColor.GREEN + "You have successfully added " + toAdd.getName() + " to this chunk.");
+                            player.sendMessage(ChatColor.GREEN + "You have successfully added "
+                                    + toAdd.getName() + " to this chunk.");
 
                             try {
                                 chunkStorage.addMember(toAdd.getUniqueId());

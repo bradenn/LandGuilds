@@ -23,7 +23,8 @@ public class GuildsCommand implements CommandExecutor {
     private HashMap<UUID, String> pendingGuildInvites = new HashMap<>();
 
     private String noGuildError = ChatColor.RED + "You are not apart of a guild. Please create or join one.";
-    private String inGuildError = ChatColor.RED + "You are already apart of a guild, you must leave or disband your current one.";
+    private String inGuildError = ChatColor.RED + "You are already apart of a guild, " +
+            "you must leave or disband your current one.";
     private String noGuildPermissionsRole = ChatColor.RED +
             "You do not have enough permissions " +
             "in your guild to do this.";
@@ -54,7 +55,8 @@ public class GuildsCommand implements CommandExecutor {
 
                         GuildStorage guildStorage = playerStorage.getGuild();
 
-                        if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                        if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER &&
+                                guildStorage.getRole(player.getUniqueId()) != null) {
                             try {
                                 player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");
                                 guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
@@ -87,7 +89,8 @@ public class GuildsCommand implements CommandExecutor {
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                         if (guildStorage.getMembers().contains(player.getUniqueId())) {
-                            if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                            if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER
+                                    && guildStorage.getRole(player.getUniqueId()) != null) {
                                 player.sendMessage(ChatColor.GREEN +
                                         "You have unclaimed this chunk from your guild.");
                                 try {
@@ -143,7 +146,8 @@ public class GuildsCommand implements CommandExecutor {
                 if (playerStorage.getGuild() != null) {
                     GuildStorage guildStorage = playerStorage.getGuild();
 
-                    if (guildStorage.getRole(player.getUniqueId()) == Roles.OWNER && guildStorage.getRole(player.getUniqueId()) != null) {
+                    if (guildStorage.getRole(player.getUniqueId()) == Roles.OWNER
+                            && guildStorage.getRole(player.getUniqueId()) != null) {
                         try {
                             player.sendMessage(ChatColor.GREEN + "Successfully disbanded your guild!");
                             guildStorage.disbandGuild();
@@ -165,7 +169,8 @@ public class GuildsCommand implements CommandExecutor {
                     if (Main.allowedWorlds().contains(player.getWorld().getName())) {
                         GuildStorage guildStorage = playerStorage.getGuild();
 
-                        if (guildStorage.getRole(player.getUniqueId()) != Roles.OWNER && guildStorage.getRole(player.getUniqueId()) != null) {
+                        if (guildStorage.getRole(player.getUniqueId()) != Roles.OWNER
+                                && guildStorage.getRole(player.getUniqueId()) != null) {
                             try {
                                 player.sendMessage(ChatColor.GREEN + "You have left your current guild.");
                                 playerStorage.removeGuild();
@@ -234,14 +239,16 @@ public class GuildsCommand implements CommandExecutor {
                     PlayerStorage invitePlayerStorage = new PlayerStorage(toInvite.getUniqueId());
 
                     if (pendingGuildInvites.containsKey(toInvite.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "This player already has a pending invite, try again in a little bit.");
+                        player.sendMessage(ChatColor.RED +
+                                "This player already has a pending invite, try again in a little bit.");
                         return false;
                     }
 
 
                     GuildStorage guildStorage = playerStorage.getGuild();
 
-                    if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                    if (guildStorage.getRole(player.getUniqueId()) != Roles.MEMBER
+                            && guildStorage.getRole(player.getUniqueId()) != null) {
                         String guildToken = guildStorage.getName() + "_" + guildStorage.getUuid().toString();
                         pendingGuildInvites.put(toInvite.getUniqueId(), guildToken);
 
@@ -289,7 +296,8 @@ public class GuildsCommand implements CommandExecutor {
                             }
 
                             if (guildStorage.getOwner() == toKick.getUniqueId()) {
-                                player.sendMessage(ChatColor.RED + "You cannot kick the owner! They must disband or transfer the guild.");
+                                player.sendMessage(ChatColor.RED +
+                                        "You cannot kick the owner! They must disband or transfer the guild.");
                                 return false;
                             }
 
