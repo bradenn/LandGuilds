@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Roles;
+import xyz.dec0de.landguilds.handlers.MapHandler;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
@@ -91,7 +92,9 @@ public class LandsCommand implements CommandExecutor {
                     }
                 }
             } else if (args[0].equalsIgnoreCase("map")) {
-
+                if (Main.allowedWorlds().contains(player.getWorld())) {
+                    MapHandler.showMap(player);
+                }
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("kick")) {
