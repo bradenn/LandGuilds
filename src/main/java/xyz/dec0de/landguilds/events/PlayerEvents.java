@@ -24,6 +24,8 @@ public class PlayerEvents implements Listener {
             PlayerStorage playerStorage = new PlayerStorage(e.getPlayer());
             if (playerStorage.getGuild() != null) {
                 e.setFormat(e.getFormat().replace("{GUILD}", playerStorage.getGuild().getTag()));
+            } else {
+                e.setFormat(e.getFormat().replace("{GUILD}", ""));
             }
         } catch (IOException ex) {
             ex.printStackTrace();

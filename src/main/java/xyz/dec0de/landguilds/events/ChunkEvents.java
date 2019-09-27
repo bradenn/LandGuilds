@@ -2,14 +2,13 @@ package xyz.dec0de.landguilds.events;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import xyz.dec0de.landguilds.Main;
@@ -154,6 +153,21 @@ public class ChunkEvents implements Listener {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onExplode(EntityExplodeEvent e) {
+        Location location = e.getLocation();
+
+        if (Main.allowedWorlds().contains(location.getWorld().getName())) {
+            Chunk chunk = location.getChunk();
+            World world = location.getWorld();
+
+            ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
+            if (chunkStorage.isClaimed()) {
+                e.setCancelled(true);
             }
         }
     }
