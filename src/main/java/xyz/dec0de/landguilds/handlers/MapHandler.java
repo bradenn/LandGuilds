@@ -17,8 +17,9 @@ import java.util.UUID;
 
 public class MapHandler {
 
-    private static char BLOCK_CHAR = '■';
-    private static char STAR_CHAR = '☆';
+    private static char SQUARE_CHAR = '⬛';
+    private static char CIRCLE_CHAR = '⬤';
+    private static char COMPASS_CHAR = '\uDDED';
 
     public static void showMap(Player player) {
         /*
@@ -48,16 +49,17 @@ public class MapHandler {
 
             HashMap<String, ChatColor> landOwners = new HashMap<>();
 
-            for (int z = centerZ - 4; z < centerZ + 4; z++) {
+            int lineNum = 0;
+            for (int z = centerZ - 4; z <= centerZ + 4; z++) {
                 String currentLine = "";
-                for (int x = centerX - 4; x < centerX + 4; x++) {
+                for (int x = centerX - 4; x <= centerX + 4; x++) {
 
                     Chunk currentChunk = world.getChunkAt(x, z);
                     ChunkStorage chunkStorage = new ChunkStorage(world, currentChunk);
 
+                    char symbol = (x == centerX && z == centerZ) ? CIRCLE_CHAR : SQUARE_CHAR;
+
                     if (chunkStorage.isClaimed()) {
-                        //check if it is guild, if guild, return GUILD-UUID
-                        //if player put player UUID
                         String owner = chunkStorage.isGuild() ?
                                 "GUILD_" + chunkStorage.getOwner().toString()
                                 : chunkStorage.getOwner().toString();
@@ -72,17 +74,36 @@ public class MapHandler {
                             color = landOwners.get(owner);
                         }
 
-                        if (x == centerX && z == centerZ) {
-                            currentLine = currentLine + color + STAR_CHAR + " ";
-                        } else {
-                            currentLine = currentLine + color + BLOCK_CHAR + " ";
-                        }
+                        currentLine = currentLine + color + symbol + " ";
                     } else {
-                        currentLine = currentLine + ChatColor.WHITE + BLOCK_CHAR + " ";
+                        currentLine = currentLine + ChatColor.WHITE + symbol + " ";
                     }
                 }
 
+                switch (lineNum) {
+                    case 3:
+                        currentLine = currentLine + ChatColor.RESET +
+                                ChatColor.GRAY + ChatColor.BOLD
+                                + "     " +
+                                "   North";
+                        break;
+                    case 4:
+                        currentLine = currentLine + ChatColor.RESET +
+                                ChatColor.GRAY + ChatColor.BOLD
+                                + "     " +
+                                "West + East";
+                        break;
+                    case 5:
+                        currentLine = currentLine + ChatColor.RESET +
+                                ChatColor.GRAY + ChatColor.BOLD
+                                + "     " +
+                                "   South";
+                        break;
+                }
+
                 player.sendMessage(currentLine);
+
+                lineNum++;
             }
 
             String landOwnerList = "";
@@ -92,14 +113,14 @@ public class MapHandler {
 
                 if (land.getKey().startsWith("GUILD_")) {
                     GuildStorage guild = new GuildStorage(UUID.fromString(land.getKey().replace("GUILD_", "")));
-                    ownerTag = guild.getTag();
+                    ownerTag = ChatColor.stripColor(guild.getTag());
                 } else {
                     PlayerStorage playerStorage = new PlayerStorage(UUID.fromString(land.getKey()));
                     ownerTag = playerStorage.getUsername();
                 }
 
 
-                landOwnerList = landOwnerList + ChatColor.GRAY + land.getValue() + ownerTag;
+                landOwnerList = landOwnerList + ChatColor.GRAY + land.getValue() + ownerTag + " ";
             }
 
             player.sendMessage(landOwnerList);

@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Roles;
-import xyz.dec0de.landguilds.handlers.MapHandler;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -189,10 +188,6 @@ public class GuildsCommand implements CommandExecutor {
                     return false;
                 }
 
-            } else if (args[0].equalsIgnoreCase("map")) {
-                if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                    MapHandler.showMap(player);
-                }
             }
         } else if (args.length == 2) {
 

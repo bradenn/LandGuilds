@@ -135,6 +135,9 @@ public class ChunkEvents implements Listener {
         blockedBlocks.add(Material.FURNACE_MINECART);
         blockedBlocks.add(Material.DISPENSER);
         blockedBlocks.add(Material.DROPPER);
+        blockedBlocks.add(Material.BREWING_STAND);
+        blockedBlocks.add(Material.BARREL);
+
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
             if (blockedBlocks.contains(e.getClickedBlock().getType())) {
                 ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
