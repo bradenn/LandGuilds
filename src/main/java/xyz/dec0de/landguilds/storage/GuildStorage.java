@@ -198,6 +198,20 @@ public class GuildStorage {
         config.save(file);
     }
 
+    public List<Chunk> getChunks() {
+        List<Chunk> chunkList = new ArrayList<>();
+        List<String> list = config.getStringList("chunks");
+        for (String chnk : list) {
+            String world = chnk.split(";")[0];
+            int chunkX = Integer.parseInt(chnk.split(";")[1]);
+            int chunkZ = Integer.parseInt(chnk.split(";")[2]);
+
+            chunkList.add(Bukkit.getWorld(world).getChunkAt(chunkX, chunkZ));
+        }
+
+        return chunkList;
+    }
+
     //TODO Make it claim the chunk or remove it too
     public boolean addChunk(World world, Chunk chunk) throws IOException {
         ChunkStorage chunkStorage = new ChunkStorage(world, chunk);

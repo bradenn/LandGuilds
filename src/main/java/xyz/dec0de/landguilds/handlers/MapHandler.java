@@ -17,9 +17,9 @@ import java.util.UUID;
 
 public class MapHandler {
 
-    private static char SQUARE_CHAR = '⬛';
-    private static char CIRCLE_CHAR = '⬤';
-    private static char COMPASS_CHAR = '\uDDED';
+    private static char CLAIMED_CHAR = '⬛';
+    private static char UNCLAIMED_CHAR = '⬜';
+    private static char CENTER_CHAR = '⬤';
 
     public static void showMap(Player player) {
         /*
@@ -50,24 +50,24 @@ public class MapHandler {
             HashMap<String, ChatColor> landOwners = new HashMap<>();
 
             int lineNum = 0;
-            for (int z = centerZ - 4; z <= centerZ + 4; z++) {
+            for (int z = centerZ - 3; z <= centerZ + 3; z++) {
                 String currentLine = "";
-                for (int x = centerX - 4; x <= centerX + 4; x++) {
+                for (int x = centerX - 3; x <= centerX + 3; x++) {
 
                     Chunk currentChunk = world.getChunkAt(x, z);
                     ChunkStorage chunkStorage = new ChunkStorage(world, currentChunk);
 
-                    char symbol = (x == centerX && z == centerZ) ? CIRCLE_CHAR : SQUARE_CHAR;
+                    char symbol = (x == centerX && z == centerZ) ? CENTER_CHAR : chunkStorage.isClaimed() ? CLAIMED_CHAR : UNCLAIMED_CHAR;
 
                     if (chunkStorage.isClaimed()) {
                         String owner = chunkStorage.isGuild() ?
                                 "GUILD_" + chunkStorage.getOwner().toString()
                                 : chunkStorage.getOwner().toString();
 
-                        ChatColor color = ChatColor.getByChar(Integer.toHexString(new Random().nextInt(16)));
+                        ChatColor color = ChatColor.getByChar(Integer.toHexString(new Random().nextInt(15)));
                         if (!landOwners.containsKey(owner)) {
                             while (landOwners.containsValue(color)) {
-                                color = ChatColor.getByChar(Integer.toHexString(new Random().nextInt(16)));
+                                color = ChatColor.getByChar(Integer.toHexString(new Random().nextInt(15)));
                             }
                             landOwners.put(owner, color);
                         } else {
@@ -106,7 +106,10 @@ public class MapHandler {
                 lineNum++;
             }
 
-            String landOwnerList = "";
+            String landOwnerList = landOwners.entrySet().size() > 0 ?
+                    ChatColor.GRAY + "" + ChatColor.ITALIC + "Land Owner" +
+                            (landOwners.entrySet().size() > 1 ? "s" : "") + ": "
+                            + ChatColor.RESET : "";
 
             for (Map.Entry<String, ChatColor> land : landOwners.entrySet()) {
                 String ownerTag = "";

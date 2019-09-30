@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -68,6 +69,26 @@ public class ChunkEvents implements Listener {
                 }
             }
         });
+    }
+
+    @EventHandler
+    public void playerPVP(EntityDamageByEntityEvent e) {
+        if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+            Player damager = (Player) e.getDamager();
+            Player player = (Player) e.getEntity();
+
+            PlayerStorage damagerStorage = new PlayerStorage(damager.getUniqueId());
+            if (damagerStorage.getGuild() != null) {
+                GuildStorage guildStorage = new GuildStorage(damagerStorage.getGuild().getUuid());
+
+                if (guildStorage.getMembers().contains(player.getUniqueId())) {
+                    if (guildStorage.getChunks().contains(player.getLocation().getChunk())) {
+                        e.setCancelled(true);
+                        damager.sendMessage(ChatColor.RED + "You cannot attack a player that is in your guild, while you're in guild land.");
+                    }
+                }
+            }
+        }
     }
 
     @EventHandler
