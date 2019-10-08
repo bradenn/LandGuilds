@@ -6,7 +6,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import xyz.dec0de.landguilds.Main;
-import xyz.dec0de.landguilds.enums.Roles;
+import xyz.dec0de.landguilds.enums.Role;
 
 import java.io.File;
 import java.io.IOException;
@@ -171,8 +171,8 @@ public class ChunkStorage {
      * @param uuid
      * @return
      */
-    public Roles getRole(UUID uuid) {
-        Roles roles = Roles.valueOf(config.getString("members." + uuid.toString() + ".role"));
+    public Role getRole(UUID uuid) {
+        Role roles = Role.valueOf(config.getString("members." + uuid.toString() + ".role"));
 
         return roles;
     }
