@@ -39,7 +39,7 @@ public class GuildsCommand implements CommandExecutor {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
                 help(player);
-            // CLAIM
+                // CLAIM
             } else if (args[0].equalsIgnoreCase("claim")) {
                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
                 if (playerStorage.getGuild() != null) {

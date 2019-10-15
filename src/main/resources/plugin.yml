@@ -15,3 +15,6 @@ commands:
   map:
     aliases: [mapo, mapmap, yaymaps]
     description: Show a map of the claimed chunks
+  lgadmin:
+    aliases: [landguildsadmin, ladmin, gadmin]
+    description: Operator command
