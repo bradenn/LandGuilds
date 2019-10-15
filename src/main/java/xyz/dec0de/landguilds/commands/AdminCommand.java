@@ -70,6 +70,8 @@ public class AdminCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("help")) {
                 help(player);
             }
+        } else {
+            help(player);
         }
 
         return false;
