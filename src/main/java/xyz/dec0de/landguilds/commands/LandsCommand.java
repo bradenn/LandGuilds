@@ -7,7 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
-import xyz.dec0de.landguilds.enums.Roles;
+import xyz.dec0de.landguilds.enums.Role;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
@@ -61,7 +61,7 @@ public class LandsCommand implements CommandExecutor {
 
                     if (!chunkStorage.isGuild()) {
                         if (chunkStorage.getMembers().contains(player.getUniqueId())) {
-                            if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER
+                            if (chunkStorage.getRole(player.getUniqueId()) != Role.MEMBER
                                     && chunkStorage.getRole(player.getUniqueId()) != null) {
                                 player.sendMessage(ChatColor.GREEN +
                                         "You have unclaimed this chunk.");
@@ -112,7 +112,7 @@ public class LandsCommand implements CommandExecutor {
                         return false;
                     }
 
-                    if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER
+                    if (chunkStorage.getRole(player.getUniqueId()) != Role.MEMBER
                             && chunkStorage.getRole(player.getUniqueId()) != null) {
                         if (chunkStorage.getMembers().contains(toKick.getUniqueId())) {
                             if (username.equalsIgnoreCase(player.getName())) {
@@ -159,7 +159,7 @@ public class LandsCommand implements CommandExecutor {
                         return false;
                     }
 
-                    if (chunkStorage.getRole(player.getUniqueId()) != Roles.MEMBER) {
+                    if (chunkStorage.getRole(player.getUniqueId()) != Role.MEMBER) {
                         if (!chunkStorage.getMembers().contains(toAdd)) {
                             player.sendMessage(ChatColor.GREEN + "You have successfully added "
                                     + toAdd.getName() + " to this chunk.");
