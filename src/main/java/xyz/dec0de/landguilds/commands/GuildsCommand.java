@@ -5,25 +5,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 public class GuildsCommand implements CommandExecutor {
 
-    private HashMap<UUID, String> pendingGuildInvites = new HashMap<>();
-
-    private String noGuildError = ChatColor.RED + "You are not apart of a guild. Please create or join one.";
-    private String inGuildError = ChatColor.RED + "You are already apart of a guild, " +
-            "you must leave or disband your current one.";
-    private String noGuildPermissionsRole = ChatColor.RED +
-            "You do not have enough permissions " +
-            "in your guild to do this.";
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("You must be a player to use this command.");
+            sender.sendMessage(Messages.MUST_BE_PLAYER.getMessage());
             return false;
         }
         Player player = (Player) sender;
