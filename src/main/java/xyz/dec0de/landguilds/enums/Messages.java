@@ -34,7 +34,9 @@ public enum Messages {
     ALREADY_PENDING_INVITE("&cThis player already has a pending invite. Please try later."),
     INVITE_EXPIRE("&cThe invite has expired!"),
     INVITE_SENT("&aYou have invited %player% to join your guild."),
-    INVITE_NOTIFY("&aYou have been invited to join %args0%. &aExpires in 30 seconds. Type /guilds join");
+    INVITE_NOTIFY("&aYou have been invited to join %args0%. &aExpires in 30 seconds. Type /guilds join"),
+    GUILD_LEAVE("&aYou have left your current guild."),
+    GUILD_LEAVE_OWNER("&cYou own this guild. You cannot leave it. You must disband or transfer it.");
 
     //todo add more messages
 

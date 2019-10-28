@@ -6,7 +6,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Role;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
 import xyz.dec0de.landguilds.storage.GuildStorage;
@@ -48,30 +47,7 @@ public class GuildsCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("disband")) {
                 GuildHandler.disband(player);
             } else if (args[0].equalsIgnoreCase("leave")) {
-                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if (playerStorage.getGuild() != null) {
-                    if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                        GuildStorage guildStorage = playerStorage.getGuild();
-
-                        if (guildStorage.getRole(player.getUniqueId()) != Role.OWNER
-                                && guildStorage.getRole(player.getUniqueId()) != null) {
-                            try {
-                                player.sendMessage(ChatColor.GREEN + "You have left your current guild.");
-                                playerStorage.removeGuild();
-                                guildStorage.removeMember(player.getUniqueId());
-                                return false;
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            player.sendMessage(ChatColor.RED + "You cannot leave your guild because you are the owner. You must disband or transfer it.");
-                        }
-                    }
-                } else {
-                    player.sendMessage(noGuildError);
-                    return false;
-                }
-
+                GuildHandler.leave(player);
             }
         } else if (args.length == 2) {
 

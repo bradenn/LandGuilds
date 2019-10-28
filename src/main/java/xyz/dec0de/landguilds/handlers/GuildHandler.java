@@ -17,6 +17,13 @@ public class GuildHandler {
 
     private static HashMap<UUID, String> pendingGuildInvites = new HashMap<>();
 
+    /**
+     * Create a guild, and set player as the owner
+     *
+     * @param player    Player that is making the guild
+     * @param guildName Guild name / prefix
+     */
+
     public static void create(Player player, String guildName) {
 
     }
@@ -145,6 +152,13 @@ public class GuildHandler {
 
     }
 
+    /**
+     * Have a player invite someone to their guild.
+     *
+     * @param player       The player that invites someone to their guild if they have enough permissions.
+     * @param targetPlayer The player that is being invited to the guild.
+     */
+
     public static void invite(Player player, String targetPlayer) {
         String username = targetPlayer;
 
@@ -211,6 +225,8 @@ public class GuildHandler {
 
                     player.sendMessage(Messages.JOIN_GUILD.getMessage());
 
+                    //TODO message all guild members saying that they joined
+
                     pendingGuildInvites.remove(player.getUniqueId());
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -224,17 +240,66 @@ public class GuildHandler {
         }
     }
 
-    public static void leave(Player player) {
+    /**
+     * Player leave their current guild
+     *
+     * @param player The player to leave their current guild
+     */
 
+    public static void leave(Player player) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+                GuildStorage guildStorage = playerStorage.getGuild();
+
+                if (guildStorage.getRole(player.getUniqueId()) != Role.OWNER
+                        && guildStorage.getRole(player.getUniqueId()) != null) {
+                    try {
+                        player.sendMessage(Messages.GUILD_LEAVE.getMessage());
+                        playerStorage.removeGuild();
+                        guildStorage.removeMember(player.getUniqueId());
+                        return;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    player.sendMessage(Messages.GUILD_LEAVE_OWNER.getMessage());
+                }
+            }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
     }
+
+    /**
+     * Kick a player from the guild
+     *
+     * @param player       Player that has enough permissions who is kicking someone from the guild
+     * @param targetPlayer The target player that is being kicked
+     */
 
     public static void kick(Player player, String targetPlayer) {
 
     }
 
+    /**
+     * Promote a player to a leader (kick, claim, unclaim)
+     *
+     * @param player       The player that is making someone a guild leader
+     * @param targetPlayer The player that is being made a leader
+     */
+
     public static void promote(Player player, String targetPlayer) {
 
     }
+
+    /**
+     * Demote someone if they are leader, to a member
+     *
+     * @param player       The player that is demoting someone
+     * @param targetPlayer The player that is promoting someone
+     */
 
     public static void demote(Player player, String targetPlayer) {
 
