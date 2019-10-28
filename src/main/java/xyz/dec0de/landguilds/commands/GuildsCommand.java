@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Role;
+import xyz.dec0de.landguilds.handlers.GuildHandler;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -39,40 +40,8 @@ public class GuildsCommand implements CommandExecutor {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
                 help(player);
-                // CLAIM
             } else if (args[0].equalsIgnoreCase("claim")) {
-                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if (playerStorage.getGuild() != null) {
-                    if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                        ChunkStorage chunkStorage = new ChunkStorage(
-                                player.getWorld(),
-                                player.getWorld().getChunkAt(player.getLocation()));
-
-                        if (chunkStorage.isClaimed()) {
-                            player.sendMessage(ChatColor.RED + "This chunk has already been claimed.");
-                            return false;
-                        }
-
-                        GuildStorage guildStorage = playerStorage.getGuild();
-
-                        if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER &&
-                                guildStorage.getRole(player.getUniqueId()) != null) {
-                            try {
-                                player.sendMessage(ChatColor.GREEN + "Successfully claimed a chunk!");
-                                guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
-                                chunkStorage.claim(guildStorage.getUuid(), true);
-                                return false;
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            player.sendMessage(noGuildPermissionsRole);
-                        }
-                    }
-                } else {
-                    player.sendMessage(noGuildError);
-                    return false;
-                }
+                GuildHandler.claim(player);
 
                 // JOIN
             } else if (args[0].equalsIgnoreCase("unclaim")) {

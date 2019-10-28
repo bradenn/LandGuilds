@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
+import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -22,21 +23,9 @@ public class MapHandler {
     private static char CENTER_CHAR = '⬤';
 
     public static void showMap(Player player) {
-        /*
-           Get the current chunk a player is in, that will be the center of the map
-           that will be displayed in the chat
-
-           * X increases East, decreases West
-           * Z increases South, decreases North
-
-           - unclaimed chunks will be displayed as "■" in gray
-           - for each claimed land it will be displayed in a different color
-           if it's not the same owner
-
-           - Current position will be displayed as "+" with the color
-           being based on the claimed land owner
-
-         */
+        if (!Main.allowedWorlds().contains(player.getWorld().getName())) {
+            player.sendMessage(Messages.INVALID_WORLD.getMessage());
+        }
 
         Location location = player.getLocation();
         Chunk chunk = location.getChunk();
