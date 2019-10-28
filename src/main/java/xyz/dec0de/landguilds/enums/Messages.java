@@ -4,10 +4,13 @@ import org.bukkit.ChatColor;
 
 public enum Messages {
 
-    NO_VALID_WORLD("&cYou are in an invalid world and cannot execute this command."),
+    INVALID_WORLD("&cYou are in an invalid world and cannot execute this command."),
     NO_GUILD("&cYou are not apart of a guild. Please join one, or create one."),
     CLAIMED_LAND_GUILD("&aYou have successfully claimed land for your guild."),
+    UNCLAIM_SUCCESS("&aYou have unclaimed this chunk."),
     CLAIMED_LAND("&aYou have successfully claimed personal land."),
+    NOT_CLAIMED("&cThis chunk is not claimed."),
+    LAND_NOT_OWNER("&cYou do not own this land."),
     NO_PERMISSIONS("&cYou do not have enough permissions."),
     MUST_BE_PLAYER("&cYou must be a player to run this command"),
     NO_INTERACT("&cYou cannot interact with this."),
