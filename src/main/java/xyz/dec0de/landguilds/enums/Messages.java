@@ -6,6 +6,7 @@ public enum Messages {
 
     INVALID_WORLD("&cYou are in an invalid world and cannot execute this command."),
     NO_GUILD("&cYou are not apart of a guild. Please join one, or create one."),
+    ALREADY_GUILD("&cYou are already in a guild. Please leave or disband it."),
     CLAIMED_LAND_GUILD("&aYou have successfully claimed land for your guild."),
     UNCLAIM_SUCCESS("&aYou have unclaimed this chunk."),
     CLAIMED_LAND("&aYou have successfully claimed personal land."),
@@ -26,7 +27,10 @@ public enum Messages {
     KICK_SELF_FAIL("&cYou cannot kick yourself."),
     KICK_PLAYER("&aYou have successfully kicked %player%."),
     PLAYER_NOT_IN_LAND_OR_GUILD("&aPlayer is not in land/guild."),
-    ADD_PLAYER_LAND("&aYou have successfully added %player%.");
+    ADD_PLAYER_LAND("&aYou have successfully added %player%."),
+    NO_PENDING_INVITES("&cYou do not have any pending invites."),
+    JOIN_GUILD("&aYou have successfully joined a guild."),
+    GUILD_DISBAND_SUCCESS("&aYou have successfully disbanded the guild.");
 
     //todo add more messages
 

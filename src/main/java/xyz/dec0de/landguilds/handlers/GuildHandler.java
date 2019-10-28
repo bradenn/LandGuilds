@@ -14,14 +14,41 @@ import java.util.UUID;
 
 public class GuildHandler {
 
-    private HashMap<UUID, String> pendingGuildInvites = new HashMap<>();
+    private static HashMap<UUID, String> pendingGuildInvites = new HashMap<>();
 
     public static void create(Player player, String guildName) {
 
     }
 
-    public static void disband(Player player) {
+    /**
+     * If a player has enough permissions in a guild,
+     * disband that guild and unclaim all land and
+     * delete the file for the guild.
+     *
+     * @param player The player that has enough permissions to disband.
+     */
 
+    public static void disband(Player player) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
+                    && guildStorage.getRole(player.getUniqueId()) != null) {
+                try {
+                    player.sendMessage(Messages.GUILD_DISBAND_SUCCESS.getMessage());
+                    guildStorage.disbandGuild();
+                    return;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+            }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
     }
 
     /**
@@ -68,7 +95,52 @@ public class GuildHandler {
         }
     }
 
+    /**
+     * Unclaim land from a guild if a user
+     * has enough permissions within that guild
+     *
+     * @param player The player that is unclaiming land from a guild
+     */
     public static void unclaim(Player player) {
+        if (!Main.allowedWorlds().contains(player.getWorld().getName())) {
+            player.sendMessage(Messages.INVALID_WORLD.getMessage());
+        }
+
+        ChunkStorage chunkStorage = new ChunkStorage(
+                player.getWorld(),
+                player.getWorld().getChunkAt(player.getLocation()));
+
+        if (!chunkStorage.isClaimed()) {
+            player.sendMessage(Messages.NOT_CLAIMED.getMessage());
+            return;
+        }
+
+        if (chunkStorage.isGuild()) {
+            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+            if (guildStorage.getMembers().contains(player.getUniqueId())) {
+                if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER
+                        && guildStorage.getRole(player.getUniqueId()) != null) {
+                    player.sendMessage(Messages.UNCLAIM_SUCCESS.getMessage());
+                    try {
+                        guildStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
+                        chunkStorage.unclaim();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    return;
+
+                } else {
+                    player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+                }
+            } else {
+                player.sendMessage(Messages.LAND_NOT_OWNER.getMessage());
+            }
+            return;
+        } else {
+            player.sendMessage(Messages.LAND_NOT_OWNER.getMessage());
+            return;
+        }
 
     }
 
@@ -76,8 +148,36 @@ public class GuildHandler {
 
     }
 
-    public static void join(Player player) {
+    /**
+     * Join a guild if you have a pending invite already.
+     *
+     * @param player The player that is joining a guild
+     */
 
+    public static void join(Player player) {
+        if (pendingGuildInvites.containsKey(player.getUniqueId())) {
+            PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+            if (playerStorage.getGuild() == null) {
+                UUID guildUuid = UUID.fromString(pendingGuildInvites.get(
+                        player.getUniqueId()).split("\\_")[1]);
+                try {
+                    playerStorage.setGuild(guildUuid);
+                    GuildStorage guildStorage = new GuildStorage(guildUuid);
+                    guildStorage.addMember(player.getUniqueId());
+
+                    player.sendMessage(Messages.JOIN_GUILD.getMessage());
+
+                    pendingGuildInvites.remove(player.getUniqueId());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                player.sendMessage(Messages.ALREADY_GUILD.getMessage());
+            }
+        } else {
+            player.sendMessage(Messages.NO_PENDING_INVITES.getMessage());
+            return;
+        }
     }
 
     public static void leave(Player player) {

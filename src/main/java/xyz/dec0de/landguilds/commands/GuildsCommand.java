@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Role;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
-import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
@@ -42,96 +41,12 @@ public class GuildsCommand implements CommandExecutor {
                 help(player);
             } else if (args[0].equalsIgnoreCase("claim")) {
                 GuildHandler.claim(player);
-
-                // JOIN
             } else if (args[0].equalsIgnoreCase("unclaim")) {
-                if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                    ChunkStorage chunkStorage = new ChunkStorage(
-                            player.getWorld(),
-                            player.getWorld().getChunkAt(player.getLocation()));
-
-                    if (!chunkStorage.isClaimed()) {
-                        player.sendMessage(ChatColor.RED + "This chunk is not claimed.");
-                        return false;
-                    }
-
-                    if (chunkStorage.isGuild()) {
-                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        if (guildStorage.getMembers().contains(player.getUniqueId())) {
-                            if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER
-                                    && guildStorage.getRole(player.getUniqueId()) != null) {
-                                player.sendMessage(ChatColor.GREEN +
-                                        "You have unclaimed this chunk from your guild.");
-                                try {
-                                    guildStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
-                                    chunkStorage.unclaim();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                                return false;
-
-                            } else {
-                                player.sendMessage(noGuildPermissionsRole);
-                            }
-                        } else {
-                            player.sendMessage(
-                                    ChatColor.RED +
-                                            "You do not own this land.");
-                        }
-                        return false;
-                    } else {
-                        player.sendMessage(ChatColor.RED + "This land was not claimed by a guild.");
-                        return false;
-                    }
-                }
+                GuildHandler.unclaim(player);
             } else if (args[0].equalsIgnoreCase("join")) {
-                if (pendingGuildInvites.containsKey(player.getUniqueId())) {
-                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                    if (playerStorage.getGuild() == null) {
-                        UUID guildUuid = UUID.fromString(pendingGuildInvites.get(
-                                player.getUniqueId()).split("\\_")[1]);
-                        try {
-                            playerStorage.setGuild(guildUuid);
-                            GuildStorage guildStorage = new GuildStorage(guildUuid);
-                            guildStorage.addMember(player.getUniqueId());
-
-                            player.sendMessage(ChatColor.GREEN + "You have joined the guild "
-                                    + guildStorage.getTag() + ChatColor.GREEN + ".");
-
-                            pendingGuildInvites.remove(player.getUniqueId());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        player.sendMessage(inGuildError);
-                    }
-                } else {
-                    player.sendMessage(ChatColor.RED + "You do not have any pending invites.");
-                    return false;
-                }
+                GuildHandler.join(player);
             } else if (args[0].equalsIgnoreCase("disband")) {
-                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if (playerStorage.getGuild() != null) {
-                    GuildStorage guildStorage = playerStorage.getGuild();
-
-                    if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
-                            && guildStorage.getRole(player.getUniqueId()) != null) {
-                        try {
-                            player.sendMessage(ChatColor.GREEN + "Successfully disbanded your guild!");
-                            guildStorage.disbandGuild();
-                            return false;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        player.sendMessage(noGuildPermissionsRole);
-                    }
-                } else {
-                    player.sendMessage(noGuildError);
-                    return false;
-                }
-
+                GuildHandler.disband(player);
             } else if (args[0].equalsIgnoreCase("leave")) {
                 PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
                 if (playerStorage.getGuild() != null) {
