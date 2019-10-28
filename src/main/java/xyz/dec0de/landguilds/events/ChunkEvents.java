@@ -143,6 +143,8 @@ public class ChunkEvents implements Listener {
 
         if (e.getClickedBlock() == null) return;
 
+        //todo update blocks for 1.12.2?
+
         List<Material> blockedBlocks = new ArrayList<>();
         blockedBlocks.add(Material.BLAST_FURNACE);
         blockedBlocks.add(Material.FURNACE);

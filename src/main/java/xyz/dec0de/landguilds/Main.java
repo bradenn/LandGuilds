@@ -34,12 +34,10 @@ public class Main extends JavaPlugin {
      * TODO
      * Guilds:
      * - Disbanding Guilds (only for owners)
-     * - Leaving guilds
      * - Transfering ownership
-     * - Roles
-     * - Levels
-     * - Vault
-     * - GUIs
+     * - Levels (xp ranking up system for earning more
+     * guild claims & colors and ability to change prefix)
+     * - GUIs (Members list, etc)
      * Lands:
      * - Homes
      * - Permissions for claims and such
