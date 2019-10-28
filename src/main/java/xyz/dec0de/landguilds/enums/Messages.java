@@ -22,7 +22,11 @@ public enum Messages {
     GUILD_DEMOTE_MEMBER_FAIL("&c%player% cannot be demoted."),
     GUILD_PROMOTE_FAIL("&c%player% cannot be demoted."),
     GUILD_PROMOTE_SUCCESS("&a%player% has been promoted to leader in the guild."),
-    GUILD_DEMOTE_SUCCESS("&a% has been demoted to member in the guild.");
+    GUILD_DEMOTE_SUCCESS("&a% has been demoted to member in the guild."),
+    KICK_SELF_FAIL("&cYou cannot kick yourself."),
+    KICK_PLAYER("&aYou have successfully kicked %player%."),
+    PLAYER_NOT_IN_LAND_OR_GUILD("&aPlayer is not in land/guild."),
+    ADD_PLAYER_LAND("&aYou have successfully added %player%.");
 
     //todo add more messages
 

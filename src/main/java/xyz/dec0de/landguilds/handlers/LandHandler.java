@@ -1,7 +1,6 @@
 package xyz.dec0de.landguilds.handlers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
@@ -111,7 +110,8 @@ public class LandHandler {
         if (Bukkit.getServer().getPlayer(username) != null) {
             Player toKick = Bukkit.getPlayer(username);
 
-            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
+            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(),
+                    player.getWorld().getChunkAt(player.getLocation()));
             if (!chunkStorage.isClaimed()) {
                 player.sendMessage(Messages.NOT_CLAIMED.getMessage());
                 return;
@@ -126,12 +126,11 @@ public class LandHandler {
                     && chunkStorage.getRole(player.getUniqueId()) != null) {
                 if (chunkStorage.getMembers().contains(toKick.getUniqueId())) {
                     if (username.equalsIgnoreCase(player.getName())) {
-                        player.sendMessage(ChatColor.RED + "You cannot kick yourself.");
+                        player.sendMessage(Messages.KICK_SELF_FAIL.getMessage());
                         return;
                     }
 
-                    player.sendMessage(ChatColor.GREEN + "You have successfully kicked " +
-                            toKick.getName() + " from this chunk.");
+                    player.sendMessage(Messages.KICK_SELF_FAIL.getMessage(toKick.getName()));
 
                     try {
                         chunkStorage.removeMember(toKick.getUniqueId());
@@ -140,15 +139,60 @@ public class LandHandler {
                     }
                     return;
                 } else {
-                    player.sendMessage(ChatColor.RED + "This player has not been added to this land.");
+                    player.sendMessage(Messages.PLAYER_NOT_IN_LAND_OR_GUILD.getMessage());
                     return;
                 }
             } else {
-                player.sendMessage(ChatColor.RED + "You are not the owner of this land.");
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
                 return;
             }
         } else {
-            player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
+            player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
+            return;
+        }
+    }
+
+    /**
+     * Add targetPlayer to player's claimed chunk
+     *
+     * @param player       Player of claimed chunk
+     * @param targetPlayer Target player to add
+     */
+
+    public static void add(Player player, String targetPlayer) {
+        String username = targetPlayer;
+
+        if (Bukkit.getServer().getPlayer(username) != null) {
+            Player toAdd = Bukkit.getPlayer(username);
+
+            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(),
+                    player.getWorld().getChunkAt(player.getLocation()));
+            if (!chunkStorage.isClaimed()) {
+                player.sendMessage(Messages.NOT_CLAIMED.getMessage());
+                return;
+            }
+
+            if (chunkStorage.isGuild()) {
+                player.sendMessage(Messages.ALREADY_CLAIMED.getMessage());
+                return;
+            }
+
+            if (chunkStorage.getRole(player.getUniqueId()) != Role.MEMBER) {
+                if (!chunkStorage.getMembers().contains(toAdd)) {
+                    player.sendMessage(Messages.ADD_PLAYER_LAND.getMessage(toAdd.getName()));
+
+                    try {
+                        chunkStorage.addMember(toAdd.getUniqueId());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+                return;
+            }
+        } else {
+            player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
             return;
         }
     }
