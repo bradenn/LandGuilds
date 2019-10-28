@@ -428,6 +428,54 @@ public class GuildHandler {
      */
 
     public static void demote(Player player, String targetPlayer) {
+        String username = targetPlayer;
 
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() == null) {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+
+        if (Bukkit.getServer().getPlayer(username) != null) {
+            Player toMote = Bukkit.getPlayer(username);
+
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                if (guildStorage.getMembers().contains(toMote.getUniqueId())) {
+                    if (username.equalsIgnoreCase(player.getName())) {
+                        player.sendMessage(Messages.GUILD_DEMOTE_FAIL.getMessage(toMote.getName()));
+                        return;
+                    }
+
+                    if (guildStorage.getOwner() == toMote.getUniqueId()) {
+                        player.sendMessage(Messages.GUILD_DEMOTE_FAIL.getMessage(toMote.getName()));
+                        return;
+                    }
+
+                    if (guildStorage.getRole(toMote.getUniqueId()) == Role.MEMBER) {
+                        player.sendMessage(Messages.GUILD_DEMOTE_FAIL.getMessage(toMote.getName()));
+                        return;
+                    }
+
+                    player.sendMessage(Messages.GUILD_DEMOTE_SUCCESS.getMessage(toMote.getName()));
+
+                    try {
+                        guildStorage.setRole(toMote.getUniqueId(), Role.MEMBER);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    player.sendMessage(Messages.NOT_IN_LAND_OR_GUILD.getMessage());
+                    return;
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+                return;
+            }
+        } else {
+            player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
+            return;
+        }
     }
 }

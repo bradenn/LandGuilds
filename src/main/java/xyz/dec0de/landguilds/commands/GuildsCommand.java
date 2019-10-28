@@ -1,17 +1,12 @@
 package xyz.dec0de.landguilds.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import xyz.dec0de.landguilds.enums.Role;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
-import xyz.dec0de.landguilds.storage.GuildStorage;
-import xyz.dec0de.landguilds.storage.PlayerStorage;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -62,55 +57,7 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.promote(player, username);
             } else if (args[0].equalsIgnoreCase("demote")) {
                 String username = args[1];
-
-                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if (playerStorage.getGuild() == null) {
-                    player.sendMessage(noGuildError);
-                    return false;
-                }
-
-                if (Bukkit.getServer().getPlayer(username) != null) {
-                    Player toMote = Bukkit.getPlayer(username);
-
-                    GuildStorage guildStorage = playerStorage.getGuild();
-
-                    if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
-                        if (guildStorage.getMembers().contains(toMote.getUniqueId())) {
-                            if (username.equalsIgnoreCase(player.getName())) {
-                                player.sendMessage(ChatColor.RED + "You cannot demote yourself.");
-                                return false;
-                            }
-
-                            if (guildStorage.getOwner() == toMote.getUniqueId()) {
-                                player.sendMessage(ChatColor.RED +
-                                        "You cannot demote the owner! They must disband or transfer the guild.");
-                                return false;
-                            }
-
-                            if (guildStorage.getRole(toMote.getUniqueId()) == Role.MEMBER) {
-                                player.sendMessage(ChatColor.RED + "This player is only a member and cannot be demoted.");
-                                return false;
-                            }
-
-                            player.sendMessage(ChatColor.GREEN + "Successfully demoted " + toMote.getName() + " in the guild.");
-
-                            try {
-                                guildStorage.setRole(toMote.getUniqueId(), Role.MEMBER);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } else {
-                            player.sendMessage(ChatColor.RED + "This player is not in the guild.");
-                            return false;
-                        }
-                    } else {
-                        player.sendMessage(noGuildPermissionsRole);
-                        return false;
-                    }
-                } else {
-                    player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
-                    return false;
-                }
+                GuildHandler.demote(player, username);
             }
         } else {
             help(player);
