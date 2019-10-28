@@ -17,20 +17,13 @@ import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class ChunkEvents implements Listener {
 
     private HashMap<UUID, String> playersInChunk = new HashMap<>();
 
-    //TODO prevent explosions from breaking blocks
-    //TODO prevent passive mob killing
-    //TODO
-
-    // Chunk entry / exit action bar
     @EventHandler
     public void moveEvent(PlayerMoveEvent e) {
 
@@ -143,29 +136,9 @@ public class ChunkEvents implements Listener {
 
         if (e.getClickedBlock() == null) return;
 
-        //todo update blocks for 1.12.2?
-
-        List<Material> blockedBlocks = new ArrayList<>();
-        blockedBlocks.add(Material.BLAST_FURNACE);
-        blockedBlocks.add(Material.FURNACE);
-        blockedBlocks.add(Material.TRAPPED_CHEST);
-        blockedBlocks.add(Material.CHEST_MINECART);
-        blockedBlocks.add(Material.CHEST);
-        blockedBlocks.add(Material.SMOKER);
-        blockedBlocks.add(Material.BLAST_FURNACE);
-        blockedBlocks.add(Material.HOPPER);
-        blockedBlocks.add(Material.HOPPER_MINECART);
-        blockedBlocks.add(Material.FURNACE_MINECART);
-        blockedBlocks.add(Material.DISPENSER);
-        blockedBlocks.add(Material.DROPPER);
-        blockedBlocks.add(Material.BREWING_STAND);
-        blockedBlocks.add(Material.BARREL);
-
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            if (blockedBlocks.contains(e.getClickedBlock().getType())) {
                 ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
                 if (chunkStorage.isClaimed()) {
-                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                         if (!guildStorage.getMembers().contains(player.getUniqueId())) {
@@ -179,7 +152,6 @@ public class ChunkEvents implements Listener {
                         }
                     }
                 }
-            }
         }
     }
 
