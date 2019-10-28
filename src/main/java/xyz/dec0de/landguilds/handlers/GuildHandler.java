@@ -102,6 +102,7 @@ public class GuildHandler {
     public static void claim(Player player) {
         if (!Main.allowedWorlds().contains(player.getWorld().getName())) {
             player.sendMessage(Messages.INVALID_WORLD.getMessage());
+            return;
         }
 
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
@@ -145,6 +146,7 @@ public class GuildHandler {
     public static void unclaim(Player player) {
         if (!Main.allowedWorlds().contains(player.getWorld().getName())) {
             player.sendMessage(Messages.INVALID_WORLD.getMessage());
+            return;
         }
 
         ChunkStorage chunkStorage = new ChunkStorage(
@@ -282,7 +284,6 @@ public class GuildHandler {
     public static void leave(Player player) {
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
         if (playerStorage.getGuild() != null) {
-            if (Main.allowedWorlds().contains(player.getWorld().getName())) {
                 GuildStorage guildStorage = playerStorage.getGuild();
 
                 if (guildStorage.getRole(player.getUniqueId()) != Role.OWNER
@@ -298,7 +299,6 @@ public class GuildHandler {
                 } else {
                     player.sendMessage(Messages.GUILD_LEAVE_OWNER.getMessage());
                 }
-            }
         } else {
             player.sendMessage(Messages.NO_GUILD.getMessage());
             return;

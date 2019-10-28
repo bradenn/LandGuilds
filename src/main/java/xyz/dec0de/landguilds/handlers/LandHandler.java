@@ -53,9 +53,8 @@ public class LandHandler {
      */
 
     public static void unclaim(Player player) {
-        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+        if (!Main.allowedWorlds().contains(player.getWorld().getName())) {
             player.sendMessage(Messages.INVALID_WORLD.getMessage());
-
             return;
         }
         ChunkStorage chunkStorage = new ChunkStorage(
