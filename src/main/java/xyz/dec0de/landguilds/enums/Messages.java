@@ -30,7 +30,11 @@ public enum Messages {
     ADD_PLAYER_LAND("&aYou have successfully added %player%."),
     NO_PENDING_INVITES("&cYou do not have any pending invites."),
     JOIN_GUILD("&aYou have successfully joined a guild."),
-    GUILD_DISBAND_SUCCESS("&aYou have successfully disbanded the guild.");
+    GUILD_DISBAND_SUCCESS("&aYou have successfully disbanded the guild."),
+    ALREADY_PENDING_INVITE("&cThis player already has a pending invite. Please try later."),
+    INVITE_EXPIRE("&cThe invite has expired!"),
+    INVITE_SENT("&aYou have invited %player% to join your guild."),
+    INVITE_NOTIFY("&aYou have been invited to join %args0%. &aExpires in 30 seconds. Type /guilds join");
 
     //todo add more messages
 
@@ -47,5 +51,14 @@ public enum Messages {
     public String getMessage(String playerName) {
         return ChatColor.translateAlternateColorCodes('&', message)
                 .replace("%player%", playerName);
+    }
+
+    public String getMessage(String... args) {
+        String msg = ChatColor.translateAlternateColorCodes('&', message);
+        for (int i = 0; i < args.length; i++) {
+            msg.replace("%args" + i + "%", args[i]);
+        }
+
+        return msg;
     }
 }

@@ -1,5 +1,6 @@
 package xyz.dec0de.landguilds.handlers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
@@ -145,7 +146,50 @@ public class GuildHandler {
     }
 
     public static void invite(Player player, String targetPlayer) {
+        String username = targetPlayer;
 
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() == null) {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+        if (Bukkit.getServer().getPlayer(username) != null) {
+            Player toInvite = Bukkit.getPlayer(username);
+            PlayerStorage invitePlayerStorage = new PlayerStorage(toInvite.getUniqueId());
+
+            if (pendingGuildInvites.containsKey(toInvite.getUniqueId())) {
+                player.sendMessage(Messages.ALREADY_PENDING_INVITE.getMessage());
+                return;
+            }
+
+
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER
+                    && guildStorage.getRole(player.getUniqueId()) != null) {
+                String guildToken = guildStorage.getName() + "_" + guildStorage.getUuid().toString();
+                pendingGuildInvites.put(toInvite.getUniqueId(), guildToken);
+
+                player.sendMessage(Messages.INVITE_SENT.getMessage(toInvite.getName()));
+
+                toInvite.sendMessage(Messages.INVITE_NOTIFY.getMessage(guildStorage.getTag()));
+
+                Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+                    public void run() {
+                        if (pendingGuildInvites.containsKey(toInvite.getUniqueId()) &&
+                                pendingGuildInvites.get(toInvite.getUniqueId()) == guildToken) {
+                            player.sendMessage(Messages.INVITE_EXPIRE.getMessage());
+                            pendingGuildInvites.remove(toInvite.getUniqueId());
+                        }
+                    }
+                }, 30 * 20L); // 20 ticks = 1 second. So 100 ticks = 5 seconds.
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+            }
+        } else {
+            player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
+            return;
+        }
     }
 
     /**

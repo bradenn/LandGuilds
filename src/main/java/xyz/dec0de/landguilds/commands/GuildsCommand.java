@@ -111,51 +111,7 @@ public class GuildsCommand implements CommandExecutor {
                 // INVITE
             } else if (args[0].equalsIgnoreCase("invite")) {
                 String username = args[1];
-
-                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if (playerStorage.getGuild() == null) {
-                    player.sendMessage(noGuildError);
-                    return false;
-                }
-                if (Bukkit.getServer().getPlayer(username) != null) {
-                    Player toInvite = Bukkit.getPlayer(username);
-                    PlayerStorage invitePlayerStorage = new PlayerStorage(toInvite.getUniqueId());
-
-                    if (pendingGuildInvites.containsKey(toInvite.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED +
-                                "This player already has a pending invite, try again in a little bit.");
-                        return false;
-                    }
-
-
-                    GuildStorage guildStorage = playerStorage.getGuild();
-
-                    if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER
-                            && guildStorage.getRole(player.getUniqueId()) != null) {
-                        String guildToken = guildStorage.getName() + "_" + guildStorage.getUuid().toString();
-                        pendingGuildInvites.put(toInvite.getUniqueId(), guildToken);
-
-                        player.sendMessage(ChatColor.GREEN + "You have invited " + toInvite.getName() + " to join your guild.");
-
-                        toInvite.sendMessage(ChatColor.GREEN + "You have been invited to join " +
-                                guildStorage.getTag() + ChatColor.GREEN + ". Expires in 30 seconds. Type /guilds join");
-
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
-                            public void run() {
-                                if (pendingGuildInvites.containsKey(toInvite.getUniqueId()) &&
-                                        pendingGuildInvites.get(toInvite.getUniqueId()) == guildToken) {
-                                    toInvite.sendMessage(ChatColor.RED + "The invite has expired!");
-                                    pendingGuildInvites.remove(toInvite.getUniqueId());
-                                }
-                            }
-                        }, 30 * 20L); // 20 ticks = 1 second. So 100 ticks = 5 seconds.
-                    } else {
-                        player.sendMessage(noGuildPermissionsRole);
-                    }
-                } else {
-                    player.sendMessage(ChatColor.RED + "Unable to find player. Make sure they are online.");
-                    return false;
-                }
+                GuildHandler.invite(player, username);
             } else if (args[0].equalsIgnoreCase("kick")) {
                 String username = args[1];
 
