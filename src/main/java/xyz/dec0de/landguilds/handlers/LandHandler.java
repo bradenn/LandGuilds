@@ -139,7 +139,7 @@ public class LandHandler {
                     }
                     return;
                 } else {
-                    player.sendMessage(Messages.PLAYER_NOT_IN_LAND_OR_GUILD.getMessage());
+                    player.sendMessage(Messages.NOT_IN_LAND_OR_GUILD.getMessage());
                     return;
                 }
             } else {

@@ -1,6 +1,7 @@
 package xyz.dec0de.landguilds.handlers;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
@@ -12,6 +13,8 @@ import xyz.dec0de.landguilds.storage.PlayerStorage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GuildHandler {
 
@@ -25,6 +28,36 @@ public class GuildHandler {
      */
 
     public static void create(Player player, String guildName) {
+        String name = guildName;
+
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            player.sendMessage(Messages.ALREADY_GUILD.getMessage());
+            return;
+        }
+
+        Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(name);
+
+        if (m.find()) {
+            player.sendMessage(ChatColor.RED + "You cannot have any special characters in your guild name.");
+            return;
+        }
+
+        if (name.length() > 6) {
+            player.sendMessage(ChatColor.RED + "Your guild name cannot be longer than 6 characters.");
+            return;
+        }
+
+        try {
+            GuildStorage guildStorage = new GuildStorage(name, player.getUniqueId());
+            playerStorage.setGuild(guildStorage.getUuid());
+
+            player.sendMessage(ChatColor.GREEN + "You have created the guild named " + name + ".");
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -280,6 +313,51 @@ public class GuildHandler {
      */
 
     public static void kick(Player player, String targetPlayer) {
+        String username = targetPlayer;
+
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() == null) {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+
+        if (Bukkit.getServer().getPlayer(username) != null) {
+            Player toKick = Bukkit.getPlayer(username);
+            PlayerStorage toKickPlayerStorage = new PlayerStorage(toKick.getUniqueId());
+
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                if (guildStorage.getMembers().contains(toKick.getUniqueId())) {
+                    if (username.equalsIgnoreCase(player.getName())) {
+                        player.sendMessage(Messages.KICK_SELF_FAIL.getMessage());
+                        return;
+                    }
+
+                    if (guildStorage.getOwner() == toKick.getUniqueId()) {
+                        player.sendMessage(Messages.GUILD_LEAVE_OWNER.getMessage());
+                        return;
+                    }
+
+                    player.sendMessage(Messages.KICK_PLAYER.getMessage(toKick.getName()));
+                    try {
+                        toKickPlayerStorage.removeGuild();
+                        guildStorage.removeMember(toKick.getUniqueId());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    player.sendMessage(Messages.NOT_IN_LAND_OR_GUILD.getMessage());
+                    return;
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+                return;
+            }
+        } else {
+            player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
+            return;
+        }
 
     }
 
@@ -291,7 +369,55 @@ public class GuildHandler {
      */
 
     public static void promote(Player player, String targetPlayer) {
+        String username = targetPlayer;
 
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() == null) {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+
+        if (Bukkit.getServer().getPlayer(username) != null) {
+            Player toMote = Bukkit.getPlayer(username);
+
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) != Role.MEMBER && guildStorage.getRole(player.getUniqueId()) != null) {
+                if (guildStorage.getMembers().contains(toMote.getUniqueId())) {
+                    if (username.equalsIgnoreCase(player.getName())) {
+                        player.sendMessage(Messages.GUILD_PROMOTE_FAIL.getMessage(toMote.getName()));
+                        return;
+                    }
+
+                    if (guildStorage.getOwner() == toMote.getUniqueId()) {
+                        player.sendMessage(Messages.GUILD_PROMOTE_FAIL.getMessage(toMote.getName()));
+                        return;
+                    }
+
+                    if (guildStorage.getRole(toMote.getUniqueId()) == Role.LEADER) {
+                        player.sendMessage(Messages.GUILD_PROMOTE_FAIL.getMessage(toMote.getName()));
+                        return;
+                    }
+
+                    player.sendMessage(Messages.GUILD_PROMOTE_SUCCESS.getMessage(toMote.getName()));
+
+                    try {
+                        guildStorage.setRole(toMote.getUniqueId(), Role.LEADER);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    player.sendMessage(Messages.NOT_IN_LAND_OR_GUILD.getMessage());
+                    return;
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+                return;
+            }
+        } else {
+            player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
+            return;
+        }
     }
 
     /**
