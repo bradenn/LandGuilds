@@ -3,7 +3,7 @@ package xyz.dec0de.landguilds.enums;
 import org.bukkit.ChatColor;
 
 public enum Messages {
-
+    PREFIX("&8[&aLandGuilds&8] &r"),
     INVALID_WORLD("&cYou are in an invalid world and cannot execute this command."),
     NO_GUILD("&cYou are not apart of a guild. Please join one, or create one."),
     ALREADY_GUILD("&cYou are already in a guild. Please leave or disband it."),
@@ -13,7 +13,7 @@ public enum Messages {
     NOT_CLAIMED("&cThis chunk is not claimed."),
     LAND_NOT_OWNER("&cYou do not own this land."),
     NO_PERMISSIONS("&cYou do not have enough permissions."),
-    MUST_BE_PLAYER("&cYou must be a player to run this command"),
+    MUST_BE_PLAYER("&cYou must be a player to run this command."),
     NO_INTERACT("&cYou cannot interact with this."),
     NO_GUILD_PVP("&cPvP is disabled in this land."),
     NO_BUILD("&cYou cannot build in this land."),
@@ -47,16 +47,16 @@ public enum Messages {
     }
 
     public String getMessage() {
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return ChatColor.translateAlternateColorCodes('&', PREFIX.message + message);
     }
 
     public String getMessage(String playerName) {
-        return ChatColor.translateAlternateColorCodes('&', message)
+        return ChatColor.translateAlternateColorCodes('&', PREFIX.message + message)
                 .replace("%player%", playerName);
     }
 
     public String getMessage(String... args) {
-        String msg = ChatColor.translateAlternateColorCodes('&', message);
+        String msg = ChatColor.translateAlternateColorCodes('&', PREFIX.message + message);
         for (int i = 0; i < args.length; i++) {
             msg.replace("%args" + i + "%", args[i]);
         }
