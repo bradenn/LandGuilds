@@ -3,6 +3,7 @@ package xyz.dec0de.landguilds.events;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -72,7 +73,7 @@ public class ChunkEvents implements Listener {
     }
 
     @EventHandler
-    public void playerPVP(EntityDamageByEntityEvent e) {
+    public void entityDamage(EntityDamageByEntityEvent e) {
         if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
             Player damager = (Player) e.getDamager();
             Player player = (Player) e.getEntity();
@@ -85,6 +86,20 @@ public class ChunkEvents implements Listener {
                     if (guildStorage.getChunks().contains(player.getLocation().getChunk())) {
                         e.setCancelled(true);
                         damager.sendMessage(ChatColor.RED + "You cannot attack a player that is in your guild, while you're in guild land.");
+                    }
+                }
+            }
+        } else if (e.getDamager() instanceof Player && e.getEntity() instanceof Animals) {
+            Player damager = (Player) e.getDamager();
+
+            PlayerStorage damagerStorage = new PlayerStorage(damager.getUniqueId());
+            ChunkStorage chunk = new ChunkStorage(damager.getWorld(), damager.getLocation().getChunk());
+            if (chunk.isClaimed()) {
+                if (chunk.isGuild()) {
+                    if (damagerStorage.getGuild() != null) {
+                        if (damagerStorage.getGuild().getUuid() != chunk.getOwner()) {
+                            player.sendMess
+                        }
                     }
                 }
             }
