@@ -81,10 +81,12 @@ public class ChunkEvents implements Listener {
                         GuildStorage guild = new GuildStorage(chunk.getOwner());
                         if (!guild.getMembers().contains(damager.getUniqueId())) {
                             damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
+                            e.setCancelled(true);
                         }
                     } else {
                         if (!chunk.getMembers().contains(damager)) {
                             damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
+                            e.setCancelled(true);
                         }
                     }
                 }
