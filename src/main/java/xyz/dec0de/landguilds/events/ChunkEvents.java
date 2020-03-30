@@ -3,6 +3,8 @@ package xyz.dec0de.landguilds.events;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +15,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import xyz.dec0de.landguilds.Main;
+import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -65,19 +68,46 @@ public class ChunkEvents implements Listener {
     }
 
     @EventHandler
+    public void animalAttack(EntityDamageByEntityEvent e) {
+        if (Main.allowedWorlds().contains(e.getDamager().getLocation().getWorld().getName())) {
+            if (e.getDamager() instanceof Player && e.getEntity() instanceof Animals) {
+                Player damager = (Player) e.getDamager();
+                Entity entity = e.getEntity();
+
+                ChunkStorage chunk = new ChunkStorage(entity.getWorld(), entity.getLocation().getChunk());
+
+                if (chunk.isClaimed()) {
+                    if (chunk.isGuild()) {
+                        GuildStorage guild = new GuildStorage(chunk.getOwner());
+                        if (!guild.getMembers().contains(damager.getUniqueId())) {
+                            damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
+                        }
+                    } else {
+                        if (!chunk.getMembers().contains(damager)) {
+                            damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void playerPVP(EntityDamageByEntityEvent e) {
-        if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
-            Player damager = (Player) e.getDamager();
-            Player player = (Player) e.getEntity();
+        if (Main.allowedWorlds().contains(e.getDamager().getLocation().getWorld().getName())) {
+            if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+                Player damager = (Player) e.getDamager();
+                Player player = (Player) e.getEntity();
 
-            PlayerStorage damagerStorage = new PlayerStorage(damager.getUniqueId());
-            if (damagerStorage.getGuild() != null) {
-                GuildStorage guildStorage = new GuildStorage(damagerStorage.getGuild().getUuid());
+                PlayerStorage damagerStorage = new PlayerStorage(damager.getUniqueId());
+                if (damagerStorage.getGuild() != null) {
+                    GuildStorage guildStorage = new GuildStorage(damagerStorage.getGuild().getUuid());
 
-                if (guildStorage.getMembers().contains(player.getUniqueId())) {
-                    if (guildStorage.getChunks().contains(player.getLocation().getChunk())) {
-                        e.setCancelled(true);
-                        damager.sendMessage(ChatColor.RED + "You cannot attack a player that is in your guild, while you're in guild land.");
+                    if (guildStorage.getMembers().contains(player.getUniqueId())) {
+                        if (guildStorage.getChunks().contains(player.getLocation().getChunk())) {
+                            e.setCancelled(true);
+                            damager.sendMessage(Messages.NO_GUILD_PVP.getMessage());
+                        }
                     }
                 }
             }
@@ -94,12 +124,12 @@ public class ChunkEvents implements Listener {
                 if (chunkStorage.isGuild()) {
                     GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                     if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
+                        player.sendMessage(Messages.NO_BREAK.getMessage());
                         e.setCancelled(true);
                     }
                 } else {
                     if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot break here.");
+                        player.sendMessage(Messages.NO_BREAK.getMessage());
                         e.setCancelled(true);
                     }
                 }
@@ -117,12 +147,12 @@ public class ChunkEvents implements Listener {
                 if (chunkStorage.isGuild()) {
                     GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                     if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
+                        player.sendMessage(Messages.NO_BUILD.getMessage());
                         e.setCancelled(true);
                     }
                 } else {
                     if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                        player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot place here.");
+                        player.sendMessage(Messages.NO_BUILD.getMessage());
                         e.setCancelled(true);
                     }
                 }
@@ -142,12 +172,12 @@ public class ChunkEvents implements Listener {
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                         if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot interact here.");
+                            player.sendMessage(Messages.NO_INTERACT.getMessage());
                             e.setCancelled(true);
                         }
                     } else {
                         if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "This chunk is claimed. You cannot interact here.");
+                            player.sendMessage(Messages.NO_INTERACT.getMessage());
                             e.setCancelled(true);
                         }
                     }

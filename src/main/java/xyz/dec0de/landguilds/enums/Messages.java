@@ -18,6 +18,7 @@ public enum Messages {
     NO_GUILD_PVP("&cPvP is disabled in this land."),
     NO_BUILD("&cYou cannot build in this land."),
     NO_BREAK("&cYou cannot break in this land."),
+    NO_KILL_ANIMAL("&cYou cannot kill animals in land you do not own."),
     ALREADY_CLAIMED("&cThis land has already been claimed"),
     UNABLE_FIND_PLAYER("&cUnable to find this player. Make sure they are online."),
     GUILD_DEMOTE_FAIL("&c%player% cannot be demoted."),
