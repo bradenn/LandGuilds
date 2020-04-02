@@ -37,7 +37,8 @@ public enum Messages {
     INVITE_SENT("&aYou have invited %player% to join your guild."),
     INVITE_NOTIFY("&aYou have been invited to join %args0%. &aExpires in 30 seconds. Type /guilds join"),
     GUILD_LEAVE("&aYou have left your current guild."),
-    GUILD_LEAVE_OWNER("&cYou own this guild. You cannot leave it. You must disband or transfer it.");
+    GUILD_LEAVE_OWNER("&cYou own this guild. You cannot leave it. You must disband or transfer it."),
+    ADMIN_OVERRIDE("&aYou have %args0% admin override.");
 
     //todo add more messages
 
