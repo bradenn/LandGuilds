@@ -19,7 +19,7 @@ public class AdminCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if (!player.isOp()) {
+        if (!player.isOp() || !player.hasPermission("landguilds.admin")) {
             player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
             return false;
         }
@@ -30,10 +30,12 @@ public class AdminCommand implements CommandExecutor {
         }
 
         if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("unclaim")) {
-                AdminHandler.unclaim(player);
-            } else if (args[0].equalsIgnoreCase("help")) {
+            if (args[0].equalsIgnoreCase("help")) {
                 help(player);
+            } else if (args[0].equalsIgnoreCase("unclaim")) {
+                AdminHandler.unclaim(player);
+            } else if (args[0].equalsIgnoreCase("override")) {
+                AdminHandler.addOverride(player.getUniqueId());
             } else {
                 help(player);
             }
@@ -48,6 +50,7 @@ public class AdminCommand implements CommandExecutor {
         player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Lands&Guilds Admin Help -*-*-*-*-*-");
         player.sendMessage(ChatColor.GRAY + "/lgadmin help " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Displays help");
         player.sendMessage(ChatColor.GRAY + "/lgadmin unclaim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Unclaim anyones chunk");
+        player.sendMessage(ChatColor.GRAY + "/lgadmin override " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Override interact/build/break");
         player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Lands&Guilds Admin Help -*-*-*-*-*-");
     }
 }

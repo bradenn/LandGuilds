@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
+import xyz.dec0de.landguilds.handlers.AdminHandler;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -79,19 +80,21 @@ public class ChunkEvents implements Listener {
                 Player damager = (Player) e.getDamager();
                 Entity entity = e.getEntity();
 
-                ChunkStorage chunk = new ChunkStorage(entity.getWorld(), entity.getLocation().getChunk());
+                if (!AdminHandler.isOverride(damager.getUniqueId())) {
+                    ChunkStorage chunk = new ChunkStorage(entity.getWorld(), entity.getLocation().getChunk());
 
-                if (chunk.isClaimed()) {
-                    if (chunk.isGuild()) {
-                        GuildStorage guild = new GuildStorage(chunk.getOwner());
-                        if (!guild.getMembers().contains(damager.getUniqueId())) {
-                            damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
-                            e.setCancelled(true);
-                        }
-                    } else {
-                        if (!chunk.getMembers().contains(damager)) {
-                            damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
-                            e.setCancelled(true);
+                    if (chunk.isClaimed()) {
+                        if (chunk.isGuild()) {
+                            GuildStorage guild = new GuildStorage(chunk.getOwner());
+                            if (!guild.getMembers().contains(damager.getUniqueId())) {
+                                damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
+                                e.setCancelled(true);
+                            }
+                        } else {
+                            if (!chunk.getMembers().contains(damager)) {
+                                damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
+                                e.setCancelled(true);
+                            }
                         }
                     }
                 }
@@ -125,19 +128,21 @@ public class ChunkEvents implements Listener {
     public void breakBlock(BlockBreakEvent e) {
         Player player = e.getPlayer();
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
-            if (chunkStorage.isClaimed()) {
-                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if (chunkStorage.isGuild()) {
-                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                    if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                        player.sendMessage(Messages.NO_BREAK.getMessage());
-                        e.setCancelled(true);
-                    }
-                } else {
-                    if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                        player.sendMessage(Messages.NO_BREAK.getMessage());
-                        e.setCancelled(true);
+            if (!AdminHandler.isOverride(player.getUniqueId())) {
+                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
+                if (chunkStorage.isClaimed()) {
+                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                    if (chunkStorage.isGuild()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                            player.sendMessage(Messages.NO_BREAK.getMessage());
+                            e.setCancelled(true);
+                        }
+                    } else {
+                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                            player.sendMessage(Messages.NO_BREAK.getMessage());
+                            e.setCancelled(true);
+                        }
                     }
                 }
             }
@@ -148,19 +153,21 @@ public class ChunkEvents implements Listener {
     public void placeBlock(BlockPlaceEvent e) {
         Player player = e.getPlayer();
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
-            if (chunkStorage.isClaimed()) {
-                PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-                if (chunkStorage.isGuild()) {
-                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                    if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                        player.sendMessage(Messages.NO_BUILD.getMessage());
-                        e.setCancelled(true);
-                    }
-                } else {
-                    if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                        player.sendMessage(Messages.NO_BUILD.getMessage());
-                        e.setCancelled(true);
+            if (!AdminHandler.isOverride(player.getUniqueId())) {
+                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
+                if (chunkStorage.isClaimed()) {
+                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                    if (chunkStorage.isGuild()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                            player.sendMessage(Messages.NO_BUILD.getMessage());
+                            e.setCancelled(true);
+                        }
+                    } else {
+                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                            player.sendMessage(Messages.NO_BUILD.getMessage());
+                            e.setCancelled(true);
+                        }
                     }
                 }
             }
@@ -174,6 +181,7 @@ public class ChunkEvents implements Listener {
         if (e.getClickedBlock() == null) return;
 
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+            if (!AdminHandler.isOverride(player.getUniqueId())) {
                 ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
                 if (chunkStorage.isClaimed()) {
                     if (chunkStorage.isGuild()) {
@@ -193,6 +201,7 @@ public class ChunkEvents implements Listener {
                         }
                     }
                 }
+            }
         }
     }
 

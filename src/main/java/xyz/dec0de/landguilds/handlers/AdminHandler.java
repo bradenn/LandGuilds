@@ -7,6 +7,9 @@ import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class AdminHandler {
 
@@ -47,6 +50,28 @@ public class AdminHandler {
             }
 
             return;
+        }
+    }
+
+    private static List<UUID> overrideAdmins = new ArrayList<>();
+
+    public static boolean isOverride(UUID uuid) {
+        if (overrideAdmins.contains(uuid)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static void addOverride(UUID uuid) {
+        if (!isOverride(uuid)) {
+            overrideAdmins.add(uuid);
+        }
+    }
+
+    public static void removeOverride(UUID uuid) {
+        if (isOverride(uuid)) {
+            overrideAdmins.remove(uuid);
         }
     }
 }
