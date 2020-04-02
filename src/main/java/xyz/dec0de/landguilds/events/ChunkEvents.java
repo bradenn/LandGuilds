@@ -3,6 +3,9 @@ package xyz.dec0de.landguilds.events;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -20,7 +23,9 @@ import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class ChunkEvents implements Listener {
@@ -173,18 +178,43 @@ public class ChunkEvents implements Listener {
                 if (chunkStorage.isClaimed()) {
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(Messages.NO_INTERACT.getMessage());
-                            e.setCancelled(true);
+                        if (!blockHasAllowSign(player, e.getClickedBlock())) {
+                            if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                                player.sendMessage(Messages.NO_INTERACT.getMessage());
+                                e.setCancelled(true);
+                            }
                         }
                     } else {
                         if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(Messages.NO_INTERACT.getMessage());
-                            e.setCancelled(true);
+                            if (!blockHasAllowSign(player, e.getClickedBlock())) {
+                                player.sendMessage(Messages.NO_INTERACT.getMessage());
+                                e.setCancelled(true);
+                            }
                         }
                     }
                 }
         }
+    }
+
+    private boolean blockHasAllowSign(Player player, Block block) {
+        List<Sign> sign = new ArrayList<>();
+        for (BlockFace blockFace : BlockFace.values()) {
+            Block br = block.getRelative(blockFace, 1);
+            if (br.getBlockData().getMaterial().toString().contains("SIGN")) {
+                Sign sign1 = (Sign) br.getState();
+                sign.add(sign1);
+            }
+        }
+
+        for (Sign signCheck : sign) {
+            if (signCheck.getLine(0).equalsIgnoreCase("[LandGuilds]")) {
+                if (signCheck.getLine(1).equalsIgnoreCase("*Everyone*")) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @EventHandler

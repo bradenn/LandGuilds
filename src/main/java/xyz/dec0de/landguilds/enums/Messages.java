@@ -64,4 +64,8 @@ public enum Messages {
 
         return msg;
     }
+
+    public String getMessageWithoutColor() {
+        return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', message));
+    }
 }
