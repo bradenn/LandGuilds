@@ -22,26 +22,24 @@ public enum Messages {
     NO_KILL_ANIMAL("&cYou cannot kill animals in land you do not own."),
     ALREADY_CLAIMED("&cThis land has already been claimed"),
     UNABLE_FIND_PLAYER("&cUnable to find this player. Make sure they are online."),
-    GUILD_DEMOTE_FAIL("&c%player% cannot be demoted."),
-    GUILD_PROMOTE_FAIL("&c%player% cannot be promoted."),
-    GUILD_PROMOTE_SUCCESS("&a%player% has been promoted to leader in the guild."),
+    GUILD_DEMOTE_FAIL("&c%args0% cannot be demoted."),
+    GUILD_PROMOTE_FAIL("&c%args0% cannot be promoted."),
+    GUILD_PROMOTE_SUCCESS("&a%args0% has been promoted to leader in the guild."),
     GUILD_DEMOTE_SUCCESS("&a% has been demoted to member in the guild."),
     KICK_SELF_FAIL("&cYou cannot kick yourself."),
-    KICK_PLAYER("&aYou have successfully kicked %player%."),
+    KICK_PLAYER("&aYou have successfully kicked %args0%."),
     NOT_IN_LAND_OR_GUILD("&aPlayer is not in land/guild."),
-    ADD_PLAYER_LAND("&aYou have successfully added %player%."),
+    ADD_PLAYER_LAND("&aYou have successfully added %args0%."),
     NO_PENDING_INVITES("&cYou do not have any pending invites."),
     JOIN_GUILD("&aYou have successfully joined a guild."),
     GUILD_DISBAND_SUCCESS("&aYou have successfully disbanded the guild."),
     ALREADY_PENDING_INVITE("&cThis player already has a pending invite. Please try later."),
     INVITE_EXPIRE("&cThe invite has expired!"),
-    INVITE_SENT("&aYou have invited %player% to join your guild."),
+    INVITE_SENT("&aYou have invited %args0% to join your guild."),
     INVITE_NOTIFY("&aYou have been invited to join %args0%. &aExpires in 30 seconds. Type /guilds join"),
     GUILD_LEAVE("&aYou have left your current guild."),
     GUILD_LEAVE_OWNER("&cYou own this guild. You cannot leave it. You must disband or transfer it."),
     ADMIN_OVERRIDE("&aYou have %args0% admin override.");
-
-    //todo add more messages
 
     private String message;
 
@@ -54,17 +52,18 @@ public enum Messages {
     }
 
     public String getMessage(Player player) {
-        return ChatColor.translateAlternateColorCodes('&', PREFIX.message + message)
-                .replace("%player%", player.getName());
+        return ChatColor.translateAlternateColorCodes('&',
+                PREFIX.message + message.replaceAll("%args0%", player.getName()));
     }
 
     public String getMessage(String... args) {
-        String msg = ChatColor.translateAlternateColorCodes('&', PREFIX.message + message);
+        String msg = message;
         for (int i = 0; i < args.length; i++) {
-            msg.replace("%args" + i + "%", args[i]);
+            msg = msg.replaceAll("%args" + i + "%", args[i]);
         }
 
-        return msg;
+        return ChatColor.translateAlternateColorCodes('&',
+                PREFIX.message + msg);
     }
 
     public String getMessageWithoutColor() {
