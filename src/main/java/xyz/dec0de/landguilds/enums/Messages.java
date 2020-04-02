@@ -1,6 +1,7 @@
 package xyz.dec0de.landguilds.enums;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public enum Messages {
     PREFIX("&8[&aLandGuilds&8] &r"),
@@ -52,9 +53,9 @@ public enum Messages {
         return ChatColor.translateAlternateColorCodes('&', PREFIX.message + message);
     }
 
-    public String getMessage(String playerName) {
+    public String getMessage(Player player) {
         return ChatColor.translateAlternateColorCodes('&', PREFIX.message + message)
-                .replace("%player%", playerName);
+                .replace("%player%", player.getName());
     }
 
     public String getMessage(String... args) {
