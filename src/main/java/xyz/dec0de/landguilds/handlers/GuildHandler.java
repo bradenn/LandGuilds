@@ -228,6 +228,7 @@ public class GuildHandler {
                         if (pendingGuildInvites.containsKey(toInvite.getUniqueId()) &&
                                 pendingGuildInvites.get(toInvite.getUniqueId()) == guildToken) {
                             player.sendMessage(Messages.INVITE_EXPIRE.getMessage());
+                            toInvite.sendMessage(Messages.INVITE_EXPIRE.getMessage());
                             pendingGuildInvites.remove(toInvite.getUniqueId());
                         }
                     }
