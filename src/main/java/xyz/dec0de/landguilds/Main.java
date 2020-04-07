@@ -5,7 +5,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.dec0de.landguilds.commands.*;
 import xyz.dec0de.landguilds.events.ChunkEvents;
+import xyz.dec0de.landguilds.events.InventoryEvents;
 import xyz.dec0de.landguilds.events.PlayerEvents;
+import xyz.dec0de.landguilds.handlers.InventoryHandler;
 
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class Main extends JavaPlugin {
         plugin.getCommand("lgadmin").setExecutor(new AdminCommand());
         plugin.getCommand("landguilds").setExecutor(new LandGuildsCommand());
 
+        Bukkit.getPluginManager().registerEvents(new InventoryEvents(), plugin);
         Bukkit.getPluginManager().registerEvents(new PlayerEvents(), plugin);
         Bukkit.getPluginManager().registerEvents(new ChunkEvents(), plugin);
     }

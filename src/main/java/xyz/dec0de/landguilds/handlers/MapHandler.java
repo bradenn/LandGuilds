@@ -1,20 +1,15 @@
 package xyz.dec0de.landguilds.handlers;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class MapHandler {
 
@@ -117,5 +112,44 @@ public class MapHandler {
 
             player.sendMessage(landOwnerList);
         }
+    }
+
+    public static void generateInventoryMap(Player player) {
+        Server server = player.getServer();
+        Inventory inv = server.createInventory(null, 9 * 5, "Guilds Map");
+        Location location = player.getLocation();
+        Chunk chunk = location.getChunk();
+        World world = location.getWorld();
+
+        if (Main.allowedWorlds().contains(world.getName())) {
+
+            int centerX = chunk.getX();
+            int centerZ = chunk.getZ();
+
+            int clk = 0;
+            for (int z = centerZ - 2; z <= centerZ + 2; z++) {
+                for (int x = centerX - 4; x <= centerX + 4; x++) {
+                    Chunk currentChunk = world.getChunkAt(x, z);
+                    ChunkStorage chunkStorage = new ChunkStorage(world, currentChunk);
+
+                    if (chunkStorage.isClaimed()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        List<String> players = new ArrayList<>();
+                        guildStorage.getMembers().forEach(uuid -> {
+                            PlayerStorage playerStorage = new PlayerStorage(uuid);
+                            players.add(playerStorage.getUsername());
+                        });
+                        inv.setItem(clk, InventoryHandler.createItemStack(guildStorage.getName(), Material.RED_STAINED_GLASS_PANE, players));
+                    } else {
+                        inv.setItem(clk, InventoryHandler.createItemStack("Unclaimed", Material.GRAY_STAINED_GLASS_PANE, new ArrayList<String>()));
+
+                    }
+                    clk++;
+
+                }
+            }
+        }
+        player.openInventory(inv);
+
     }
 }
