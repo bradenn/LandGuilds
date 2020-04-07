@@ -84,7 +84,6 @@ public class ChunkEvents implements Listener {
 
                 if (!AdminHandler.isOverride(damager.getUniqueId())) {
                     ChunkStorage chunk = new ChunkStorage(entity.getWorld(), entity.getLocation().getChunk());
-
                     if (chunk.isClaimed()) {
                         if (chunk.isGuild()) {
                             GuildStorage guild = new GuildStorage(chunk.getOwner());
