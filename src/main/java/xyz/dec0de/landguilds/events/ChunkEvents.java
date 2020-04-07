@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -23,6 +24,7 @@ import xyz.dec0de.landguilds.handlers.AdminHandler;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -198,6 +200,25 @@ public class ChunkEvents implements Listener {
                                 player.sendMessage(Messages.NO_INTERACT.getMessage());
                                 e.setCancelled(true);
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityInteract(EntityBreedEvent e) {
+        Player player = (Player) e.getBreeder();
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+            if (!AdminHandler.isOverride(player.getUniqueId())) {
+                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getLocation().getChunk());
+                if (chunkStorage.isClaimed()) {
+                    if (chunkStorage.isGuild()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                            e.getEntity().remove();
+                            player.sendMessage(Messages.NO_BREED.getMessage());
                         }
                     }
                 }
