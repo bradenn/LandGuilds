@@ -1,10 +1,10 @@
 name: LandGuilds
 main: xyz.dec0de.landguilds.Main
-version: 0.2.0
+version: 0.2.3
 api-version: 1.13
 website: https://dec0de.xyz
 description: Land Claiming & Guilds
-authors: [Nyarrth]
+authors: [Nyarrth, bradencn]
 commands:
   lands:
     aliases: [l, land, ll]
