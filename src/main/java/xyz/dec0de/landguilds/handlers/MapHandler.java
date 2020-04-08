@@ -133,13 +133,22 @@ public class MapHandler {
                     ChunkStorage chunkStorage = new ChunkStorage(world, currentChunk);
 
                     if (chunkStorage.isClaimed()) {
-                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        List<String> players = new ArrayList<>();
-                        guildStorage.getMembers().forEach(uuid -> {
-                            PlayerStorage playerStorage = new PlayerStorage(uuid);
-                            players.add(playerStorage.getUsername());
-                        });
-                        inv.setItem(clk, InventoryHandler.createItemStack(guildStorage.getName(), Material.RED_STAINED_GLASS_PANE, players));
+                        if (chunkStorage.isGuild()) {
+                            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                            List<String> players = new ArrayList<>();
+                            guildStorage.getMembers().forEach(uuid -> {
+                                PlayerStorage playerStorage = new PlayerStorage(uuid);
+                                players.add(playerStorage.getUsername());
+                            });
+                            Material material = (players.contains(player.getName()))?Material.BLUE_STAINED_GLASS_PANE:Material.ORANGE_STAINED_GLASS_PANE;
+                            inv.setItem(clk, InventoryHandler.createItemStack(guildStorage.getName(), material, players));
+                        } else {
+                            PlayerStorage playerStorage = new PlayerStorage(chunkStorage.getOwner());
+                            Material material = (playerStorage.getUsername().equalsIgnoreCase(player.getName()))?Material.GREEN_STAINED_GLASS_PANE:Material.RED_STAINED_GLASS_PANE;
+                            inv.setItem(clk, InventoryHandler.createItemStack(playerStorage.getUsername(), material, new ArrayList<String>()));
+
+                        }
+
                     } else {
                         inv.setItem(clk, InventoryHandler.createItemStack("Unclaimed", Material.GRAY_STAINED_GLASS_PANE, new ArrayList<String>()));
 
