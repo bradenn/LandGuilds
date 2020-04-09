@@ -13,8 +13,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -24,7 +24,6 @@ import xyz.dec0de.landguilds.handlers.AdminHandler;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +91,7 @@ public class ChunkEvents implements Listener {
                                 e.setCancelled(true);
                             }
                         } else {
-                            if (!chunk.getMembers().contains(damager)) {
+                            if (!chunk.getMembers().contains(damager.getUniqueId())) {
                                 damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
                                 e.setCancelled(true);
                             }
