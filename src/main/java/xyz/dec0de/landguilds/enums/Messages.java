@@ -22,6 +22,7 @@ public enum Messages {
     NO_KILL_ANIMAL("&cYou cannot kill animals in land you do not own."),
     NO_BREED("&cYou are not allowed to breed these animals; the product has been aborted."),
     ALREADY_CLAIMED("&cThis land has already been claimed"),
+    UNKNOWN_ERROR("&cA non-fatal, unknown error has occurred."),
     UNABLE_FIND_PLAYER("&cUnable to find this player. Make sure they are online."),
     GUILD_DEMOTE_FAIL("&c%args0% cannot be demoted."),
     GUILD_PROMOTE_FAIL("&c%args0% cannot be promoted."),
@@ -37,10 +38,13 @@ public enum Messages {
     ALREADY_PENDING_INVITE("&cThis player already has a pending invite. Please try later."),
     INVITE_EXPIRE("&cThe invite has expired!"),
     INVITE_SENT("&aYou have invited %args0% to join your guild."),
+    RELATIONSHIP_CHANGED("&aYou have successfully declared the guild %args0% as an %args1%."),
     INVITE_NOTIFY("&aYou have been invited to join %args0%. &aExpires in 30 seconds. Type /guilds join"),
     GUILD_LEAVE("&aYou have left your current guild."),
+    GUILD_ANNOUNCEMENT_DECLARE("&aThe guild %args0% has declared %args1% as an %args2%."),
     GUILD_LEAVE_OWNER("&cYou own this guild. You cannot leave it. You must disband or transfer it."),
-    ADMIN_OVERRIDE("&aYou have %args0% admin override.");
+    ADMIN_OVERRIDE("&aYou have %args0% admin override."),
+    UNKNOWN_TYPE("&cYou have entered an unknown type '%args0%'.");
 
     private String message;
 

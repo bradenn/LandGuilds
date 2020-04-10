@@ -49,6 +49,11 @@ public class GuildsCommand implements CommandExecutor {
                 String username = args[1];
                 GuildHandler.demote(player, username);
             }
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("declare")) {
+                String targetUser = args[1];
+                GuildHandler.setRelationship(player, targetUser, args[2]);
+            }
         } else {
             help(player);
         }
@@ -65,6 +70,7 @@ public class GuildsCommand implements CommandExecutor {
         player.sendMessage(ChatColor.GRAY + "/g leave " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Leave your current guild");
         player.sendMessage(ChatColor.GRAY + "/g unclaim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Unclaim a chunk from your guild");
         player.sendMessage(ChatColor.GRAY + "/g invite [player name]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Invite a player to your guild");
+        player.sendMessage(ChatColor.GRAY + "/g declare [player name] [ENEMY|ALLIE|NEUTRAL]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Sets relationship with other guild");
         player.sendMessage(ChatColor.GRAY + "/g kick [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Kick a player from your guild");
         player.sendMessage(ChatColor.GRAY + "/g promote [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Promote a player in the guild to a leader");
         player.sendMessage(ChatColor.GRAY + "/g demote [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Demote a player from leader to member");
