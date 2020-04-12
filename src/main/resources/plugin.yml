@@ -21,3 +21,6 @@ commands:
   landguilds:
     aliases: [lg, landguild]
     description: Main Command
+permissions:
+  landguilds.admin:
+    default: op

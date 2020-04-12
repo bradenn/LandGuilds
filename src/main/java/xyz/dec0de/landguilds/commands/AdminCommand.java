@@ -19,7 +19,7 @@ public class AdminCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if (!player.isOp() || !player.hasPermission("landguilds.admin")) {
+        if (!player.hasPermission("landguilds.admin")) {
             player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
             return false;
         }
