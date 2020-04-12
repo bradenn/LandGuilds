@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
+import xyz.dec0de.landguilds.enums.Tags;
 import xyz.dec0de.landguilds.handlers.AdminHandler;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
@@ -109,17 +110,16 @@ public class ChunkEvents implements Listener {
                 Player damager = (Player) e.getDamager();
                 Player player = (Player) e.getEntity();
 
-                PlayerStorage damagerStorage = new PlayerStorage(damager.getUniqueId());
-                if (damagerStorage.getGuild() != null) {
-                    GuildStorage guildStorage = new GuildStorage(damagerStorage.getGuild().getUuid());
-
-                    if (guildStorage.getMembers().contains(player.getUniqueId())) {
-                        if (guildStorage.getChunks().contains(player.getLocation().getChunk())) {
-//                            e.setCancelled(true);
-//                            damager.sendMessage(Messages.NO_GUILD_PVP.getMessage());
-                        }
+                ChunkStorage chunkStorage = new ChunkStorage(damager.getLocation().getWorld(), damager.getLocation().getChunk());
+                if (chunkStorage.isGuild()) {
+                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                    if (!guildStorage.getTag(Tags.PVP)) {
+                        e.setCancelled(true);
+                        damager.sendMessage(Messages.NO_GUILD_PVP.getMessage());
                     }
                 }
+
+
             }
         }
     }
