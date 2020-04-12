@@ -14,8 +14,8 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) throws IOException {
         Player player = e.getPlayer();
-
         PlayerStorage playerStorage = new PlayerStorage(player);
+        e.getPlayer().setPlayerListName(playerStorage.getGuild().getTag() + " §r" + player.getDisplayName());
     }
 
     @EventHandler
