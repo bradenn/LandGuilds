@@ -1,6 +1,6 @@
 name: LandGuilds
 main: xyz.dec0de.landguilds.Main
-version: 0.2.4
+version: 0.2.6
 api-version: 1.13
 website: https://dec0de.xyz
 description: Land Claiming & Guilds
@@ -21,3 +21,6 @@ commands:
   landguilds:
     aliases: [lg, landguild]
     description: Main Command
+permissions:
+  landguilds.admin:
+    default: op

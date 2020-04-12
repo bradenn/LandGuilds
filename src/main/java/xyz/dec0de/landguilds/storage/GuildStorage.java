@@ -8,7 +8,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import xyz.dec0de.landguilds.Main;
+import xyz.dec0de.landguilds.enums.Relationship;
 import xyz.dec0de.landguilds.enums.Role;
+import xyz.dec0de.landguilds.enums.Tags;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +23,7 @@ public class GuildStorage {
     private UUID uuid;
     private File file;
     private FileConfiguration config;
+
 
     /**
      * Gets a config based on guild UUID
@@ -104,6 +107,23 @@ public class GuildStorage {
         return roles;
     }
 
+    public void setTag(Tags tag, boolean status) {
+        config.set("tags." + tag.toString(), status);
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean getTag(Tags tag) {
+        if (config.contains("tags." + tag.toString() + "")) {
+            return config.getBoolean("tags." + tag.toString() + "");
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Set the role of players
      *
@@ -172,6 +192,39 @@ public class GuildStorage {
         }
 
         return false;
+    }
+
+    /**
+     * Declare another guild as an enemy or a friend
+     *
+     * @param uuid
+     * @return
+     * @throws IOException
+     */
+
+    public void setRelationship(UUID uuid, Relationship relationship) throws IOException {
+        if (relationship != Relationship.NEUTRAL) {
+            config.set("relationships." + uuid.toString(), Relationship.ALLY.toString());
+        } else {
+            config.set("relationships." + uuid.toString(), null);
+        }
+        config.save(file);
+    }
+
+    /**
+     * Declare another guild as an enemy or a friend
+     *
+     * @param uuid
+     * @return
+     * @throws IOException
+     */
+
+    public Relationship getRelationship(UUID uuid) {
+        if (config.contains("relationships." + uuid.toString())) {
+            return Relationship.valueOf(config.getString("relationships." + uuid.toString()));
+        } else {
+            return Relationship.NEUTRAL;
+        }
     }
 
     /**
@@ -274,4 +327,7 @@ public class GuildStorage {
         return true;
     }
 
+    public boolean get(Tags valueOf) {
+        return config.getBoolean("tags."+valueOf.toString());
+    }
 }

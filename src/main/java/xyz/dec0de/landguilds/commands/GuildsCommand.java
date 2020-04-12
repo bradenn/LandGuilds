@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
+import xyz.dec0de.landguilds.storage.GuildStorage;
 
 public class GuildsCommand implements CommandExecutor {
 
@@ -48,6 +49,16 @@ public class GuildsCommand implements CommandExecutor {
             } else if (args[0].equalsIgnoreCase("demote")) {
                 String username = args[1];
                 GuildHandler.demote(player, username);
+            } else if (args[0].equalsIgnoreCase("get")) {
+                GuildHandler.get(player, args[1]);
+            }
+
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("declare")) {
+                String targetUser = args[1];
+                GuildHandler.setRelationship(player, targetUser, args[2]);
+            } else if(args[0].equalsIgnoreCase("set")) {
+                GuildHandler.setTag(player, args[1], Boolean.parseBoolean(args[2]));
             }
         } else {
             help(player);
@@ -65,9 +76,11 @@ public class GuildsCommand implements CommandExecutor {
         player.sendMessage(ChatColor.GRAY + "/g leave " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Leave your current guild");
         player.sendMessage(ChatColor.GRAY + "/g unclaim " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Unclaim a chunk from your guild");
         player.sendMessage(ChatColor.GRAY + "/g invite [player name]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Invite a player to your guild");
+        player.sendMessage(ChatColor.GRAY + "/g declare [player name] [ENEMY | ALLY | NEUTRAL]" + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Sets relationship with other guild");
         player.sendMessage(ChatColor.GRAY + "/g kick [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Kick a player from your guild");
         player.sendMessage(ChatColor.GRAY + "/g promote [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Promote a player in the guild to a leader");
         player.sendMessage(ChatColor.GRAY + "/g demote [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Demote a player from leader to member");
+        player.sendMessage(ChatColor.GRAY + "/g set [tag] [true | false] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " change settings (firespread, pvp)");
         player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Guilds Help -*-*-*-*-*-");
     }
 }
