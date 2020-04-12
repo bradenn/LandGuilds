@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.io.IOException;
@@ -47,7 +48,13 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e){
-        Player player = e.getEntity();
+        e.setDeathMessage(e.getDeathMessage() + ", oops.");
+    }
+
+    @EventHandler
+    public void onRevive(PlayerRespawnEvent e){
+        Player player = e.getPlayer();
+        player.chat("can i get an f in the chat");
         for(Player p : player.getServer().getOnlinePlayers()){
             p.chat("f");
         }
