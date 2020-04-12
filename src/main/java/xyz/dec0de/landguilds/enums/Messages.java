@@ -30,6 +30,8 @@ public enum Messages {
     GUILD_DEMOTE_SUCCESS("&a% has been demoted to member in the guild."),
     KICK_SELF_FAIL("&cYou cannot kick yourself."),
     KICK_PLAYER("&aYou have successfully kicked %args0%."),
+    SET_TAG("&aYou have the tag §7%args0%§a to §7%args1%§a."),
+    GET_TAG("&aThe tag §7%args0%§a is set to §7%args1%§a."),
     WAR_ON_THE_HOME_FRONT("&cYou can't declare yourself an %args0%, dipshit."),
     NOT_IN_LAND_OR_GUILD("&aPlayer is not in land/guild."),
     ADD_PLAYER_LAND("&aYou have successfully added %args0%."),
