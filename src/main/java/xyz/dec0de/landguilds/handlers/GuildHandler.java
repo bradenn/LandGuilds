@@ -7,6 +7,7 @@ import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.enums.Relationship;
 import xyz.dec0de.landguilds.enums.Role;
+import xyz.dec0de.landguilds.enums.Tags;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -367,13 +368,24 @@ public class GuildHandler {
      * SO the thing is.. You put in a guild name, we parse it, we declare ir, we do it.
      */
 
+    public static void get(Player player, String tag) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        player.sendMessage(Messages.GET_TAG.getMessage(tag, playerStorage.getGuild().get(Tags.valueOf(tag.toUpperCase()))+""));
+    }
+
+    public static void setTag(Player player, String tag, boolean option) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        playerStorage.getGuild().setTag(Tags.valueOf(tag.toUpperCase()), option);
+        player.sendMessage(Messages.SET_TAG.getMessage(tag, option + ""));
+    }
+
     public static Relationship getRelationship(Player player, UUID uuid) {
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
         return playerStorage.getGuild().getRelationship(uuid);
     }
 
     public static void setRelationship(Player player, String playerName, String _relationship) {
-        if(player.getName().equalsIgnoreCase(playerName)){
+        if (player.getName().equalsIgnoreCase(playerName)) {
             player.sendMessage(Messages.WAR_ON_THE_HOME_FRONT.getMessage(_relationship));
             return;
         }
@@ -384,7 +396,7 @@ public class GuildHandler {
             relationship = Relationship.ENEMY;
         } else if (_relationship.equalsIgnoreCase(Relationship.NEUTRAL.toString())) {
             relationship = Relationship.NEUTRAL;
-        }else{
+        } else {
             player.sendMessage(Messages.UNKNOWN_TYPE.getMessage(_relationship));
         }
         Player targetPlayer = player.getServer().getPlayer(playerName);
