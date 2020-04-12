@@ -115,8 +115,8 @@ public class ChunkEvents implements Listener {
 
                     if (guildStorage.getMembers().contains(player.getUniqueId())) {
                         if (guildStorage.getChunks().contains(player.getLocation().getChunk())) {
-                            e.setCancelled(true);
-                            damager.sendMessage(Messages.NO_GUILD_PVP.getMessage());
+//                            e.setCancelled(true);
+//                            damager.sendMessage(Messages.NO_GUILD_PVP.getMessage());
                         }
                     }
                 }
