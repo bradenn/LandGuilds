@@ -186,7 +186,7 @@ public class GuildStorage {
 
     public void setRelationship(UUID uuid, Relationship relationship) throws IOException {
         if (relationship != Relationship.NEUTRAL) {
-            config.set("relationships." + uuid.toString(), Relationship.ALLIE.toString());
+            config.set("relationships." + uuid.toString(), Relationship.ALLY.toString());
         } else {
             config.set("relationships." + uuid.toString(), null);
         }

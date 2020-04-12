@@ -367,14 +367,23 @@ public class GuildHandler {
      * SO the thing is.. You put in a guild name, we parse it, we declare ir, we do it.
      */
 
+    public static Relationship getRelationship(Player player, UUID uuid) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        return playerStorage.getGuild().getRelationship(uuid);
+    }
+
     public static void setRelationship(Player player, String playerName, String _relationship) {
+        if(player.getName().equalsIgnoreCase(playerName)){
+            player.sendMessage(Messages.WAR_ON_THE_HOME_FRONT.getMessage(_relationship));
+            return;
+        }
         Relationship relationship = Relationship.NEUTRAL;
-        if (_relationship.equalsIgnoreCase(Relationship.ALLIE.toString())) {
-            relationship = Relationship.ALLIE;
+        if (_relationship.equalsIgnoreCase(Relationship.ALLY.toString())) {
+            relationship = Relationship.ALLY;
         } else if (_relationship.equalsIgnoreCase(Relationship.ENEMY.toString())) {
             relationship = Relationship.ENEMY;
         } else if (_relationship.equalsIgnoreCase(Relationship.NEUTRAL.toString())) {
-            relationship = Relationship.ENEMY;
+            relationship = Relationship.NEUTRAL;
         }else{
             player.sendMessage(Messages.UNKNOWN_TYPE.getMessage(_relationship));
         }
