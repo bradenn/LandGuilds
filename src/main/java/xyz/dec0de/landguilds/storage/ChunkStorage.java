@@ -20,9 +20,7 @@ public class ChunkStorage {
         if (chunkCache.containsKey(container)) {
             return chunkCache.get(container);
         } else {
-            ChunkStorage storage = new ChunkStorage(world, chunk);
-            chunkCache.put(container, storage);
-            return storage;
+            return new ChunkStorage(world, chunk);
         }
     }
 
@@ -51,7 +49,9 @@ public class ChunkStorage {
                 }
             }
             claimed = members.size() >= 1;
-            if (!claimed) {
+            if (claimed) {
+                chunkCache.put(new ChunkStorageContainer(world.getUID(), chunk.getX(), chunk.getZ()), this);
+            } else {
                 file.delete();
             }
         } else {
