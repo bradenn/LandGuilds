@@ -17,6 +17,14 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <releases>
+            </releases>
+            <snapshots>
+            </snapshots>
+            <id>dynmap-repo</id>
+            <url>http://repo.mikeprimm.com/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -27,6 +35,11 @@
             <artifactId>spigot-api</artifactId>
             <version>1.14.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>dynmap-api</artifactId>
+            <version>3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

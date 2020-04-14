@@ -126,6 +126,7 @@ public class GuildHandler {
                     player.sendMessage(Messages.CLAIMED_LAND_GUILD.getMessage());
                     guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
                     chunkStorage.claim(guildStorage.getUuid(), true);
+                    DynmapHandler.reloadGuildChunks();
                     return;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -369,6 +370,7 @@ public class GuildHandler {
      */
 
     public static void get(Player player, String tag) {
+
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
         player.sendMessage(Messages.GET_TAG.getMessage(tag, playerStorage.getGuild().get(Tags.valueOf(tag.toUpperCase()))+""));
     }
