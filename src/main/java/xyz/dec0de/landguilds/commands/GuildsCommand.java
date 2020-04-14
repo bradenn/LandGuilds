@@ -80,7 +80,7 @@ public class GuildsCommand implements CommandExecutor {
         player.sendMessage(ChatColor.GRAY + "/g kick [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Kick a player from your guild");
         player.sendMessage(ChatColor.GRAY + "/g promote [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Promote a player in the guild to a leader");
         player.sendMessage(ChatColor.GRAY + "/g demote [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Demote a player from leader to member");
-        player.sendMessage(ChatColor.GRAY + "/g set [tag] [true | false] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " change settings (firespread, pvp)");
+        player.sendMessage(ChatColor.GRAY + "/g set [tag] [true | false] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " change settings (firespread, pvp, boom)");
         player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Guilds Help -*-*-*-*-*-");
     }
 }

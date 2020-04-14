@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -33,6 +34,18 @@ public class PlayerEvents implements Listener {
         if (chunkStorage.isGuild()) {
             GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
             if (!guildStorage.getTag(Tags.FIRESPREAD)) {
+                e.setCancelled(true);
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void onFireTick(BlockExplodeEvent e) {
+        ChunkStorage chunkStorage = new ChunkStorage(e.getBlock().getWorld(), e.getBlock().getChunk());
+        if (chunkStorage.isGuild()) {
+            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+            if (!guildStorage.getTag(Tags.BOOM)) {
                 e.setCancelled(true);
             }
         }
