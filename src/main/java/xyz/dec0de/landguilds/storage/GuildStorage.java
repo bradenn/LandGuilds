@@ -16,19 +16,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class GuildStorage {
-
     private UUID uuid;
     private File file;
     private FileConfiguration config;
 
-
     /**
      * Gets a config based on guild UUID
-     *
-     * @param uuid
      */
     public GuildStorage(UUID uuid) {
         this.uuid = uuid;
@@ -54,8 +51,6 @@ public class GuildStorage {
 
     /**
      * Creates a new guild
-     *
-     * @param name
      */
     public GuildStorage(String name, UUID owner) throws IOException {
         this(UUID.randomUUID());
@@ -67,8 +62,6 @@ public class GuildStorage {
 
     /**
      * Get uuid of guild
-     *
-     * @return
      */
     public UUID getUuid() {
         return uuid;
@@ -76,18 +69,15 @@ public class GuildStorage {
 
     /**
      * Get the members of a chunk
-     *
-     * @return
-     * @throws NullPointerException
      */
-
     public List<UUID> getMembers() throws NullPointerException {
         ConfigurationSection section = config.getConfigurationSection("members");
         List<UUID> members = new ArrayList<>();
 
         if (config.getConfigurationSection("members") != null) {
-            for (String uuids : section.getKeys(false)) {
-                members.add(UUID.fromString(uuids));
+            assert section != null;
+            for (String uuid : section.getKeys(false)) {
+                members.add(UUID.fromString(uuid));
             }
         }
 
@@ -97,14 +87,9 @@ public class GuildStorage {
 
     /**
      * Get the role of a player in a chunk.
-     *
-     * @param uuid
-     * @return
      */
     public Role getRole(UUID uuid) {
-        Role roles = Role.valueOf(config.getString("members." + uuid.toString() + ".role"));
-
-        return roles;
+        return Role.valueOf(config.getString("members." + uuid.toString() + ".role"));
     }
 
     public void setTag(Tags tag, boolean status) {
@@ -126,10 +111,6 @@ public class GuildStorage {
 
     /**
      * Set the role of players
-     *
-     * @param uuid
-     * @param role
-     * @return
      */
     public void setRole(UUID uuid, Role role) throws IOException {
         if (getMembers().contains(uuid)) {
@@ -140,15 +121,12 @@ public class GuildStorage {
 
     /**
      * Get the owner of the chunk
-     *
-     * @return
      */
-
     public UUID getOwner() {
         UUID owner = null;
 
         for (UUID member : getMembers()) {
-            if (config.getString("members." + member.toString() + ".role").equalsIgnoreCase("OWNER")) {
+            if (Objects.requireNonNull(config.getString("members." + member.toString() + ".role")).equalsIgnoreCase("OWNER")) {
                 owner = member;
                 break;
             }
@@ -158,48 +136,26 @@ public class GuildStorage {
 
     /**
      * Allow another player the chunk
-     *
-     * @param uuid
-     * @return
-     * @throws IOException
      */
-
-    public boolean addMember(UUID uuid) throws IOException {
+    public void addMember(UUID uuid) throws IOException {
         if (!getMembers().contains(uuid)) {
             config.set("members." + uuid.toString() + ".role", "MEMBER");
             config.save(file);
-
-            return true;
         }
-
-        return false;
     }
 
     /**
      * Remove another player from the chunk
-     *
-     * @param uuid
-     * @return
-     * @throws IOException
      */
-
-    public boolean removeMember(UUID uuid) throws IOException {
+    public void removeMember(UUID uuid) throws IOException {
         if (getMembers().contains(uuid)) {
             config.set("members." + uuid.toString(), null);
             config.save(file);
-
-            return true;
         }
-
-        return false;
     }
 
     /**
      * Declare another guild as an enemy or a friend
-     *
-     * @param uuid
-     * @return
-     * @throws IOException
      */
 
     public void setRelationship(UUID uuid, Relationship relationship) throws IOException {
@@ -213,12 +169,7 @@ public class GuildStorage {
 
     /**
      * Declare another guild as an enemy or a friend
-     *
-     * @param uuid
-     * @return
-     * @throws IOException
      */
-
     public Relationship getRelationship(UUID uuid) {
         if (config.contains("relationships." + uuid.toString())) {
             return Relationship.valueOf(config.getString("relationships." + uuid.toString()));
@@ -229,8 +180,6 @@ public class GuildStorage {
 
     /**
      * Get the name of the guild
-     *
-     * @return
      */
     public String getName() {
         return config.getString("name");
@@ -238,9 +187,6 @@ public class GuildStorage {
 
     /**
      * Set the name of a guild
-     *
-     * @param name
-     * @throws IOException
      */
     public void setName(String name) throws IOException {
         config.set("name", name);
@@ -249,8 +195,6 @@ public class GuildStorage {
 
     /**
      * Get the guild tag
-     *
-     * @return
      */
     public String getTag() {
         return getColor() + "[" + getName().toUpperCase() + "]";
@@ -260,41 +204,36 @@ public class GuildStorage {
         return ChatColor.valueOf(config.getString("color"));
     }
 
-    public void setColor(ChatColor color) throws IOException {
-        config.set("color", color.toString());
-        config.save(file);
-    }
+//    public void setColor(ChatColor color) throws IOException {
+//        config.set("color", color.toString());
+//        config.save(file);
+//    }
 
     public List<Chunk> getChunks() {
         List<Chunk> chunkList = new ArrayList<>();
         List<String> list = config.getStringList("chunks");
-        for (String chnk : list) {
-            String world = chnk.split(";")[0];
-            int chunkX = Integer.parseInt(chnk.split(";")[1]);
-            int chunkZ = Integer.parseInt(chnk.split(";")[2]);
+        for (String chunkString : list) {
+            String world = chunkString.split(";")[0];
+            int chunkX = Integer.parseInt(chunkString.split(";")[1]);
+            int chunkZ = Integer.parseInt(chunkString.split(";")[2]);
 
-            chunkList.add(Bukkit.getWorld(world).getChunkAt(chunkX, chunkZ));
+            chunkList.add(Objects.requireNonNull(Bukkit.getWorld(world)).getChunkAt(chunkX, chunkZ));
         }
-
         return chunkList;
     }
 
     //TODO Make it claim the chunk or remove it too
-    public boolean addChunk(World world, Chunk chunk) throws IOException {
-        ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
+    public void addChunk(World world, Chunk chunk) throws IOException {
         if (Main.allowedWorlds().contains(world.getName())) {
             List<String> list = config.getStringList("chunks");
             list.add(world.getName() + ";" + chunk.getX() + ";" + chunk.getZ());
 
             config.set("chunks", list);
             config.save(file);
-            return true;
         }
-
-        return false;
     }
 
-    public boolean removeChunk(World world, Chunk chunk) throws IOException {
+    public void removeChunk(World world, Chunk chunk) throws IOException {
         if (Main.allowedWorlds().contains(world.getName())) {
             List<String> list = config.getStringList("chunks");
 
@@ -302,19 +241,17 @@ public class GuildStorage {
 
             config.set("chunks", list);
             config.save(file);
-            return true;
         }
-
-        return false;
     }
 
-    public boolean disbandGuild() throws IOException {
+    public void disbandGuild() throws IOException {
         List<String> chunks = config.getStringList("chunks");
-        for (String chnk : chunks) {
-            World world = Bukkit.getWorld(chnk.split(";")[0]);
-            Chunk chunk = world.getChunkAt(Integer.parseInt(chnk.split(";")[1]), Integer.parseInt(chnk.split(";")[2]));
+        for (String chunkString : chunks) {
+            World world = Bukkit.getWorld(chunkString.split(";")[0]);
+            assert world != null;
+            Chunk chunk = world.getChunkAt(Integer.parseInt(chunkString.split(";")[1]), Integer.parseInt(chunkString.split(";")[2]));
 
-            ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(world, chunk);
             chunkStorage.unclaim();
         }
 
@@ -324,7 +261,6 @@ public class GuildStorage {
         }
 
         file.delete();
-        return true;
     }
 
     public boolean get(Tags valueOf) {

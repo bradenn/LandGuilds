@@ -13,9 +13,9 @@ import java.util.*;
 
 public class MapHandler {
 
-    private static char CLAIMED_CHAR = '⬛';
-    private static char UNCLAIMED_CHAR = '⬜';
-    private static char CENTER_CHAR = '⬤';
+    private final static char CLAIMED_CHAR = '⬛';
+    private final static char UNCLAIMED_CHAR = '⬜';
+    private final static char CENTER_CHAR = '⬤';
 
     public static void showMap(Player player) {
         if (!Main.allowedWorlds().contains(player.getWorld().getName())) {
@@ -26,6 +26,7 @@ public class MapHandler {
         Chunk chunk = location.getChunk();
         World world = location.getWorld();
 
+        assert world != null;
         if (Main.allowedWorlds().contains(world.getName())) {
 
             int centerX = chunk.getX();
@@ -35,11 +36,11 @@ public class MapHandler {
 
             int lineNum = 0;
             for (int z = centerZ - 3; z <= centerZ + 3; z++) {
-                String currentLine = "";
+                StringBuilder currentLine = new StringBuilder();
                 for (int x = centerX - 3; x <= centerX + 3; x++) {
 
                     Chunk currentChunk = world.getChunkAt(x, z);
-                    ChunkStorage chunkStorage = new ChunkStorage(world, currentChunk);
+                    ChunkStorage chunkStorage = ChunkStorage.getChunk(world, currentChunk);
 
                     char symbol = (x == centerX && z == centerZ) ? CENTER_CHAR : chunkStorage.isClaimed() ? CLAIMED_CHAR : UNCLAIMED_CHAR;
 
@@ -58,34 +59,25 @@ public class MapHandler {
                             color = landOwners.get(owner);
                         }
 
-                        currentLine = currentLine + color + symbol + " ";
+                        currentLine.append(color).append(symbol).append(" ");
                     } else {
-                        currentLine = currentLine + ChatColor.WHITE + symbol + " ";
+                        currentLine.append(ChatColor.WHITE).append(symbol).append(" ");
                     }
                 }
 
                 switch (lineNum) {
                     case 3:
-                        currentLine = currentLine + ChatColor.RESET +
-                                ChatColor.GRAY + ChatColor.BOLD
-                                + "     " +
-                                "   North";
+                        currentLine.append(ChatColor.RESET).append(ChatColor.GRAY).append(ChatColor.BOLD).append("     ").append("   North");
                         break;
                     case 4:
-                        currentLine = currentLine + ChatColor.RESET +
-                                ChatColor.GRAY + ChatColor.BOLD
-                                + "     " +
-                                "West + East";
+                        currentLine.append(ChatColor.RESET).append(ChatColor.GRAY).append(ChatColor.BOLD).append("     ").append("West + East");
                         break;
                     case 5:
-                        currentLine = currentLine + ChatColor.RESET +
-                                ChatColor.GRAY + ChatColor.BOLD
-                                + "     " +
-                                "   South";
+                        currentLine.append(ChatColor.RESET).append(ChatColor.GRAY).append(ChatColor.BOLD).append("     ").append("   South");
                         break;
                 }
 
-                player.sendMessage(currentLine);
+                player.sendMessage(currentLine.toString());
 
                 lineNum++;
             }
@@ -121,6 +113,7 @@ public class MapHandler {
         Chunk chunk = location.getChunk();
         World world = location.getWorld();
 
+        assert world != null;
         if (Main.allowedWorlds().contains(world.getName())) {
 
             int centerX = chunk.getX();
@@ -130,7 +123,7 @@ public class MapHandler {
             for (int z = centerZ - 2; z <= centerZ + 2; z++) {
                 for (int x = centerX - 4; x <= centerX + 4; x++) {
                     Chunk currentChunk = world.getChunkAt(x, z);
-                    ChunkStorage chunkStorage = new ChunkStorage(world, currentChunk);
+                    ChunkStorage chunkStorage = ChunkStorage.getChunk(world, currentChunk);
 
                     if (chunkStorage.isClaimed()) {
                         if (chunkStorage.isGuild()) {
@@ -140,11 +133,11 @@ public class MapHandler {
                                 PlayerStorage playerStorage = new PlayerStorage(uuid);
                                 players.add(playerStorage.getUsername());
                             });
-                            Material material = (players.contains(player.getName()))?Material.BLUE_STAINED_GLASS_PANE:Material.ORANGE_STAINED_GLASS_PANE;
+                            Material material = (players.contains(player.getName())) ? Material.BLUE_STAINED_GLASS_PANE : Material.ORANGE_STAINED_GLASS_PANE;
                             inv.setItem(clk, InventoryHandler.createItemStack(guildStorage.getName(), material, players));
                         } else {
                             PlayerStorage playerStorage = new PlayerStorage(chunkStorage.getOwner());
-                            Material material = (playerStorage.getUsername().equalsIgnoreCase(player.getName()))?Material.GREEN_STAINED_GLASS_PANE:Material.RED_STAINED_GLASS_PANE;
+                            Material material = (playerStorage.getUsername().equalsIgnoreCase(player.getName())) ? Material.GREEN_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE;
                             inv.setItem(clk, InventoryHandler.createItemStack(playerStorage.getUsername(), material, new ArrayList<String>()));
 
                         }

@@ -26,10 +26,7 @@ import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ChunkEvents implements Listener {
 
@@ -37,11 +34,10 @@ public class ChunkEvents implements Listener {
 
     @EventHandler
     public void moveEvent(PlayerMoveEvent e) {
-
         Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), () -> {
             Player player = e.getPlayer();
             if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
+                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
                 if (chunkStorage.isClaimed()) {
                     String landOwner;
 
@@ -77,13 +73,13 @@ public class ChunkEvents implements Listener {
 
     @EventHandler
     public void animalAttack(EntityDamageByEntityEvent e) {
-        if (Main.allowedWorlds().contains(e.getDamager().getLocation().getWorld().getName())) {
+        if (Main.allowedWorlds().contains(Objects.requireNonNull(e.getDamager().getLocation().getWorld()).getName())) {
             if (e.getDamager() instanceof Player && e.getEntity() instanceof Animals) {
                 Player damager = (Player) e.getDamager();
                 Entity entity = e.getEntity();
 
                 if (!AdminHandler.isOverride(damager.getUniqueId())) {
-                    ChunkStorage chunk = new ChunkStorage(entity.getWorld(), entity.getLocation().getChunk());
+                    ChunkStorage chunk = ChunkStorage.getChunk(entity.getWorld(), entity.getLocation().getChunk());
                     if (chunk.isClaimed()) {
                         if (chunk.isGuild()) {
                             GuildStorage guild = new GuildStorage(chunk.getOwner());
@@ -105,12 +101,11 @@ public class ChunkEvents implements Listener {
 
     @EventHandler
     public void playerPVP(EntityDamageByEntityEvent e) {
-        if (Main.allowedWorlds().contains(e.getDamager().getLocation().getWorld().getName())) {
+        if (Main.allowedWorlds().contains(Objects.requireNonNull(e.getDamager().getLocation().getWorld()).getName())) {
             if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
                 Player damager = (Player) e.getDamager();
-                Player player = (Player) e.getEntity();
 
-                ChunkStorage chunkStorage = new ChunkStorage(damager.getLocation().getWorld(), damager.getLocation().getChunk());
+                ChunkStorage chunkStorage = ChunkStorage.getChunk(damager.getLocation().getWorld(), damager.getLocation().getChunk());
                 if (chunkStorage.isGuild()) {
                     GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                     if (!guildStorage.getTag(Tags.PVP)) {
@@ -129,9 +124,9 @@ public class ChunkEvents implements Listener {
         Player player = e.getPlayer();
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
             if (!AdminHandler.isOverride(player.getUniqueId())) {
-                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
+                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
                 if (chunkStorage.isClaimed()) {
-                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                    new PlayerStorage(player.getUniqueId());
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                         if (!guildStorage.getMembers().contains(player.getUniqueId())) {
@@ -154,9 +149,9 @@ public class ChunkEvents implements Listener {
         Player player = e.getPlayer();
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
             if (!AdminHandler.isOverride(player.getUniqueId())) {
-                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
+                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
                 if (chunkStorage.isClaimed()) {
-                    PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+                    new PlayerStorage(player.getUniqueId());
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                         if (!guildStorage.getMembers().contains(player.getUniqueId())) {
@@ -182,7 +177,7 @@ public class ChunkEvents implements Listener {
 
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
             if (!AdminHandler.isOverride(player.getUniqueId())) {
-                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
+                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
                 if (chunkStorage.isClaimed()) {
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
@@ -208,9 +203,9 @@ public class ChunkEvents implements Listener {
     @EventHandler
     public void onEntityInteract(EntityBreedEvent e) {
         Player player = (Player) e.getBreeder();
-        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+        if (player != null && Main.allowedWorlds().contains(player.getWorld().getName())) {
             if (!AdminHandler.isOverride(player.getUniqueId())) {
-                ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(), player.getLocation().getChunk());
+                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getLocation().getChunk());
                 if (chunkStorage.isClaimed()) {
                     if (chunkStorage.isGuild()) {
                         GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
@@ -249,11 +244,11 @@ public class ChunkEvents implements Listener {
     public void onExplode(EntityExplodeEvent e) {
         Location location = e.getLocation();
 
-        if (Main.allowedWorlds().contains(location.getWorld().getName())) {
+        if (Main.allowedWorlds().contains(Objects.requireNonNull(location.getWorld()).getName())) {
             Chunk chunk = location.getChunk();
             World world = location.getWorld();
 
-            ChunkStorage chunkStorage = new ChunkStorage(world, chunk);
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(world, chunk);
             if (chunkStorage.isClaimed()) {
                 e.setCancelled(true);
             }

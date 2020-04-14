@@ -20,7 +20,7 @@ public class AdminHandler {
      */
 
     public static void unclaim(Player player) {
-        ChunkStorage chunkStorage = new ChunkStorage(
+        ChunkStorage chunkStorage = ChunkStorage.getChunk(
                 player.getWorld(),
                 player.getWorld().getChunkAt(player.getLocation()));
 
@@ -38,7 +38,6 @@ public class AdminHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return;
         } else {
             GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
             player.sendMessage(Messages.UNCLAIM_SUCCESS.getMessage());
@@ -48,19 +47,13 @@ public class AdminHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            return;
         }
     }
 
     private static List<UUID> overrideAdmins = new ArrayList<>();
 
     public static boolean isOverride(UUID uuid) {
-        if (overrideAdmins.contains(uuid)) {
-            return true;
-        }
-
-        return false;
+        return overrideAdmins.contains(uuid);
     }
 
     public static void addOverride(UUID uuid) {

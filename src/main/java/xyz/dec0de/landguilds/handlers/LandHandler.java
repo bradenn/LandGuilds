@@ -24,7 +24,7 @@ public class LandHandler {
             return;
         }
 
-        ChunkStorage chunkStorage = new ChunkStorage(
+        ChunkStorage chunkStorage = ChunkStorage.getChunk(
                 player.getWorld(),
                 player.getWorld().getChunkAt(player.getLocation()));
 
@@ -40,7 +40,6 @@ public class LandHandler {
             player.sendMessage(Messages.CLAIMED_LAND.getMessage());
             playerStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
             chunkStorage.claim(player.getUniqueId(), false);
-            return;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -57,7 +56,7 @@ public class LandHandler {
             player.sendMessage(Messages.INVALID_WORLD.getMessage());
             return;
         }
-        ChunkStorage chunkStorage = new ChunkStorage(
+        ChunkStorage chunkStorage = ChunkStorage.getChunk(
                 player.getWorld(),
                 player.getWorld().getChunkAt(player.getLocation()));
 
@@ -81,15 +80,12 @@ public class LandHandler {
 
                 } else {
                     player.sendMessage(Messages.LAND_NOT_OWNER.getMessage());
-                    return;
                 }
-                return;
             } else {
                 player.sendMessage(Messages.LAND_NOT_OWNER.getMessage());
             }
         } else {
             player.sendMessage(Messages.ALREADY_CLAIMED.getMessage());
-            return;
         }
     }
 
@@ -101,15 +97,13 @@ public class LandHandler {
      */
 
     public static void kick(Player player, String targetPlayer) {
-        String username = targetPlayer;
-
         //TODO get all the players in the current chunk
         // and compare the username that was entered to their cached usernames.
 
-        if (Bukkit.getServer().getPlayer(username) != null) {
-            Player toKick = Bukkit.getPlayer(username);
+        if (Bukkit.getServer().getPlayer(targetPlayer) != null) {
+            Player toKick = Bukkit.getPlayer(targetPlayer);
 
-            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(),
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(),
                     player.getWorld().getChunkAt(player.getLocation()));
             if (!chunkStorage.isClaimed()) {
                 player.sendMessage(Messages.NOT_CLAIMED.getMessage());
@@ -123,8 +117,9 @@ public class LandHandler {
 
             if (chunkStorage.getRole(player.getUniqueId()) != Role.MEMBER
                     && chunkStorage.getRole(player.getUniqueId()) != null) {
+                assert toKick != null;
                 if (chunkStorage.getMembers().contains(toKick.getUniqueId())) {
-                    if (username.equalsIgnoreCase(player.getName())) {
+                    if (targetPlayer.equalsIgnoreCase(player.getName())) {
                         player.sendMessage(Messages.KICK_SELF_FAIL.getMessage());
                         return;
                     }
@@ -136,18 +131,14 @@ public class LandHandler {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    return;
                 } else {
                     player.sendMessage(Messages.NOT_IN_LAND_OR_GUILD.getMessage());
-                    return;
                 }
             } else {
                 player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
-                return;
             }
         } else {
             player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
-            return;
         }
     }
 
@@ -159,12 +150,10 @@ public class LandHandler {
      */
 
     public static void add(Player player, String targetPlayer) {
-        String username = targetPlayer;
+        if (Bukkit.getServer().getPlayer(targetPlayer) != null) {
+            Player toAdd = Bukkit.getPlayer(targetPlayer);
 
-        if (Bukkit.getServer().getPlayer(username) != null) {
-            Player toAdd = Bukkit.getPlayer(username);
-
-            ChunkStorage chunkStorage = new ChunkStorage(player.getWorld(),
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(),
                     player.getWorld().getChunkAt(player.getLocation()));
             if (!chunkStorage.isClaimed()) {
                 player.sendMessage(Messages.NOT_CLAIMED.getMessage());
@@ -177,7 +166,8 @@ public class LandHandler {
             }
 
             if (chunkStorage.getRole(player.getUniqueId()) != Role.MEMBER) {
-                if (!chunkStorage.getMembers().contains(toAdd)) {
+                assert toAdd != null;
+                if (!chunkStorage.getMembers().contains(toAdd.getUniqueId())) {
                     player.sendMessage(Messages.ADD_PLAYER_LAND.getMessage(toAdd.getName()));
 
                     try {
@@ -188,11 +178,9 @@ public class LandHandler {
                 }
             } else {
                 player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
-                return;
             }
         } else {
             player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
-            return;
         }
     }
 }
