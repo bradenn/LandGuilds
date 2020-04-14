@@ -109,7 +109,7 @@ public class GuildHandler {
 
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
         if (playerStorage.getGuild() != null) {
-            ChunkStorage chunkStorage = new ChunkStorage(
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(
                     player.getWorld(),
                     player.getWorld().getChunkAt(player.getLocation()));
 
@@ -152,7 +152,7 @@ public class GuildHandler {
             return;
         }
 
-        ChunkStorage chunkStorage = new ChunkStorage(
+        ChunkStorage chunkStorage = ChunkStorage.getChunk(
                 player.getWorld(),
                 player.getWorld().getChunkAt(player.getLocation()));
 

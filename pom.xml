@@ -18,10 +18,6 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <releases>
-            </releases>
-            <snapshots>
-            </snapshots>
             <id>dynmap-repo</id>
             <url>http://repo.mikeprimm.com/</url>
         </repository>
@@ -42,4 +38,8 @@
             <version>3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+    </build>
 </project>
