@@ -31,15 +31,15 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onFireTick(BlockSpreadEvent e) {
         ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getBlock().getWorld(), e.getBlock().getChunk());
-        if (chunkStorage.isGuild()) {
-            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-            if (!guildStorage.getTag(Tags.FIRESPREAD)) {
-                e.setCancelled(true);
+        if(chunkStorage.isClaimed()){
+            if (chunkStorage.isGuild()) {
+                GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                if (!guildStorage.getTag(Tags.FIRESPREAD)) {
+                    e.setCancelled(true);
+                }
             }
         }
-
     }
-
 
 
     @EventHandler

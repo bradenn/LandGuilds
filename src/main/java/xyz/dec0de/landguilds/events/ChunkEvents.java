@@ -10,6 +10,7 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
@@ -242,16 +243,17 @@ public class ChunkEvents implements Listener {
         return false;
     }
 
-
     @EventHandler
-    public void onBlockBoom(BlockExplodeEvent e) {
-        ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getBlock().getWorld(), e.getBlock().getChunk());
-        if (chunkStorage.isGuild()) {
-            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-            if (!guildStorage.getTag(Tags.BOOM)) {
-                e.setCancelled(true);
+    public void onBoom(EntityExplodeEvent e){
+        ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getLocation().getWorld(), e.getLocation().getChunk());
+        if (chunkStorage.isClaimed()) {
+            if (chunkStorage.isGuild()) {
+                GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                if (!guildStorage.getTag(Tags.BOOM)) {
+                    e.setCancelled(true);
+                }
             }
         }
-
     }
+
 }
