@@ -40,17 +40,7 @@ public class PlayerEvents implements Listener {
 
     }
 
-    @EventHandler
-    public void onFireTick(BlockExplodeEvent e) {
-        ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getBlock().getWorld(), e.getBlock().getChunk());
-        if (chunkStorage.isGuild()) {
-            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-            if (!guildStorage.getTag(Tags.BOOM)) {
-                e.setCancelled(true);
-            }
-        }
 
-    }
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {

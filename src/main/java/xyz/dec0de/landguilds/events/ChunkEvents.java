@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -122,6 +123,7 @@ public class ChunkEvents implements Listener {
     @EventHandler
     public void breakBlock(BlockBreakEvent e) {
         Player player = e.getPlayer();
+
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
             if (!AdminHandler.isOverride(player.getUniqueId())) {
                 ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
@@ -240,18 +242,16 @@ public class ChunkEvents implements Listener {
         return false;
     }
 
+
     @EventHandler
-    public void onExplode(EntityExplodeEvent e) {
-        Location location = e.getLocation();
-
-        if (Main.allowedWorlds().contains(Objects.requireNonNull(location.getWorld()).getName())) {
-            Chunk chunk = location.getChunk();
-            World world = location.getWorld();
-
-            ChunkStorage chunkStorage = ChunkStorage.getChunk(world, chunk);
-            if (chunkStorage.isClaimed()) {
+    public void onBlockBoom(BlockExplodeEvent e) {
+        ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getBlock().getWorld(), e.getBlock().getChunk());
+        if (chunkStorage.isGuild()) {
+            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+            if (!guildStorage.getTag(Tags.BOOM)) {
                 e.setCancelled(true);
             }
         }
+
     }
 }

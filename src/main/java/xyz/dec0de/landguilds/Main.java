@@ -48,8 +48,7 @@ public class Main extends JavaPlugin {
         plugin = this;
         config = this.getConfig();
         plugin.saveDefaultConfig();
-        DynmapHandler.initDynmap(getServer());
-        DynmapHandler.reloadGuildChunks();
+        new DynmapHandler().reloadAllChunks();
         Objects.requireNonNull(plugin.getCommand("lands")).setExecutor(new LandsCommand());
         Objects.requireNonNull(plugin.getCommand("guilds")).setExecutor(new GuildsCommand());
         Objects.requireNonNull(plugin.getCommand("map")).setExecutor(new MapCommand());

@@ -1,5 +1,6 @@
 package xyz.dec0de.landguilds.storage;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -74,6 +75,18 @@ public class PlayerStorage {
             config.set("chunks", list);
             config.save(file);
         }
+    }
+
+    public List<Chunk> getChunks() {
+        List<Chunk> chunkList = new ArrayList<>();
+        List<String> list = config.getStringList("chunks");
+        for (String chunkString : list) {
+            String world = chunkString.split(";")[0];
+            int chunkX = Integer.parseInt(chunkString.split(";")[1]);
+            int chunkZ = Integer.parseInt(chunkString.split(";")[2]);
+            chunkList.add(Objects.requireNonNull(Bukkit.getWorld(world)).getChunkAt(chunkX, chunkZ));
+        }
+        return chunkList;
     }
 
     public void removeChunk(World world, Chunk chunk) throws IOException {
