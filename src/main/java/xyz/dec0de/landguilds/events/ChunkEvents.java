@@ -6,9 +6,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,6 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import xyz.dec0de.landguilds.Main;
@@ -102,9 +101,24 @@ public class ChunkEvents implements Listener {
     }
 
     @EventHandler
+    public void itemframeDestroy(HangingBreakEvent e){
+        if(e.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION){
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getEntity().getWorld(), e.getEntity().getLocation().getChunk());
+            if (chunkStorage.isClaimed()) {
+                if (chunkStorage.isGuild()) {
+                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                    if (!guildStorage.getTag(Tags.BOOM)) {
+                        e.setCancelled(true);
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void playerPVP(EntityDamageByEntityEvent e) {
         if (Main.allowedWorlds().contains(Objects.requireNonNull(e.getDamager().getLocation().getWorld()).getName())) {
-            if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+           if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
                 Player damager = (Player) e.getDamager();
 
                 ChunkStorage chunkStorage = ChunkStorage.getChunk(damager.getLocation().getWorld(), damager.getLocation().getChunk());
@@ -179,6 +193,7 @@ public class ChunkEvents implements Listener {
         if (e.getClickedBlock() == null) return;
 
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+
             if (!AdminHandler.isOverride(player.getUniqueId())) {
                 ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
                 if (chunkStorage.isClaimed()) {
