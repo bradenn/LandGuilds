@@ -1,9 +1,11 @@
 package xyz.dec0de.landguilds.events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -24,21 +26,6 @@ public class PlayerEvents implements Listener {
         PlayerStorage playerStorage = new PlayerStorage(player);
         if (playerStorage.getGuild() != null)
             e.getPlayer().setPlayerListName(playerStorage.getGuild().getTag() + " §r" + player.getDisplayName());
-    }
-
-    @EventHandler
-    public void onFireTick(BlockSpreadEvent e) {
-        ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getBlock().getWorld(), e.getBlock().getChunk());
-        if (chunkStorage.isClaimed()) {
-            if (chunkStorage.isGuild()) {
-                GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                if (!guildStorage.getTag(Tags.FIRESPREAD)) {
-                    e.setCancelled(true);
-                }
-            } else {
-                e.setCancelled(true);
-            }
-        }
     }
 
 

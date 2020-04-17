@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -73,6 +74,23 @@ public class ChunkEvents implements Listener {
     }
 
     @EventHandler
+    public void onFireIgnite(BlockIgniteEvent e) {
+        if (Main.allowedWorlds().contains(Objects.requireNonNull(e.getBlock().getWorld()).getName())) {
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getBlock().getWorld(), e.getBlock().getChunk());
+            if (e.getCause() == BlockIgniteEvent.IgniteCause.SPREAD) {
+                if (chunkStorage.isClaimed()) {
+                    if (chunkStorage.isGuild()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        if (!guildStorage.getTag(Tags.FIRESPREAD)) {
+                            e.setCancelled(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void animalAttack(EntityDamageByEntityEvent e) {
         if (Main.allowedWorlds().contains(Objects.requireNonNull(e.getDamager().getLocation().getWorld()).getName())) {
             if (e.getDamager() instanceof Player && e.getEntity() instanceof Animals) {
@@ -101,8 +119,8 @@ public class ChunkEvents implements Listener {
     }
 
     @EventHandler
-    public void itemframeDestroy(HangingBreakEvent e){
-        if(e.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION){
+    public void itemframeDestroy(HangingBreakEvent e) {
+        if (e.getCause() == HangingBreakEvent.RemoveCause.EXPLOSION) {
             ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getEntity().getWorld(), e.getEntity().getLocation().getChunk());
             if (chunkStorage.isClaimed()) {
                 if (chunkStorage.isGuild()) {
@@ -118,7 +136,7 @@ public class ChunkEvents implements Listener {
     @EventHandler
     public void playerPVP(EntityDamageByEntityEvent e) {
         if (Main.allowedWorlds().contains(Objects.requireNonNull(e.getDamager().getLocation().getWorld()).getName())) {
-           if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
+            if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
                 Player damager = (Player) e.getDamager();
 
                 ChunkStorage chunkStorage = ChunkStorage.getChunk(damager.getLocation().getWorld(), damager.getLocation().getChunk());
@@ -259,7 +277,7 @@ public class ChunkEvents implements Listener {
     }
 
     @EventHandler
-    public void onBoom(EntityExplodeEvent e){
+    public void onBoom(EntityExplodeEvent e) {
         ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getLocation().getWorld(), e.getLocation().getChunk());
         if (chunkStorage.isClaimed()) {
             if (chunkStorage.isGuild()) {
