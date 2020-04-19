@@ -25,6 +25,10 @@ public class Main extends JavaPlugin {
         return config.getStringList("worlds");
     }
 
+    public static int getMaxLandClaims() {
+        return config.getInt("maxlandclaims");
+    }
+
     @Override
     public void onDisable() {
 

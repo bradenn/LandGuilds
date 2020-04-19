@@ -109,6 +109,10 @@ public class GuildStorage {
         }
     }
 
+    public void getRelationships() {
+
+    }
+
     /**
      * Set the role of players
      */
@@ -159,10 +163,31 @@ public class GuildStorage {
      */
 
     public void setRelationship(UUID uuid, Relationship relationship) throws IOException {
+        List<String> enemies = config.getStringList("enemies");
+        List<String> allies = config.getStringList("allies");
         if (relationship != Relationship.NEUTRAL) {
-            config.set("relationships." + uuid.toString(), Relationship.ALLY.toString());
+            if (relationship == Relationship.ENEMY) {
+                if (!enemies.contains(uuid)) {
+                    enemies.add(uuid.toString());
+                    if (allies.contains(uuid.toString())) {
+                        allies.remove(uuid.toString());
+                    }
+                }
+            } else if (relationship == Relationship.ALLY) {
+                if (!allies.contains(uuid)) {
+                    allies.add(uuid.toString());
+                    if (enemies.contains(uuid.toString())) {
+                        enemies.remove(uuid.toString());
+                    }
+                }
+            }
         } else {
-            config.set("relationships." + uuid.toString(), null);
+            if (allies.contains(uuid.toString())) {
+                allies.remove(uuid.toString());
+            }
+            if (enemies.contains(uuid.toString())) {
+                enemies.remove(uuid.toString());
+            }
         }
         config.save(file);
     }
@@ -171,11 +196,22 @@ public class GuildStorage {
      * Declare another guild as an enemy or a friend
      */
     public Relationship getRelationship(UUID uuid) {
-        if (config.contains("relationships." + uuid.toString())) {
-            return Relationship.valueOf(config.getString("relationships." + uuid.toString()));
-        } else {
+        List<String> enemies = config.getStringList("enemies");
+        List<String> allies = config.getStringList("allies");
+        if(enemies.contains(uuid.toString())){
+            return Relationship.ENEMY;
+        }else if(allies.contains(uuid.toString())){
+            return Relationship.ALLY;
+        }else{
             return Relationship.NEUTRAL;
         }
+    }
+
+    public List<GuildStorage> getEnemies(){
+        List<String> enemies = config.getStringList("enemies");
+        List<GuildStorage> guilds = new ArrayList<>();
+        enemies.forEach(guild -> guilds.add(new GuildStorage(UUID.fromString(guild))));
+        return guilds;
     }
 
     /**
@@ -264,6 +300,6 @@ public class GuildStorage {
     }
 
     public boolean get(Tags valueOf) {
-        return config.getBoolean("tags."+valueOf.toString());
+        return config.getBoolean("tags." + valueOf.toString());
     }
 }

@@ -23,26 +23,30 @@ public class LandHandler {
             player.sendMessage(Messages.INVALID_WORLD.getMessage());
             return;
         }
-
-        ChunkStorage chunkStorage = ChunkStorage.getChunk(
-                player.getWorld(),
-                player.getWorld().getChunkAt(player.getLocation()));
-
-        if (chunkStorage.isClaimed()) {
-            player.sendMessage(Messages.ALREADY_CLAIMED.getMessage());
-            return;
-        }
-
-        //TODO check if they are allowed to claim chunks / have enough unused chunk claims
-
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-        try {
-            player.sendMessage(Messages.CLAIMED_LAND.getMessage());
-            playerStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
-            chunkStorage.claim(player.getUniqueId(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(playerStorage.getChunks().size() < Main.getMaxLandClaims() && !player.isOp()){
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(
+                    player.getWorld(),
+                    player.getWorld().getChunkAt(player.getLocation()));
+
+            if (chunkStorage.isClaimed()) {
+                player.sendMessage(Messages.ALREADY_CLAIMED.getMessage());
+                return;
+            }
+
+            //TODO check if they are allowed to claim chunks / have enough unused chunk claims
+            try {
+                player.sendMessage(Messages.CLAIMED_LAND.getMessage());
+                playerStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
+                chunkStorage.claim(player.getUniqueId(), false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            new DynmapHandler().reloadAllLandChunks();
+        }else{
+            player.sendMessage(Messages.TOO_MANY_CHUNKS.getMessage(playerStorage.getChunks().size()+"", Main.getMaxLandClaims() + ""));
         }
+
     }
 
     /**

@@ -55,7 +55,7 @@ public class DynmapHandler {
             set.setMarkerSetLabel("Guilds & Land");
     }
 
-    public void reloadAllChunks(){
+    public void reloadAllChunks() {
         reloadAllGuildChunks();
         reloadAllLandChunks();
     }
@@ -85,7 +85,8 @@ public class DynmapHandler {
     }
 
     private String buildLandMarkup(PlayerStorage playerStorage) {
-        return "<b>" + playerStorage.getUsername() + "</b>";
+        return "<b>" + playerStorage.getUsername() + "</b>" +
+                "<br>Chunks: " + playerStorage.getChunks().size();
     }
 
     /*

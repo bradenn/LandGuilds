@@ -34,6 +34,7 @@ public enum Messages {
     GET_TAG("&aThe tag §7%args0%§a is set to §7%args1%§a."),
     WAR_ON_THE_HOME_FRONT("&cYou can't declare yourself an %args0%, dipshit."),
     NOT_IN_LAND_OR_GUILD("&aPlayer is not in land/guild."),
+    TOO_MANY_CHUNKS("&cYou cannot claim anymore land. You are using %args0%/%args1% of your allotted chunks."),
     ADD_PLAYER_LAND("&aYou have successfully added %args0%."),
     NO_PENDING_INVITES("&cYou do not have any pending invites."),
     JOIN_GUILD("&aYou have successfully joined a guild."),
