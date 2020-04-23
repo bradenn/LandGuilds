@@ -24,7 +24,7 @@ public class LandHandler {
             return;
         }
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-        if(playerStorage.getChunks().size() < Main.getMaxLandClaims() && !player.isOp()){
+        if (playerStorage.getChunks().size() < Main.getMaxLandClaims()) {
             ChunkStorage chunkStorage = ChunkStorage.getChunk(
                     player.getWorld(),
                     player.getWorld().getChunkAt(player.getLocation()));
