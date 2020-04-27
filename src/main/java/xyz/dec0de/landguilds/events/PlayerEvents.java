@@ -80,7 +80,7 @@ public class PlayerEvents implements Listener {
             if (chunkStorage.isClaimed()) {
                 if (chunkStorage.isGuild()) {
                     GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                    if (!guildStorage.getMembers().contains(player)) {
+                    if (!guildStorage.getMembers().contains(player.getUniqueId())) {
                         player.sendMessage(Messages.NO_INTERACT.getMessage());
                         e.setCancelled(true);
                     }
