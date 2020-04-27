@@ -2,16 +2,17 @@ package xyz.dec0de.landguilds.events;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
@@ -140,15 +141,15 @@ public class ChunkEvents implements Listener {
                 Player damager = (Player) e.getDamager();
 
                 ChunkStorage chunkStorage = ChunkStorage.getChunk(damager.getLocation().getWorld(), damager.getLocation().getChunk());
-                if (chunkStorage.isGuild()) {
-                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                    if (!guildStorage.getTag(Tags.PVP)) {
-                        e.setCancelled(true);
-                        damager.sendMessage(Messages.NO_GUILD_PVP.getMessage());
+                if (chunkStorage.isClaimed()) {
+                    if (chunkStorage.isGuild()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        if (!guildStorage.getTag(Tags.PVP)) {
+                            e.setCancelled(true);
+                            damager.sendMessage(Messages.NO_GUILD_PVP.getMessage());
+                        }
                     }
                 }
-
-
             }
         }
     }

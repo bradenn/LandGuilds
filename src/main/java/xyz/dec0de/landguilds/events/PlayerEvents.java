@@ -1,17 +1,15 @@
 package xyz.dec0de.landguilds.events;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import xyz.dec0de.landguilds.enums.Tags;
+import org.spigotmc.event.entity.EntityMountEvent;
+import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
@@ -68,6 +66,30 @@ public class PlayerEvents implements Listener {
         player.chat("can i get an f in the chat");
         for (Player p : player.getServer().getOnlinePlayers()) {
             p.chat("f");
+        }
+    }
+
+    @EventHandler
+    public void onEntityMount(EntityMountEvent e) {
+        if (e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
+
+            Location mountLocation = e.getMount().getLocation();
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(mountLocation.getWorld(), mountLocation.getChunk());
+
+            if (chunkStorage.isClaimed()) {
+                if (chunkStorage.isGuild()) {
+                    GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                    if (!guildStorage.getMembers().contains(player)) {
+                        player.sendMessage(Messages.NO_INTERACT.getMessage());
+                    }
+                } else {
+                    if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                        player.sendMessage(Messages.NO_INTERACT.getMessage());
+                    }
+                }
+
+            }
         }
     }
 }
