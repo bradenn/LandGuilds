@@ -7,7 +7,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
@@ -58,15 +57,6 @@ public class PlayerEvents implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         e.setDeathMessage(e.getDeathMessage() + ", oops.");
-    }
-
-    @EventHandler
-    public void onRevive(PlayerRespawnEvent e) {
-        Player player = e.getPlayer();
-        player.chat("can i get an f in the chat");
-        for (Player p : player.getServer().getOnlinePlayers()) {
-            p.chat("f");
-        }
     }
 
     @EventHandler
