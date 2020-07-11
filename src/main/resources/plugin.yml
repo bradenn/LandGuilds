@@ -5,6 +5,7 @@ api-version: 1.13
 website: https://dec0de.xyz
 description: Land Claiming & Guilds
 authors: [Nyarrth, bradencn]
+depend: [DynMap]
 commands:
   lands:
     aliases: [l, land, ll]
