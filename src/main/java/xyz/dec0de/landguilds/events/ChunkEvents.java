@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -212,23 +213,25 @@ public class ChunkEvents implements Listener {
         if (e.getClickedBlock() == null) return;
 
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+            if (e.getAction() != Action.RIGHT_CLICK_BLOCK && !e.getClickedBlock().getType().toString().contains("SIGN")) {
 
-            if (!AdminHandler.isOverride(player.getUniqueId())) {
-                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
-                if (chunkStorage.isClaimed()) {
-                    if (chunkStorage.isGuild()) {
-                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        if (!blockHasAllowSign(player, e.getClickedBlock())) {
-                            if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                                player.sendMessage(Messages.NO_INTERACT.getMessage());
-                                e.setCancelled(true);
-                            }
-                        }
-                    } else {
-                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                if (!AdminHandler.isOverride(player.getUniqueId())) {
+                    ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
+                    if (chunkStorage.isClaimed()) {
+                        if (chunkStorage.isGuild()) {
+                            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
                             if (!blockHasAllowSign(player, e.getClickedBlock())) {
-                                player.sendMessage(Messages.NO_INTERACT.getMessage());
-                                e.setCancelled(true);
+                                if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                                    player.sendMessage(Messages.NO_INTERACT.getMessage());
+                                    e.setCancelled(true);
+                                }
+                            }
+                        } else {
+                            if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                                if (!blockHasAllowSign(player, e.getClickedBlock())) {
+                                    player.sendMessage(Messages.NO_INTERACT.getMessage());
+                                    e.setCancelled(true);
+                                }
                             }
                         }
                     }

@@ -1,11 +1,11 @@
-package xyz.dec0de.landguilds.handlers;
+package xyz.dec0de.landguilds.utils;
 
 import org.bukkit.ChatColor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ColorHandler {
+public class ColorUtils {
 
     public static int parseColorFromChatColor(ChatColor color) {
         return org.bukkit.Color.fromRGB(colorMap.get(color).getRed(),

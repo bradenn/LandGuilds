@@ -1,22 +1,21 @@
 package xyz.dec0de.landguilds.handlers;
 
-import org.bukkit.*;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import xyz.dec0de.landguilds.Main;
-import xyz.dec0de.landguilds.enums.Tags;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
+import xyz.dec0de.landguilds.utils.ColorUtils;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -106,7 +105,7 @@ public class DynmapHandler {
                 guildStorage = new GuildStorage(chunkStorage.getOwner());
             else
                 playerStorage = new PlayerStorage(chunkStorage.getOwner());
-            int color = ColorHandler.parseColorFromChatColor(isGuild ? guildStorage.getColor() : ChatColor.WHITE);
+            int color = ColorUtils.parseColorFromChatColor(isGuild ? guildStorage.getColor() : ChatColor.WHITE);
             String markup = isGuild ? buildGuildMarkup(guildStorage) : buildLandMarkup(playerStorage);
             String selector = (isGuild ? "guild" : "land") + ".claim." + bitX + ":" + bitZ;
 
