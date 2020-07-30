@@ -94,7 +94,7 @@ public class ChunkEvents implements Listener {
     @EventHandler
     public void animalAttack(EntityDamageByEntityEvent e) {
         if (Main.allowedWorlds().contains(Objects.requireNonNull(e.getDamager().getLocation().getWorld()).getName())) {
-            if (e.getDamager() instanceof Player && e.getEntity() instanceof Animals || e.getEntity() instanceof ItemFrame) {
+            if (e.getDamager() instanceof Player && (e.getEntity() instanceof Animals || e.getEntity() instanceof ItemFrame)) {
                 Player damager = (Player) e.getDamager();
                 Entity entity = e.getEntity();
 
@@ -206,7 +206,7 @@ public class ChunkEvents implements Listener {
     }
 
     @EventHandler
-    public void breakItemFrame(PlayerInteractEntityEvent e) {
+    public void rotateItemFrame(PlayerInteractEntityEvent e) {
         Player player = e.getPlayer();
 
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
@@ -240,8 +240,9 @@ public class ChunkEvents implements Listener {
         if (e.getClickedBlock() == null) return;
 
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            if (e.getAction() != Action.RIGHT_CLICK_BLOCK && !e.getClickedBlock().getType().toString().contains("SIGN")) {
-
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType().toString().contains("SIGN")) {
+                e.setCancelled(false);
+            } else {
                 if (!AdminHandler.isOverride(player.getUniqueId())) {
                     ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
                     if (chunkStorage.isClaimed()) {
