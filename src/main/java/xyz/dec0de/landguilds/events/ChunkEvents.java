@@ -7,9 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -20,6 +18,7 @@ import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import xyz.dec0de.landguilds.Main;
@@ -95,7 +94,7 @@ public class ChunkEvents implements Listener {
     @EventHandler
     public void animalAttack(EntityDamageByEntityEvent e) {
         if (Main.allowedWorlds().contains(Objects.requireNonNull(e.getDamager().getLocation().getWorld()).getName())) {
-            if (e.getDamager() instanceof Player && e.getEntity() instanceof Animals) {
+            if (e.getDamager() instanceof Player && e.getEntity() instanceof Animals || e.getEntity() instanceof ItemFrame) {
                 Player damager = (Player) e.getDamager();
                 Entity entity = e.getEntity();
 
@@ -199,6 +198,34 @@ public class ChunkEvents implements Listener {
                         if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
                             player.sendMessage(Messages.NO_BUILD.getMessage());
                             e.setCancelled(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void breakItemFrame(PlayerInteractEntityEvent e) {
+        Player player = e.getPlayer();
+
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+            if (e.getRightClicked().getType().equals(EntityType.ITEM_FRAME)) {
+                if (!AdminHandler.isOverride(player.getUniqueId())) {
+                    ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
+                    if (chunkStorage.isClaimed()) {
+                        new PlayerStorage(player.getUniqueId());
+                        if (chunkStorage.isGuild()) {
+                            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                            if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+                                player.sendMessage(Messages.NO_INTERACT.getMessage());
+                                e.setCancelled(true);
+                            }
+                        } else {
+                            if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+                                player.sendMessage(Messages.NO_INTERACT.getMessage());
+                                e.setCancelled(true);
+                            }
                         }
                     }
                 }
