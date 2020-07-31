@@ -233,7 +233,7 @@ public class GuildStorage {
      * Get the guild tag
      */
     public String getTag() {
-        return getColor() + "[" + getName().toUpperCase() + "]";
+        return getColor() + "[" + getName() + "]";
     }
 
     public ChatColor getColor() {
