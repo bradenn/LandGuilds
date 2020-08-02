@@ -233,17 +233,17 @@ public class GuildStorage {
      * Get the guild tag
      */
     public String getTag() {
-        return getColor() + "[" + getName().toUpperCase() + "]";
+        return getColor() + "[" + getName() + "]";
     }
 
     public ChatColor getColor() {
         return ChatColor.valueOf(config.getString("color"));
     }
 
-//    public void setColor(ChatColor color) throws IOException {
-//        config.set("color", color.toString());
-//        config.save(file);
-//    }
+    public void setColor(ChatColor color) throws IOException {
+        config.set("color", color.toString());
+        config.save(file);
+    }
 
     public List<Chunk> getChunks() {
         List<Chunk> chunkList = new ArrayList<>();

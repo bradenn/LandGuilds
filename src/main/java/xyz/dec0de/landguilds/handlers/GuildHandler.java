@@ -542,5 +542,41 @@ public class GuildHandler {
         }
     }
 
+    public static void rename(Player player, String newName) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
+                    && guildStorage.getRole(player.getUniqueId()) != null) {
+
+                Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+                Matcher m = p.matcher(newName);
+
+                if (m.find()) {
+                    player.sendMessage(ChatColor.RED + "You cannot have any special characters in your guild name.");
+                    return;
+                }
+
+                if (newName.length() > 6) {
+                    player.sendMessage(ChatColor.RED + "Your guild name cannot be longer than 6 characters.");
+                    return;
+                }
+
+                try {
+                    player.sendMessage(Messages.RENAMED.getMessage(newName));
+                    guildStorage.setName(newName);
+                    return;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+            }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+    }
 
 }

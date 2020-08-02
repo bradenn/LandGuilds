@@ -51,6 +51,8 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.demote(player, username);
             } else if (args[0].equalsIgnoreCase("get")) {
                 GuildHandler.get(player, args[1]);
+            } else if (args[0].equalsIgnoreCase("rename")) {
+                GuildHandler.rename(player, args[1]);
             }
 
         } else if (args.length == 3) {
@@ -81,6 +83,7 @@ public class GuildsCommand implements CommandExecutor {
         player.sendMessage(ChatColor.GRAY + "/g promote [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Promote a player in the guild to a leader");
         player.sendMessage(ChatColor.GRAY + "/g demote [player name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Demote a player from leader to member");
         player.sendMessage(ChatColor.GRAY + "/g set [tag] [true | false] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " change settings (firespread, pvp, boom)");
+        player.sendMessage(ChatColor.GRAY + "/g rename [name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Pretty simple; hard to fuck up.");
         player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Guilds Help -*-*-*-*-*-");
     }
 }
