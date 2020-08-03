@@ -102,6 +102,7 @@ public class GuildHandler {
             if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
                     && guildStorage.getRole(player.getUniqueId()) != null) {
                 try {
+
                     if(ChatColor.valueOf(color.toUpperCase()).isColor()){
                         guildStorage.setColor(color.toUpperCase());
                         player.sendMessage(Messages.COLORED.getMessage(color));
