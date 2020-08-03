@@ -1,7 +1,7 @@
 package xyz.dec0de.landguilds.handlers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
@@ -91,6 +91,31 @@ public class GuildHandler {
         } else {
             player.sendMessage(Messages.NO_GUILD.getMessage());
             return;
+        }
+    }
+
+    public static void setColor(Player player, String color) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
+                    && guildStorage.getRole(player.getUniqueId()) != null) {
+                try {
+                    if ((color.contains("#") && color.length() == 7) || org.bukkit.ChatColor.valueOf(color.toUpperCase()).isColor()) {
+                        guildStorage.setColor((color.contains("#"))?color:color.toUpperCase());
+                        player.sendMessage(Messages.COLORED.getMessage("" + ((color.startsWith("#"))?ChatColor.of(color):org.bukkit.ChatColor.valueOf(color).asBungee()) + color));
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                } catch (IOException | IllegalArgumentException e) {
+                    player.sendMessage(Messages.NOT_COLORED.getMessage(color));
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+            }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
         }
     }
 
@@ -373,7 +398,7 @@ public class GuildHandler {
     public static void get(Player player, String tag) {
 
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-        player.sendMessage(Messages.GET_TAG.getMessage(tag, playerStorage.getGuild().get(Tags.valueOf(tag.toUpperCase()))+""));
+        player.sendMessage(Messages.GET_TAG.getMessage(tag, playerStorage.getGuild().get(Tags.valueOf(tag.toUpperCase())) + ""));
     }
 
     public static void setTag(Player player, String tag, boolean option) {
@@ -552,7 +577,6 @@ public class GuildHandler {
 
                 Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
                 Matcher m = p.matcher(newName);
-
                 if (m.find()) {
                     player.sendMessage(ChatColor.RED + "You cannot have any special characters in your guild name.");
                     return;

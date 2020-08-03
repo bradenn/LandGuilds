@@ -53,7 +53,10 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.get(player, args[1]);
             } else if (args[0].equalsIgnoreCase("rename")) {
                 GuildHandler.rename(player, args[1]);
+            } else if (args[0].equalsIgnoreCase("recolor")) {
+                GuildHandler.setColor(player, args[1]);
             }
+
 
         } else if (args.length == 3) {
             if (args[0].equalsIgnoreCase("declare")) {
