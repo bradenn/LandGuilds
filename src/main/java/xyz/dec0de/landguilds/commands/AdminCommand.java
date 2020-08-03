@@ -34,6 +34,8 @@ public class AdminCommand implements CommandExecutor {
                 help(player);
             } else if (args[0].equalsIgnoreCase("unclaim")) {
                 AdminHandler.unclaim(player);
+            } else if (args[0].equalsIgnoreCase("info")) {
+                AdminHandler.info(player);
             } else if (args[0].equalsIgnoreCase("override")) {
                 if (!AdminHandler.isOverride(player.getUniqueId())) {
                     player.sendMessage(Messages.ADMIN_OVERRIDE.getMessage("&2&lEnabled&a"));

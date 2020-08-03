@@ -13,6 +13,33 @@ import java.util.UUID;
 
 public class AdminHandler {
 
+    public static void info(Player player) {
+        ChunkStorage chunkStorage = ChunkStorage.getChunk(
+                player.getWorld(),
+                player.getWorld().getChunkAt(player.getLocation()));
+
+        player.sendMessage(Messages.PREFIX.getMessage() + "§aLand Claim info");
+        player.sendMessage("§aClaim status: §7" + ((chunkStorage.isClaimed()) ? "Claimed" : "Unclaimed"));
+        if (chunkStorage.isClaimed()) {
+        player.sendMessage("§aClaim type: §7" + ((chunkStorage.isGuild()) ? "Guild" : "Land"));
+            if (chunkStorage.isGuild()) {
+                GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                player.sendMessage("§aGuild: §7" + guildStorage.getTag());
+                ArrayList<String> people = new ArrayList<>();
+                for(UUID puuid : guildStorage.getMembers()){
+                    PlayerStorage pus = new PlayerStorage(puuid);
+                    people.add("§7[" + guildStorage.getRole(puuid).toString().toLowerCase() + "] §a" + pus.getUsername());
+                }
+                player.sendMessage("§aMembers: §7" + String.join(", ", people));
+            } else {
+                PlayerStorage playerStorage = new PlayerStorage(chunkStorage.getOwner());
+                player.sendMessage("§aLand Owner: §7" + playerStorage.getUsername());
+            }
+        } else {
+            player.sendMessage(Messages.NOT_CLAIMED.getMessage());
+        }
+    }
+
     /**
      * Admin method to unclaim anyones chunk where player is located
      *

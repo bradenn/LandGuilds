@@ -99,8 +99,8 @@ public class GuildHandler {
         if (playerStorage.getGuild() != null) {
             GuildStorage guildStorage = playerStorage.getGuild();
 
-            if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
-                    && guildStorage.getRole(player.getUniqueId()) != null) {
+            if ((guildStorage.getRole(player.getUniqueId()) == Role.OWNER
+                    || guildStorage.getRole(player.getUniqueId()) == Role.LEADER) && player.hasPermission("landguilds.color")) {
                 try {
                     if ((color.contains("#") && color.length() == 7) || org.bukkit.ChatColor.valueOf(color.toUpperCase()).isColor()) {
                         guildStorage.setColor((color.contains("#"))?color:color.toUpperCase());

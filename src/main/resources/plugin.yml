@@ -25,3 +25,5 @@ commands:
 permissions:
   landguilds.admin:
     default: op
+  landguilds.color:
+    default: op
