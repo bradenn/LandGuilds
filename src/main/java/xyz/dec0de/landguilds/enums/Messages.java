@@ -37,6 +37,7 @@ public enum Messages {
     TOO_MANY_CHUNKS("&cYou cannot claim anymore land. You are using %args0%/%args1% of your allotted chunks."),
     ADD_PLAYER_LAND("&aYou have successfully added %args0%."),
     RENAMED("&aYou have successfully renamed your guild to %args0%."),
+    COLORED("&aYou changed your guild color to %args0%!"),
     NO_PENDING_INVITES("&cYou do not have any pending invites."),
     JOIN_GUILD("&aYou have successfully joined a guild."),
     GUILD_DISBAND_SUCCESS("&aYou have successfully disbanded the guild."),

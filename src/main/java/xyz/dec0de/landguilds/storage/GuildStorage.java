@@ -240,7 +240,7 @@ public class GuildStorage {
         return ChatColor.valueOf(config.getString("color"));
     }
 
-    public void setColor(ChatColor color) throws IOException {
+    public void setColor(String color) throws IOException {
         config.set("color", color.toString());
         config.save(file);
     }

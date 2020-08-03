@@ -94,6 +94,35 @@ public class GuildHandler {
         }
     }
 
+    public static void setColor(Player player, String color) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
+                    && guildStorage.getRole(player.getUniqueId()) != null) {
+                try {
+                    if(ChatColor.valueOf(color.toUpperCase()).isColor()){
+                        guildStorage.setColor(color.toUpperCase());
+                        player.sendMessage(Messages.COLORED.getMessage(color));
+                        return;
+                    }else{
+                     throw new IllegalArgumentException();
+                    }
+
+
+                } catch (IOException | IllegalArgumentException e) {
+                    player.sendMessage("§cThat is not a color my dear friend.");
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+            }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+    }
+
     /**
      * If a player has enough permissions in a guild
      * allow claiming as apart of a guild
@@ -552,7 +581,6 @@ public class GuildHandler {
 
                 Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
                 Matcher m = p.matcher(newName);
-
                 if (m.find()) {
                     player.sendMessage(ChatColor.RED + "You cannot have any special characters in your guild name.");
                     return;
