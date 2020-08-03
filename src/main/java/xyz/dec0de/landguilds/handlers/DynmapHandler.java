@@ -1,7 +1,7 @@
 package xyz.dec0de.landguilds.handlers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;

@@ -1,7 +1,7 @@
 package xyz.dec0de.landguilds.handlers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Messages;
@@ -102,25 +102,20 @@ public class GuildHandler {
             if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
                     && guildStorage.getRole(player.getUniqueId()) != null) {
                 try {
-
-                    if(ChatColor.valueOf(color.toUpperCase()).isColor()){
-                        guildStorage.setColor(color.toUpperCase());
-                        player.sendMessage(Messages.COLORED.getMessage(color));
-                        return;
-                    }else{
-                     throw new IllegalArgumentException();
+                    if ((color.contains("#") && color.length() == 7) || org.bukkit.ChatColor.valueOf(color.toUpperCase()).isColor()) {
+                        guildStorage.setColor((color.contains("#"))?color:color.toUpperCase());
+                        player.sendMessage(Messages.COLORED.getMessage("" + ((color.startsWith("#"))?ChatColor.of(color):org.bukkit.ChatColor.valueOf(color).asBungee()) + color));
+                    } else {
+                        throw new IllegalArgumentException();
                     }
-
-
                 } catch (IOException | IllegalArgumentException e) {
-                    player.sendMessage("§cThat is not a color my dear friend.");
+                    player.sendMessage(Messages.NOT_COLORED.getMessage(color));
                 }
             } else {
                 player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
             }
         } else {
             player.sendMessage(Messages.NO_GUILD.getMessage());
-            return;
         }
     }
 
@@ -403,7 +398,7 @@ public class GuildHandler {
     public static void get(Player player, String tag) {
 
         PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
-        player.sendMessage(Messages.GET_TAG.getMessage(tag, playerStorage.getGuild().get(Tags.valueOf(tag.toUpperCase()))+""));
+        player.sendMessage(Messages.GET_TAG.getMessage(tag, playerStorage.getGuild().get(Tags.valueOf(tag.toUpperCase())) + ""));
     }
 
     public static void setTag(Player player, String tag, boolean option) {
