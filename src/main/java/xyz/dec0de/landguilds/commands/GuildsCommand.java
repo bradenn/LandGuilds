@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.enums.Messages;
+import xyz.dec0de.landguilds.gui.GuildGui;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 
@@ -18,8 +19,9 @@ public class GuildsCommand implements CommandExecutor {
             return false;
         }
         Player player = (Player) sender;
-
-        if (args.length == 1) {
+        if(args.length == 0){
+            GuildGui.showMenu(player);
+        }else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
                 help(player);
             } else if (args[0].equalsIgnoreCase("claim")) {

@@ -7,6 +7,7 @@ import xyz.dec0de.landguilds.commands.*;
 import xyz.dec0de.landguilds.events.ChunkEvents;
 import xyz.dec0de.landguilds.events.InventoryEvents;
 import xyz.dec0de.landguilds.events.PlayerEvents;
+import xyz.dec0de.landguilds.utils.PlaceholderAPI;
 
 import java.util.List;
 import java.util.Objects;
@@ -61,5 +62,9 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryEvents(), plugin);
         Bukkit.getPluginManager().registerEvents(new PlayerEvents(), plugin);
         Bukkit.getPluginManager().registerEvents(new ChunkEvents(), plugin);
+
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+            new PlaceholderAPI(this).register();
+        }
     }
 }
