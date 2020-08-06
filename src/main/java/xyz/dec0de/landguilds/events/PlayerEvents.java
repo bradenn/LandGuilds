@@ -1,6 +1,9 @@
 package xyz.dec0de.landguilds.events;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -56,7 +59,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        e.setDeathMessage(e.getDeathMessage() + ", oops.");
+        e.setDeathMessage(e.getDeathMessage() + ", f.");
     }
 
     @EventHandler

@@ -18,7 +18,7 @@ public class AdminHandler {
                 player.getWorld(),
                 player.getWorld().getChunkAt(player.getLocation()));
 
-        player.sendMessage(Messages.PREFIX.getMessage() + "§aLand Claim info");
+        player.sendMessage("§8[§aLandGuilds§8] §aLand Claim info");
         player.sendMessage("§aClaim status: §7" + ((chunkStorage.isClaimed()) ? "Claimed" : "Unclaimed"));
         if (chunkStorage.isClaimed()) {
         player.sendMessage("§aClaim type: §7" + ((chunkStorage.isGuild()) ? "Guild" : "Land"));

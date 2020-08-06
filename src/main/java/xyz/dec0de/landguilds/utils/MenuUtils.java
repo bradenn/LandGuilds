@@ -29,10 +29,12 @@ public class MenuUtils {
         return is;
     }
 
-    public static ItemStack createSkull(String name, List<String> lore, int count, String uuid){
+    public static ItemStack createSkull(String name, List<String> lore, int count, UUID uuid){
         ItemStack is = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta sm = (SkullMeta) is.getItemMeta();
-        sm.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(uuid)));
+        sm.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
+        sm.setDisplayName(name);
+        sm.setLore(lore);
         is.setItemMeta(sm);
         return is;
     }

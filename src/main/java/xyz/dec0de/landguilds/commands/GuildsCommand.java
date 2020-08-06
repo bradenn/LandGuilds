@@ -7,8 +7,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.enums.Messages;
 import xyz.dec0de.landguilds.gui.GuildGui;
+import xyz.dec0de.landguilds.gui.GuildMenuView;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
 import xyz.dec0de.landguilds.storage.GuildStorage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuildsCommand implements CommandExecutor {
 
@@ -19,9 +23,10 @@ public class GuildsCommand implements CommandExecutor {
             return false;
         }
         Player player = (Player) sender;
-        if(args.length == 0){
-            GuildGui.showMenu(player);
-        }else if (args.length == 1) {
+//        if(args.length == 0){
+//            GuildMenuView.showView(player);
+//        }else
+        if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
                 help(player);
             } else if (args[0].equalsIgnoreCase("claim")) {
@@ -34,6 +39,8 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.disband(player);
             } else if (args[0].equalsIgnoreCase("leave")) {
                 GuildHandler.leave(player);
+            } else if (args[0].equalsIgnoreCase("members")) {
+                GuildMenuView.showView(player);
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("create")) {
@@ -55,7 +62,7 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.get(player, args[1]);
             } else if (args[0].equalsIgnoreCase("rename")) {
                 GuildHandler.rename(player, args[1]);
-            } else if (args[0].equalsIgnoreCase("recolor")) {
+            } else if (args[0].equalsIgnoreCase("color")) {
                 GuildHandler.setColor(player, args[1]);
             }
 
@@ -91,4 +98,5 @@ public class GuildsCommand implements CommandExecutor {
         player.sendMessage(ChatColor.GRAY + "/g rename [name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Pretty simple; hard to fuck up.");
         player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Guilds Help -*-*-*-*-*-");
     }
+
 }
