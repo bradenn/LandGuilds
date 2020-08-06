@@ -59,7 +59,7 @@ public class GuildMenuView implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (e.getInventory().getSize() != 9 && e.getInventory().getType() != InventoryType.DROPPER) return;
+        if ((e.getInventory().getSize() != 9 && e.getInventory().getType() != InventoryType.DROPPER) || e.getView().getTitle().equals("Dropper")) return;
         e.setCancelled(true);
         Player p = ((Player) e.getWhoClicked());
         if (e.getCurrentItem().getType() == Material.BARRIER) {

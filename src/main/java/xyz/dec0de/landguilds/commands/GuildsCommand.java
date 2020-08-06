@@ -23,9 +23,6 @@ public class GuildsCommand implements CommandExecutor {
             return false;
         }
         Player player = (Player) sender;
-//        if(args.length == 0){
-//            GuildMenuView.showView(player);
-//        }else
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("help")) {
                 help(player);
@@ -41,6 +38,8 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.leave(player);
             } else if (args[0].equalsIgnoreCase("members")) {
                 GuildMenuView.showView(player);
+            }else{
+                help(player);
             }
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("create")) {
@@ -64,6 +63,8 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.rename(player, args[1]);
             } else if (args[0].equalsIgnoreCase("color")) {
                 GuildHandler.setColor(player, args[1]);
+            }else{
+                help(player);
             }
 
 
@@ -73,6 +74,8 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.setRelationship(player, targetUser, args[2]);
             } else if(args[0].equalsIgnoreCase("set")) {
                 GuildHandler.setTag(player, args[1], Boolean.parseBoolean(args[2]));
+            }else{
+                help(player);
             }
         } else {
             help(player);
