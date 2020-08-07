@@ -21,15 +21,6 @@ import java.io.IOException;
 public class PlayerEvents implements Listener {
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent e) throws IOException {
-        Player player = e.getPlayer();
-        PlayerStorage playerStorage = new PlayerStorage(player);
-        if (playerStorage.getGuild() != null)
-            e.getPlayer().setPlayerListName(playerStorage.getGuild().getTag() + " §r" + player.getDisplayName());
-    }
-
-
-    @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
 
         try {

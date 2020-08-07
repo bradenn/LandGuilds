@@ -56,37 +56,44 @@ public class GuildMenuView implements Listener {
         player.openInventory(inv);
     }
 
-
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if ((e.getInventory().getSize() != 9 && e.getInventory().getType() != InventoryType.DROPPER) || e.getView().getTitle().equals("Dropper")) return;
+        String invTitle = e.getView().getTitle();
+        InventoryType invType = e.getInventory().getType();
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser")) return;
         e.setCancelled(true);
         Player p = ((Player) e.getWhoClicked());
-        if (e.getCurrentItem().getType() == Material.BARRIER) {
-            // Handler Back
-            p.closeInventory();
-            showView(p);
-        } else if (e.getCurrentItem().getType() == Material.PLAYER_HEAD) {
-            // Handler player selection
-            SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
-            Player targetPlayer = sm.getOwningPlayer().getPlayer();
-            showOptions(p, targetPlayer);
-        } else if (e.getCurrentItem().getType() == Material.DIAMOND) {
-            p.closeInventory();
-            GuildHandler.promote(p, e.getView().getTitle());
-        } else if (e.getCurrentItem().getType() == Material.REDSTONE) {
-            p.closeInventory();
-            GuildHandler.demote(p, e.getView().getTitle());
-        } else if (e.getCurrentItem().getType() == Material.OAK_DOOR) {
-            p.closeInventory();
-            GuildHandler.kick(p, e.getView().getTitle());
+        switch(e.getCurrentItem().getType()){
+            case BARRIER:
+                p.closeInventory();
+                showView(p);
+                break;
+            case PLAYER_HEAD:
+                SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
+                Player targetPlayer = sm.getOwningPlayer().getPlayer();
+                showOptions(p, targetPlayer);
+                break;
+            case DIAMOND:
+                p.closeInventory();
+                GuildHandler.promote(p, e.getView().getTitle());
+                break;
+            case REDSTONE:
+                p.closeInventory();
+                GuildHandler.demote(p, e.getView().getTitle());
+                break;
+            case OAK_DOOR:
+                p.closeInventory();
+                GuildHandler.kick(p, e.getView().getTitle());
+            default:
+                break;
         }
-
     }
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent e) {
-        if (e.getInventory().getSize() != 9 && e.getInventory().getType() != InventoryType.DROPPER) return;
+        String invTitle = e.getView().getTitle();
+        InventoryType invType = e.getInventory().getType();
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser")) return;
         e.setCancelled(true);
     }
 
