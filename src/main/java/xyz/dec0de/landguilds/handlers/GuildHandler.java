@@ -63,6 +63,62 @@ public class GuildHandler {
 
     }
 
+    public static void trust(Player player, String target) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
+                    || guildStorage.getRole(player.getUniqueId()) == Role.LEADER) {
+                Player toTrust = Bukkit.getPlayer(target);
+                if(guildStorage.getTrusted().contains(toTrust.getUniqueId())){
+                    player.sendMessage(Messages.ALREADY_TRUSTED.getMessage());
+                }else {
+                    try {
+                        player.sendMessage(Messages.TRUSTED.getMessage(target));
+                        toTrust.sendMessage(Messages.TRUSTED_CONF.getMessage(guildStorage.getName()));
+                        guildStorage.trustUser(toTrust.getUniqueId());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+            }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+    }
+
+    public static void untrust(Player player, String target) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER
+                    || guildStorage.getRole(player.getUniqueId()) == Role.LEADER) {
+                Player toTrust = Bukkit.getPlayer(target);
+                if(!guildStorage.getTrusted().contains(toTrust.getUniqueId())){
+                    player.sendMessage(Messages.ALREADY_UNTRUSTED.getMessage());
+                }else {
+                    try {
+                        player.sendMessage(Messages.UNTRUSTED.getMessage(target));
+                        toTrust.sendMessage(Messages.UNTRUSTED_CONF.getMessage(guildStorage.getName()));
+                        guildStorage.untrustUser(toTrust.getUniqueId());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+            }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+    }
+
     /**
      * If a player has enough permissions in a guild,
      * disband that guild and unclaim all land and
@@ -103,8 +159,8 @@ public class GuildHandler {
                     || guildStorage.getRole(player.getUniqueId()) == Role.LEADER) && player.hasPermission("landguilds.color")) {
                 try {
                     if ((color.contains("#") && color.length() == 7) || org.bukkit.ChatColor.valueOf(color.toUpperCase()).isColor()) {
-                        guildStorage.setColor((color.contains("#"))?color:color.toUpperCase());
-                        player.sendMessage(Messages.COLORED.getMessage("" + ((color.startsWith("#"))?ChatColor.of(color):org.bukkit.ChatColor.valueOf(color).asBungee()) + color));
+                        guildStorage.setColor((color.contains("#")) ? color : color.toUpperCase());
+                        player.sendMessage(Messages.COLORED.getMessage("" + ((color.startsWith("#")) ? ChatColor.of(color) : org.bukkit.ChatColor.valueOf(color).asBungee()) + color));
                     } else {
                         throw new IllegalArgumentException();
                     }

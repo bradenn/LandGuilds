@@ -84,6 +84,17 @@ public class GuildStorage {
         return members;
     }
 
+    public List<UUID> getTrusted() throws NullPointerException {
+        ConfigurationSection section = config.getConfigurationSection("trusted");
+        List<UUID> members = new ArrayList<>();
+        if (config.getConfigurationSection("trusted") != null) {
+            assert section != null;
+            for (String uuid : section.getKeys(false)) {
+                members.add(UUID.fromString(uuid));
+            }
+        }
+        return members;
+    }
 
     /**
      * Get the role of a player in a chunk.
@@ -154,6 +165,26 @@ public class GuildStorage {
     public void removeMember(UUID uuid) throws IOException {
         if (getMembers().contains(uuid)) {
             config.set("members." + uuid.toString(), null);
+            config.save(file);
+        }
+    }
+
+    /**
+     * Allow another player the chunk
+     */
+    public void trustUser(UUID uuid) throws IOException {
+        if (!getMembers().contains(uuid)) {
+            config.set("trusted." + uuid.toString(), "trusted");
+            config.save(file);
+        }
+    }
+
+    /**
+     * Remove another player from the chunk
+     */
+    public void untrustUser(UUID uuid) throws IOException {
+        if (getTrusted().contains(uuid)) {
+            config.set("trusted." + uuid.toString(), null);
             config.save(file);
         }
     }
