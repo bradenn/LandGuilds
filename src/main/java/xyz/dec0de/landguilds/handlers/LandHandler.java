@@ -42,7 +42,7 @@ public class LandHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            new DynmapHandler().reloadAllLandChunks();
+//            new DynmapHandler().reloadAllLandChunks();
         }else{
             player.sendMessage(Messages.TOO_MANY_CHUNKS.getMessage(playerStorage.getChunks().size()+"", Main.getMaxLandClaims() + ""));
         }
