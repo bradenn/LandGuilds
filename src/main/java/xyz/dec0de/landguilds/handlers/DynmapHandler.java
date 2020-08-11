@@ -95,26 +95,28 @@ public class DynmapHandler {
      * Reload on chunk's marker on dynmap
      */
     public void reloadChunk(Chunk chunk) {
-        ChunkStorage chunkStorage = ChunkStorage.getChunk(chunk.getWorld(), chunk);
-        double bitX = chunk.getX() * 16;
-        double bitZ = chunk.getZ() * 16;
-        double[] xArray = {bitX, bitX + 16};
-        double[] zArray = {bitZ, bitZ + 16};
-        if (chunkStorage.isClaimed()) {
-            boolean isGuild = chunkStorage.isGuild();
-            GuildStorage guildStorage = null;
-            PlayerStorage playerStorage = null;
-            if (isGuild)
-                guildStorage = new GuildStorage(chunkStorage.getOwner());
-            else
-                playerStorage = new PlayerStorage(chunkStorage.getOwner());
-            int color = ColorUtils.parseColor(isGuild ? guildStorage.getColorString() : ChatColor.WHITE.getName());
-            String markup = isGuild ? buildGuildMarkup(guildStorage) : buildLandMarkup(playerStorage);
-            String selector = (isGuild ? "guild" : "land") + ".claim." + bitX + ":" + bitZ;
+        if (Bukkit.getPluginManager().getPlugin("dynmap") != null) {
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(chunk.getWorld(), chunk);
+            double bitX = chunk.getX() * 16;
+            double bitZ = chunk.getZ() * 16;
+            double[] xArray = {bitX, bitX + 16};
+            double[] zArray = {bitZ, bitZ + 16};
+            if (chunkStorage.isClaimed()) {
+                boolean isGuild = chunkStorage.isGuild();
+                GuildStorage guildStorage = null;
+                PlayerStorage playerStorage = null;
+                if (isGuild)
+                    guildStorage = new GuildStorage(chunkStorage.getOwner());
+                else
+                    playerStorage = new PlayerStorage(chunkStorage.getOwner());
+                int color = ColorUtils.parseColor(isGuild ? guildStorage.getColorString() : ChatColor.WHITE.getName());
+                String markup = isGuild ? buildGuildMarkup(guildStorage) : buildLandMarkup(playerStorage);
+                String selector = (isGuild ? "guild" : "land") + ".claim." + bitX + ":" + bitZ;
 
-            set.createAreaMarker(selector, markup, true, chunk.getWorld().getName(), xArray, zArray, false);
-            set.findAreaMarker(selector).setLineStyle(2, 1, color);
-            set.findAreaMarker(selector).setFillStyle(0.3, color);
+                set.createAreaMarker(selector, markup, true, chunk.getWorld().getName(), xArray, zArray, false);
+                set.findAreaMarker(selector).setLineStyle(2, 1, color);
+                set.findAreaMarker(selector).setFillStyle(0.3, color);
+            }
         }
     }
 

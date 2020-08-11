@@ -51,7 +51,6 @@ public class Main extends JavaPlugin {
         plugin = this;
         config = this.getConfig();
         plugin.saveDefaultConfig();
-        new DynmapHandler().reloadAllChunks();
         Objects.requireNonNull(plugin.getCommand("lands")).setExecutor(new LandsCommand());
         Objects.requireNonNull(plugin.getCommand("guilds")).setExecutor(new GuildsCommand());
         Objects.requireNonNull(plugin.getCommand("guilds")).setTabCompleter(new GuildsTabMenu());
@@ -64,8 +63,12 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChunkEvents(), plugin);
         Bukkit.getPluginManager().registerEvents(new GuildMenuView(), plugin);
 
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPI(this).register();
+        }
+
+        if (Bukkit.getPluginManager().getPlugin("dynmap") != null) {
+            new DynmapHandler().reloadAllChunks();
         }
     }
 }
