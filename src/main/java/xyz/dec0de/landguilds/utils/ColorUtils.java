@@ -11,9 +11,15 @@ public class ColorUtils {
         if (color.startsWith("#")) {
             return hex2Rgb(color).getRGB();
         } else {
-            return org.bukkit.Color.fromRGB(colorMap.get(ChatColor.of(color)).getRed(),
-                    colorMap.get(ChatColor.of(color)).getGreen(),
-                    colorMap.get(ChatColor.of(color)).getBlue()).asRGB();
+            try {
+                return org.bukkit.Color.fromRGB(colorMap.get(ChatColor.of(color)).getRed(),
+                        colorMap.get(ChatColor.of(color)).getGreen(),
+                        colorMap.get(ChatColor.of(color)).getBlue()).asRGB();
+            } catch (Exception e) {
+                return org.bukkit.Color.fromRGB(colorMap.get(ChatColor.WHITE).getRed(),
+                        colorMap.get(ChatColor.WHITE).getGreen(),
+                        colorMap.get(ChatColor.WHITE).getBlue()).asRGB();
+            }
         }
     }
 
