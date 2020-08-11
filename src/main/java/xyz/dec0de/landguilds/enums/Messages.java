@@ -51,6 +51,12 @@ public enum Messages {
     GUILD_ANNOUNCEMENT_DECLARE("&aThe guild %args0%§a has declared %args1%§a as an %args2%§a."),
     GUILD_LEAVE_OWNER("&cYou own this guild. You cannot leave it. You must disband or transfer it."),
     ADMIN_OVERRIDE("&aYou have %args0% admin override."),
+    ALREADY_TRUSTED("&aThis player is already trusted."),
+    ALREADY_UNTRUSTED("&aThis player is already untrusted. You must not like them."),
+    TRUSTED_CONF("&aYou have been trusted to build and interact in the guild %args0%."),
+    UNTRUSTED_CONF("&aYour trust has been revoked. You may no longer build or interact in the guild %args0%."),
+    TRUSTED("&aYou have trusted %args0% to build and interact within your guild."),
+    UNTRUSTED("&aYou have untrusted %args0%."),
     UNKNOWN_TYPE("&cYou have entered an unknown type '%args0%'.");
 
     private String message;

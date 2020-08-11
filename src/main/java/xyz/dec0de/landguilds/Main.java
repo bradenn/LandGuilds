@@ -7,6 +7,10 @@ import xyz.dec0de.landguilds.commands.*;
 import xyz.dec0de.landguilds.events.ChunkEvents;
 import xyz.dec0de.landguilds.events.InventoryEvents;
 import xyz.dec0de.landguilds.events.PlayerEvents;
+import xyz.dec0de.landguilds.gui.GuildGui;
+import xyz.dec0de.landguilds.gui.GuildMenuView;
+import xyz.dec0de.landguilds.handlers.GuildHandler;
+import xyz.dec0de.landguilds.utils.PlaceholderAPI;
 
 import java.util.List;
 import java.util.Objects;
@@ -54,6 +58,7 @@ public class Main extends JavaPlugin {
         //new DynmapHandler().reloadAllChunks();
         Objects.requireNonNull(plugin.getCommand("lands")).setExecutor(new LandsCommand());
         Objects.requireNonNull(plugin.getCommand("guilds")).setExecutor(new GuildsCommand());
+        Objects.requireNonNull(plugin.getCommand("guilds")).setTabCompleter(new GuildsTabMenu());
         Objects.requireNonNull(plugin.getCommand("map")).setExecutor(new MapCommand());
         Objects.requireNonNull(plugin.getCommand("lgadmin")).setExecutor(new AdminCommand());
         Objects.requireNonNull(plugin.getCommand("landguilds")).setExecutor(new LandGuildsCommand());
@@ -61,5 +66,10 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new InventoryEvents(), plugin);
         Bukkit.getPluginManager().registerEvents(new PlayerEvents(), plugin);
         Bukkit.getPluginManager().registerEvents(new ChunkEvents(), plugin);
+        Bukkit.getPluginManager().registerEvents(new GuildMenuView(), plugin);
+
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+            new PlaceholderAPI(this).register();
+        }
     }
 }

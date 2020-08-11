@@ -35,6 +35,25 @@ public class ChunkEvents implements Listener {
 
     private HashMap<UUID, String> playersInChunk = new HashMap<>();
 
+    public boolean playerCanInteract(Player player) {
+        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
+            if (AdminHandler.isOverride(player.getUniqueId())) return true;
+            if (chunkStorage.isClaimed()) {
+                if (chunkStorage.isGuild()) {
+                    GuildStorage guild = new GuildStorage(chunkStorage.getOwner());
+                    return guild.getMembers().contains(player.getUniqueId()) || guild.getTrusted().contains(player.getUniqueId());
+                } else {
+                    return chunkStorage.getMembers().contains(player.getUniqueId());
+                }
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
     @EventHandler
     public void moveEvent(PlayerMoveEvent e) {
         Bukkit.getScheduler().runTaskAsynchronously(Main.getPlugin(), () -> {
@@ -157,53 +176,61 @@ public class ChunkEvents implements Listener {
     @EventHandler
     public void breakBlock(BlockBreakEvent e) {
         Player player = e.getPlayer();
-
-        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            if (!AdminHandler.isOverride(player.getUniqueId())) {
-                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
-                if (chunkStorage.isClaimed()) {
-                    new PlayerStorage(player.getUniqueId());
-                    if (chunkStorage.isGuild()) {
-                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(Messages.NO_BREAK.getMessage());
-                            e.setCancelled(true);
-                        }
-                    } else {
-                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(Messages.NO_BREAK.getMessage());
-                            e.setCancelled(true);
-                        }
-                    }
-                }
-            }
+        if (!playerCanInteract(player)) {
+            player.sendMessage(Messages.NO_BREAK.getMessage());
+            e.setCancelled(true);
         }
     }
+//        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+//            if (!AdminHandler.isOverride(player.getUniqueId())) {
+//                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
+//                if (chunkStorage.isClaimed()) {
+//                    new PlayerStorage(player.getUniqueId());
+//                    if (chunkStorage.isGuild()) {
+//                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+//                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+//                            player.sendMessage(Messages.NO_BREAK.getMessage());
+//                            e.setCancelled(true);
+//                        }
+//                    } else {
+//                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+//                            player.sendMessage(Messages.NO_BREAK.getMessage());
+//                            e.setCancelled(true);
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
     @EventHandler
     public void placeBlock(BlockPlaceEvent e) {
         Player player = e.getPlayer();
-        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            if (!AdminHandler.isOverride(player.getUniqueId())) {
-                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
-                if (chunkStorage.isClaimed()) {
-                    new PlayerStorage(player.getUniqueId());
-                    if (chunkStorage.isGuild()) {
-                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                        if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(Messages.NO_BUILD.getMessage());
-                            e.setCancelled(true);
-                        }
-                    } else {
-                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                            player.sendMessage(Messages.NO_BUILD.getMessage());
-                            e.setCancelled(true);
-                        }
-                    }
-                }
-            }
+        if (!playerCanInteract(player)) {
+            player.sendMessage(Messages.NO_BUILD.getMessage());
+            e.setCancelled(true);
         }
     }
+//        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+//            if (!AdminHandler.isOverride(player.getUniqueId())) {
+//                ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getBlock().getLocation()));
+//                if (chunkStorage.isClaimed()) {
+//                    new PlayerStorage(player.getUniqueId());
+//                    if (chunkStorage.isGuild()) {
+//                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+//                        if (!guildStorage.getMembers().contains(player.getUniqueId()) && !guildStorage.getTrusted().contains(player.getUniqueId())) {
+//                            player.sendMessage(Messages.NO_BUILD.getMessage());
+//                            e.setCancelled(true);
+//                        }
+//                    } else {
+//                        if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+//                            player.sendMessage(Messages.NO_BUILD.getMessage());
+//                            e.setCancelled(true);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
 
     @EventHandler
     public void rotateItemFrame(PlayerInteractEntityEvent e) {
@@ -238,34 +265,41 @@ public class ChunkEvents implements Listener {
         Player player = e.getPlayer();
 
         if (e.getClickedBlock() == null) return;
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType().toString().contains("SIGN"))
+            return;
 
-        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType().toString().contains("SIGN")) {
-                e.setCancelled(false);
-            } else {
-                if (!AdminHandler.isOverride(player.getUniqueId())) {
-                    ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
-                    if (chunkStorage.isClaimed()) {
-                        if (chunkStorage.isGuild()) {
-                            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
-                            if (!blockHasAllowSign(player, e.getClickedBlock())) {
-                                if (!guildStorage.getMembers().contains(player.getUniqueId())) {
-                                    player.sendMessage(Messages.NO_INTERACT.getMessage());
-                                    e.setCancelled(true);
-                                }
-                            }
-                        } else {
-                            if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
-                                if (!blockHasAllowSign(player, e.getClickedBlock())) {
-                                    player.sendMessage(Messages.NO_INTERACT.getMessage());
-                                    e.setCancelled(true);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        if (!playerCanInteract(player)) {
+            player.sendMessage(Messages.NO_INTERACT.getMessage());
+            e.setCancelled(true);
         }
+
+//        if (Main.allowedWorlds().contains(player.getWorld().getName())) {
+//            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType().toString().contains("SIGN")) {
+//                e.setCancelled(false);
+//            } else {
+//                if (!AdminHandler.isOverride(player.getUniqueId())) {
+//                    ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(e.getClickedBlock().getLocation()));
+//                    if (chunkStorage.isClaimed()) {
+//                        if (chunkStorage.isGuild()) {
+//                            GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+//                            if (!blockHasAllowSign(player, e.getClickedBlock())) {
+//                                if (!guildStorage.getMembers().contains(player.getUniqueId())) {
+//                                    player.sendMessage(Messages.NO_INTERACT.getMessage());
+//                                    e.setCancelled(true);
+//                                }
+//                            }
+//                        } else {
+//                            if (!chunkStorage.getMembers().contains(player.getUniqueId())) {
+//                                if (!blockHasAllowSign(player, e.getClickedBlock())) {
+//                                    player.sendMessage(Messages.NO_INTERACT.getMessage());
+//                                    e.setCancelled(true);
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
     @EventHandler

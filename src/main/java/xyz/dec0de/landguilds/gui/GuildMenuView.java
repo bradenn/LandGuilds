@@ -1,0 +1,101 @@
+package xyz.dec0de.landguilds.gui;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+import xyz.dec0de.landguilds.handlers.GuildHandler;
+import xyz.dec0de.landguilds.storage.GuildStorage;
+import xyz.dec0de.landguilds.storage.PlayerStorage;
+import xyz.dec0de.landguilds.utils.MenuUtils;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+public class GuildMenuView implements Listener {
+
+    public static void showView(Player p) {
+        PlayerStorage ps = new PlayerStorage(p.getUniqueId());
+        GuildStorage gs = ps.getGuild();
+
+        Inventory inv = Bukkit.createInventory(null, 9, gs.getName() + "'s Members (" + gs.getMembers().size() + "/8)");
+        gs.getMembers().forEach(member -> {
+            List<String> lore = new ArrayList<>();
+            String role = gs.getRole(member).toString();
+            lore.add("§7§lRole: §f" + role.substring(0, 1) + role.toLowerCase().substring(1));
+            lore.add("§8 ");
+            lore.add("§8Click to edit");
+            inv.addItem(MenuUtils.createSkull("§a§l" + Bukkit.getOfflinePlayer(member).getName(), lore, 1, member));
+        });
+        p.openInventory(inv);
+    }
+
+    public static void showOptions(Player player, Player target) {
+        PlayerStorage ps = new PlayerStorage(player.getUniqueId());
+        GuildStorage gs = ps.getGuild();
+        Inventory inv = Bukkit.createInventory(null, InventoryType.DROPPER, target.getName());
+        List<String> lore = new ArrayList<>();
+        String role = gs.getRole(target.getUniqueId()).toString();
+        lore.add("§7§lRole: §f" + role.substring(0, 1) + role.toLowerCase().substring(1));
+        lore.add("§8 ");
+        lore.add("§8Click to edit");
+        inv.setItem(1, MenuUtils.createItem("§a§lGo Back", null, 1, Material.BARRIER));
+        inv.setItem(3, MenuUtils.createItem("§b§lPromote", null, 1, Material.DIAMOND));
+        inv.setItem(4, MenuUtils.createSkull("§a§l" + target.getName(), lore, 1, target.getUniqueId()));
+        inv.setItem(5, MenuUtils.createItem("§c§lDemote", null, 1, Material.REDSTONE));
+        inv.setItem(7, MenuUtils.createItem("§e§lKick", null, 1, Material.OAK_DOOR));
+        player.openInventory(inv);
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        String invTitle = e.getView().getTitle();
+        InventoryType invType = e.getInventory().getType();
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser")) return;
+        e.setCancelled(true);
+        Player p = ((Player) e.getWhoClicked());
+        switch(e.getCurrentItem().getType()){
+            case BARRIER:
+                p.closeInventory();
+                showView(p);
+                break;
+            case PLAYER_HEAD:
+                SkullMeta sm = (SkullMeta) e.getCurrentItem().getItemMeta();
+                Player targetPlayer = sm.getOwningPlayer().getPlayer();
+                showOptions(p, targetPlayer);
+                break;
+            case DIAMOND:
+                p.closeInventory();
+                GuildHandler.promote(p, e.getView().getTitle());
+                break;
+            case REDSTONE:
+                p.closeInventory();
+                GuildHandler.demote(p, e.getView().getTitle());
+                break;
+            case OAK_DOOR:
+                p.closeInventory();
+                GuildHandler.kick(p, e.getView().getTitle());
+            default:
+                break;
+        }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent e) {
+        String invTitle = e.getView().getTitle();
+        InventoryType invType = e.getInventory().getType();
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser")) return;
+        e.setCancelled(true);
+    }
+
+
+}
