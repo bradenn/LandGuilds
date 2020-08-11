@@ -8,6 +8,7 @@ import xyz.dec0de.landguilds.events.ChunkEvents;
 import xyz.dec0de.landguilds.events.InventoryEvents;
 import xyz.dec0de.landguilds.events.PlayerEvents;
 import xyz.dec0de.landguilds.gui.GuildMenuView;
+import xyz.dec0de.landguilds.handlers.DynmapHandler;
 import xyz.dec0de.landguilds.utils.PlaceholderAPI;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public class Main extends JavaPlugin {
         plugin = this;
         config = this.getConfig();
         plugin.saveDefaultConfig();
-        //new DynmapHandler().reloadAllChunks();
+        new DynmapHandler().reloadAllChunks();
         Objects.requireNonNull(plugin.getCommand("lands")).setExecutor(new LandsCommand());
         Objects.requireNonNull(plugin.getCommand("guilds")).setExecutor(new GuildsCommand());
         Objects.requireNonNull(plugin.getCommand("guilds")).setTabCompleter(new GuildsTabMenu());

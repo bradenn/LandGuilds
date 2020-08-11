@@ -551,12 +551,12 @@ public class GuildHandler {
         }
 
         if (username.equalsIgnoreCase(player.getName())) {
-            player.sendMessage(Messages.GUILD_PROMOTE_FAIL.getMessage());
+            player.sendMessage(Messages.GUILD_PROMOTE_FAIL.getMessage(guildMember.getUsername()));
             return;
         }
 
         if (guild.getOwner().equals(targetUUID)) {
-            player.sendMessage(Messages.GUILD_PROMOTE_FAIL.getMessage());
+            player.sendMessage(Messages.GUILD_PROMOTE_FAIL.getMessage(guildMember.getUsername()));
             return;
         }
 
@@ -611,12 +611,12 @@ public class GuildHandler {
         }
 
         if (username.equalsIgnoreCase(player.getName())) {
-            player.sendMessage(Messages.GUILD_DEMOTE_FAIL.getMessage());
+            player.sendMessage(Messages.GUILD_DEMOTE_FAIL.getMessage(guildMember.getUsername()));
             return;
         }
 
         if (guild.getOwner().equals(targetUUID)) {
-            player.sendMessage(Messages.GUILD_DEMOTE_FAIL.getMessage());
+            player.sendMessage(Messages.GUILD_DEMOTE_FAIL.getMessage(guildMember.getUsername()));
             return;
         }
 

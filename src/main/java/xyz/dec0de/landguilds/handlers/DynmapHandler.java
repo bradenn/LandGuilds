@@ -108,7 +108,7 @@ public class DynmapHandler {
                 guildStorage = new GuildStorage(chunkStorage.getOwner());
             else
                 playerStorage = new PlayerStorage(chunkStorage.getOwner());
-            int color = ColorUtils.parseColorFromChatColor(isGuild ? guildStorage.getColor() : ChatColor.WHITE);
+            int color = ColorUtils.parseColor(isGuild ? guildStorage.getColorString() : ChatColor.WHITE.toString());
             String markup = isGuild ? buildGuildMarkup(guildStorage) : buildLandMarkup(playerStorage);
             String selector = (isGuild ? "guild" : "land") + ".claim." + bitX + ":" + bitZ;
 

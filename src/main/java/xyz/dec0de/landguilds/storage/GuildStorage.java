@@ -1,7 +1,7 @@
 package xyz.dec0de.landguilds.storage;
 
-import org.bukkit.Bukkit;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -121,7 +121,7 @@ public class GuildStorage {
     }
 
     public void getRelationships() {
-
+        //TODO
     }
 
     /**
@@ -269,7 +269,11 @@ public class GuildStorage {
 
     public ChatColor getColor() {
         String color = Objects.requireNonNull(config.getString("color"));
-        return (color.startsWith("#"))?ChatColor.of(color):org.bukkit.ChatColor.valueOf(color).asBungee();
+        return (color.startsWith("#")) ? ChatColor.of(color) : org.bukkit.ChatColor.valueOf(color).asBungee();
+    }
+
+    public String getColorString() {
+        return config.getString("color");
     }
 
     public void setColor(String color) throws IOException {

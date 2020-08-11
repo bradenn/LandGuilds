@@ -7,10 +7,21 @@ import java.util.Map;
 
 public class ColorUtils {
 
-    public static int parseColorFromChatColor(ChatColor color) {
-        return org.bukkit.Color.fromRGB(colorMap.get(color).getRed(),
-                colorMap.get(color).getGreen(),
-                colorMap.get(color).getBlue()).asRGB();
+    public static int parseColor(String color) {
+        if (color.startsWith("#")) {
+            return hex2Rgb(color).getRGB();
+        } else {
+            return org.bukkit.Color.fromRGB(colorMap.get(ChatColor.of(color)).getRed(),
+                    colorMap.get(ChatColor.of(color)).getGreen(),
+                    colorMap.get(ChatColor.of(color)).getBlue()).asRGB();
+        }
+    }
+
+    public static java.awt.Color hex2Rgb(String colorStr) {
+        return new java.awt.Color(
+                Integer.valueOf(colorStr.substring(1, 3), 16),
+                Integer.valueOf(colorStr.substring(3, 5), 16),
+                Integer.valueOf(colorStr.substring(5, 7), 16));
     }
 
     private static Map<ChatColor, ColorSet<Integer, Integer, Integer>> colorMap = new HashMap<>();
