@@ -7,9 +7,7 @@ import xyz.dec0de.landguilds.commands.*;
 import xyz.dec0de.landguilds.events.ChunkEvents;
 import xyz.dec0de.landguilds.events.InventoryEvents;
 import xyz.dec0de.landguilds.events.PlayerEvents;
-import xyz.dec0de.landguilds.gui.GuildGui;
 import xyz.dec0de.landguilds.gui.GuildMenuView;
-import xyz.dec0de.landguilds.handlers.GuildHandler;
 import xyz.dec0de.landguilds.utils.PlaceholderAPI;
 
 import java.util.List;

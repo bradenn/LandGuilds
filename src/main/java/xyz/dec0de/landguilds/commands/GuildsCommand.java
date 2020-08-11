@@ -6,13 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.enums.Messages;
-import xyz.dec0de.landguilds.gui.GuildGui;
 import xyz.dec0de.landguilds.gui.GuildMenuView;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
-import xyz.dec0de.landguilds.storage.GuildStorage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuildsCommand implements CommandExecutor {
 

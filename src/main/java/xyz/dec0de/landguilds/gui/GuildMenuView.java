@@ -9,17 +9,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import xyz.dec0de.landguilds.handlers.GuildHandler;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
-import xyz.dec0de.landguilds.utils.MenuUtils;
+import xyz.dec0de.landguilds.utils.ItemUtils;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class GuildMenuView implements Listener {
 
@@ -29,12 +26,13 @@ public class GuildMenuView implements Listener {
 
         Inventory inv = Bukkit.createInventory(null, 9, gs.getName() + "'s Members (" + gs.getMembers().size() + "/8)");
         gs.getMembers().forEach(member -> {
+            String memberName = new PlayerStorage(member).getUsername();
             List<String> lore = new ArrayList<>();
             String role = gs.getRole(member).toString();
             lore.add("§7§lRole: §f" + role.substring(0, 1) + role.toLowerCase().substring(1));
             lore.add("§8 ");
             lore.add("§8Click to edit");
-            inv.addItem(MenuUtils.createSkull("§a§l" + Bukkit.getOfflinePlayer(member).getName(), lore, 1, member));
+            inv.addItem(ItemUtils.createSkullItem(memberName, "§a§l" + memberName, lore));
         });
         p.openInventory(inv);
     }
@@ -48,11 +46,11 @@ public class GuildMenuView implements Listener {
         lore.add("§7§lRole: §f" + role.substring(0, 1) + role.toLowerCase().substring(1));
         lore.add("§8 ");
         lore.add("§8Click to edit");
-        inv.setItem(1, MenuUtils.createItem("§a§lGo Back", null, 1, Material.BARRIER));
-        inv.setItem(3, MenuUtils.createItem("§b§lPromote", null, 1, Material.DIAMOND));
-        inv.setItem(4, MenuUtils.createSkull("§a§l" + target.getName(), lore, 1, target.getUniqueId()));
-        inv.setItem(5, MenuUtils.createItem("§c§lDemote", null, 1, Material.REDSTONE));
-        inv.setItem(7, MenuUtils.createItem("§e§lKick", null, 1, Material.OAK_DOOR));
+        inv.setItem(1, ItemUtils.createItem(Material.BARRIER, 1, "§a§lGo Back"));
+        inv.setItem(3, ItemUtils.createItem(Material.DIAMOND, 1, "§b§lPromote"));
+        inv.setItem(4, ItemUtils.createSkullItem(target.getName(), "§a§l" + target.getName(), lore));
+        inv.setItem(5, ItemUtils.createItem(Material.REDSTONE, 1, "§c§lDemote"));
+        inv.setItem(7, ItemUtils.createItem(Material.OAK_DOOR, 1, "§e§lKick"));
         player.openInventory(inv);
     }
 
@@ -65,7 +63,6 @@ public class GuildMenuView implements Listener {
         Player p = ((Player) e.getWhoClicked());
         switch(e.getCurrentItem().getType()){
             case BARRIER:
-                p.closeInventory();
                 showView(p);
                 break;
             case PLAYER_HEAD:
@@ -74,15 +71,12 @@ public class GuildMenuView implements Listener {
                 showOptions(p, targetPlayer);
                 break;
             case DIAMOND:
-                p.closeInventory();
                 GuildHandler.promote(p, e.getView().getTitle());
                 break;
             case REDSTONE:
-                p.closeInventory();
                 GuildHandler.demote(p, e.getView().getTitle());
                 break;
             case OAK_DOOR:
-                p.closeInventory();
                 GuildHandler.kick(p, e.getView().getTitle());
             default:
                 break;

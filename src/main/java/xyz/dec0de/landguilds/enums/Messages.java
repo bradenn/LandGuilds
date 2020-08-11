@@ -42,6 +42,7 @@ public enum Messages {
     NO_PENDING_INVITES("&cYou do not have any pending invites."),
     JOIN_GUILD("&aYou have successfully joined a guild."),
     GUILD_DISBAND_SUCCESS("&aYou have successfully disbanded the guild."),
+    GUILD_MEMBER_LIMIT("&cYou have reached the limit of members in a guild. 8/8"),
     ALREADY_PENDING_INVITE("&cThis player already has a pending invite. Please try later."),
     INVITE_EXPIRE("&cThe invite has expired!"),
     INVITE_SENT("&aYou have invited %args0% to join your guild."),
