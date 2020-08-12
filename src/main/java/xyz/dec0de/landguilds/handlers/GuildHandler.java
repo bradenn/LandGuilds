@@ -46,8 +46,8 @@ public class GuildHandler {
             return;
         }
 
-        if (name.length() > 6) {
-            player.sendMessage(ChatColor.RED + "Your guild name cannot be longer than 6 characters.");
+        if (name.length() > 8) {
+            player.sendMessage(ChatColor.RED + "Your guild name cannot be longer than 8 characters.");
             return;
         }
 
@@ -644,8 +644,8 @@ public class GuildHandler {
                     return;
                 }
 
-                if (newName.length() > 6) {
-                    player.sendMessage(ChatColor.RED + "Your guild name cannot be longer than 6 characters.");
+                if (newName.length() > 8) {
+                    player.sendMessage(ChatColor.RED + "Your guild name cannot be longer than 8 characters.");
                     return;
                 }
 
