@@ -268,6 +268,9 @@ public class ChunkEvents implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock().getType().toString().contains("SIGN"))
             return;
 
+        if (blockHasEveryoneSign(player, e.getClickedBlock()))
+            return;
+
         if (!playerCanInteract(player)) {
             player.sendMessage(Messages.NO_INTERACT.getMessage());
             e.setCancelled(true);
@@ -321,7 +324,7 @@ public class ChunkEvents implements Listener {
         }
     }
 
-    private boolean blockHasAllowSign(Player player, Block block) {
+    private boolean blockHasEveryoneSign(Player player, Block block) {
         List<Sign> sign = new ArrayList<>();
         for (BlockFace blockFace : BlockFace.values()) {
             Block br = block.getRelative(blockFace, 1);
