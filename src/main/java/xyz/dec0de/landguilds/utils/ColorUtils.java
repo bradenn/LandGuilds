@@ -9,12 +9,12 @@ public class ColorUtils {
 
     public static int parseColor(String color) {
         if (color.startsWith("#")) {
-            return hex2Rgb(color).getRGB();
+            return hex2Rgb(color.toUpperCase()).getRGB();
         } else {
             try {
-                return org.bukkit.Color.fromRGB(colorMap.get(ChatColor.of(color)).getRed(),
-                        colorMap.get(ChatColor.of(color)).getGreen(),
-                        colorMap.get(ChatColor.of(color)).getBlue()).asRGB();
+                return org.bukkit.Color.fromRGB(colorMap.get(ChatColor.of(color.toUpperCase())).getRed(),
+                        colorMap.get(ChatColor.of(color.toUpperCase())).getGreen(),
+                        colorMap.get(ChatColor.of(color.toUpperCase())).getBlue()).asRGB();
             } catch (Exception e) {
                 return org.bukkit.Color.fromRGB(colorMap.get(ChatColor.WHITE).getRed(),
                         colorMap.get(ChatColor.WHITE).getGreen(),
