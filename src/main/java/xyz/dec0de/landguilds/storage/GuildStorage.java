@@ -268,7 +268,7 @@ public class GuildStorage {
     }
 
     public ChatColor getColor() {
-        String color = Objects.requireNonNull(config.getString("color"));
+        String color = Objects.requireNonNull(config.getString("color")).toUpperCase();
         return (color.startsWith("#")) ? ChatColor.of(color) : org.bukkit.ChatColor.valueOf(color).asBungee();
     }
 
