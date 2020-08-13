@@ -80,12 +80,15 @@ public class GuildMenuView implements Listener {
                 break;
             case DIAMOND:
                 GuildHandler.promote(p, e.getView().getTitle());
+                showOptions(p, e.getView().getTitle());
                 break;
             case REDSTONE:
                 GuildHandler.demote(p, e.getView().getTitle());
+                showOptions(p, e.getView().getTitle());
                 break;
             case OAK_DOOR:
                 GuildHandler.kick(p, e.getView().getTitle());
+                showView(p);
             default:
                 break;
         }
