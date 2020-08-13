@@ -14,6 +14,7 @@ import xyz.dec0de.landguilds.storage.PlayerStorage;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -659,6 +660,72 @@ public class GuildHandler {
             } else {
                 player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
             }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+    }
+
+    public static void setHome(Player player) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            ChunkStorage chunk = ChunkStorage.getChunk(player.getWorld(), player.getLocation().getChunk());
+
+            if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER || guildStorage.getRole(player.getUniqueId()) == Role.LEADER
+                    && guildStorage.getRole(player.getUniqueId()) != null) {
+                if (!Main.allowedWorlds().contains(Objects.requireNonNull(player.getLocation().getWorld()).getName())) {
+                    player.sendMessage(Messages.SETHOME_ERROR.getMessage());
+                    return;
+                }
+                if (!chunk.isClaimed()) {
+                    player.sendMessage(Messages.SETHOME_ERROR.getMessage());
+                    return;
+                }
+                if (!chunk.isGuild()) {
+                    player.sendMessage(Messages.SETHOME_ERROR.getMessage());
+                    return;
+                }
+                if (chunk.getOwner() != guildStorage.getUuid()) {
+                    player.sendMessage(Messages.SETHOME_ERROR.getMessage());
+                    return;
+                }
+
+                player.sendMessage(Messages.SETHOME_SUCCESS.getMessage());
+                guildStorage.setHome(player.getLocation());
+            } else {
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+                return;
+            }
+        } else {
+            player.sendMessage(Messages.NO_GUILD.getMessage());
+            return;
+        }
+    }
+
+    public static void teleportHome(Player player) {
+        PlayerStorage playerStorage = new PlayerStorage(player.getUniqueId());
+        if (playerStorage.getGuild() != null) {
+            GuildStorage guildStorage = playerStorage.getGuild();
+
+            ChunkStorage chunk = ChunkStorage.getChunk(guildStorage.getHome().getWorld(), guildStorage.getHome().getChunk());
+            if (!chunk.isClaimed()) {
+                player.sendMessage(Messages.HOME_ERROR.getMessage());
+                return;
+            }
+            if (!chunk.isGuild()) {
+                player.sendMessage(Messages.HOME_ERROR.getMessage());
+                return;
+            }
+            if (chunk.getOwner() != guildStorage.getUuid()) {
+                player.sendMessage(Messages.HOME_ERROR.getMessage());
+                return;
+            }
+
+            //teleport player
+            player.sendMessage(Messages.HOME_SUCCESS.getMessage());
+            player.teleport(guildStorage.getHome());
         } else {
             player.sendMessage(Messages.NO_GUILD.getMessage());
             return;

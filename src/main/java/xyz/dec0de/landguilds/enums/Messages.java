@@ -58,6 +58,10 @@ public enum Messages {
     UNTRUSTED_CONF("&aYour trust has been revoked. You may no longer build or interact in the guild %args0%."),
     TRUSTED("&aYou have trusted %args0% to build and interact within your guild."),
     UNTRUSTED("&aYou have untrusted %args0%."),
+    HOME_ERROR("&cYour guild home is either unclaimed, or claimed by someone else."),
+    HOME_SUCCESS("&aTeleporting to your guild home..."),
+    SETHOME_ERROR("&cCannot set home. Make sure you own the land."),
+    SETHOME_SUCCESS("&aSet guild home."),
     UNKNOWN_TYPE("&cYou have entered an unknown type '%args0%'.");
 
     private String message;

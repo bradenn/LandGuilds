@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -32,9 +33,9 @@ public class ChunkEvents implements Listener {
 
     private final HashMap<UUID, String> playersInChunk = new HashMap<>();
 
-    public boolean playerCanInteract(Player player) {
+    public boolean playerCanInteract(Player player, Location location) {
         if (Main.allowedWorlds().contains(player.getWorld().getName())) {
-            ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
+            ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(location));
             if (AdminHandler.isOverride(player.getUniqueId())) return true;
             if (chunkStorage.isClaimed()) {
                 if (chunkStorage.isGuild()) {
@@ -210,7 +211,7 @@ public class ChunkEvents implements Listener {
             return;
         }
         Player player = e.getPlayer();
-        if (!playerCanInteract(player)) {
+        if (!playerCanInteract(player, e.getBlock().getLocation())) {
             player.sendMessage(Messages.NO_BREAK.getMessage());
             e.setCancelled(true);
         }
@@ -242,7 +243,7 @@ public class ChunkEvents implements Listener {
             return;
         }
         Player player = e.getPlayer();
-        if (!playerCanInteract(player)) {
+        if (!playerCanInteract(player, e.getBlock().getLocation())) {
             player.sendMessage(Messages.NO_BUILD.getMessage());
             e.setCancelled(true);
         }
@@ -313,7 +314,7 @@ public class ChunkEvents implements Listener {
         if (blockHasEveryoneSign(player, e.getClickedBlock()))
             return;
 
-        if (!playerCanInteract(player)) {
+        if (!playerCanInteract(player, e.getClickedBlock().getLocation())) {
             player.sendMessage(Messages.NO_INTERACT.getMessage());
             e.setCancelled(true);
         }

@@ -33,7 +33,11 @@ public class GuildsCommand implements CommandExecutor {
                 GuildHandler.leave(player);
             } else if (args[0].equalsIgnoreCase("members")) {
                 GuildMenuView.showView(player);
-            }else{
+            } else if (args[0].equalsIgnoreCase("sethome")) {
+                GuildHandler.setHome(player);
+            } else if (args[0].equalsIgnoreCase("home")) {
+                GuildHandler.teleportHome(player);
+            } else {
                 help(player);
             }
         } else if (args.length == 2) {
@@ -87,6 +91,8 @@ public class GuildsCommand implements CommandExecutor {
         player.sendMessage(ChatColor.GRAY + "/g set [tag] [true | false] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " change settings (firespread, pvp, boom)");
         player.sendMessage(ChatColor.GRAY + "/g rename [name] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Pretty simple; hard to fuck up.");
         player.sendMessage(ChatColor.GRAY + "/g color [color] " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Minecraft Colors (IN CAPS) or HEX");
+        player.sendMessage(ChatColor.GRAY + "/g sethome " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Set guild home.");
+        player.sendMessage(ChatColor.GRAY + "/g home " + ChatColor.DARK_GRAY + "-" + ChatColor.WHITE + " Teleport to guild home.");
         player.sendMessage(ChatColor.GREEN + "-*-*-*-*-*- Guilds Help -*-*-*-*-*-");
     }
 

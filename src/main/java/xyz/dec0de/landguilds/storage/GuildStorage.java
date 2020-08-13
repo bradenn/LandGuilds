@@ -3,6 +3,7 @@ package xyz.dec0de.landguilds.storage;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,6 +12,7 @@ import xyz.dec0de.landguilds.Main;
 import xyz.dec0de.landguilds.enums.Relationship;
 import xyz.dec0de.landguilds.enums.Role;
 import xyz.dec0de.landguilds.enums.Tags;
+import xyz.dec0de.landguilds.utils.LocSerialization;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,6 +84,18 @@ public class GuildStorage {
         }
 
         return members;
+    }
+
+    public Location getHome() {
+        String locationString = config.getString("home");
+        if (locationString != null) {
+            return LocSerialization.getLiteLocationFromString(locationString);
+        }
+        return null;
+    }
+
+    public void setHome(Location location) {
+        config.set("home", LocSerialization.getLiteStringFromLocation(location));
     }
 
     public List<UUID> getTrusted() throws NullPointerException {
