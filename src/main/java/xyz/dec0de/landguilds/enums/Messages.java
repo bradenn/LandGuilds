@@ -60,7 +60,7 @@ public enum Messages {
     UNTRUSTED("&aYou have untrusted %args0%."),
     HOME_ERROR("&cYour guild home is either unclaimed, or claimed by someone else."),
     HOME_SUCCESS("&aTeleporting to your guild home..."),
-    SETHOME_ERROR("&cCannot set home. Make sure you own the land."),
+    SETHOME_ERROR("&cCannot set home. Make sure your guild owns the land."),
     SETHOME_SUCCESS("&aSet guild home."),
     UNKNOWN_TYPE("&cYou have entered an unknown type '%args0%'.");
 

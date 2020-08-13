@@ -96,6 +96,11 @@ public class GuildStorage {
 
     public void setHome(Location location) {
         config.set("home", LocSerialization.getLiteStringFromLocation(location));
+        try {
+            config.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<UUID> getTrusted() throws NullPointerException {

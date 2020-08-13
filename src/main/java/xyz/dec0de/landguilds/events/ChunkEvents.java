@@ -58,27 +58,35 @@ public class ChunkEvents implements Listener {
             Player player = e.getPlayer();
             if (Main.allowedWorlds().contains(player.getWorld().getName())) {
                 ChunkStorage chunkStorage = ChunkStorage.getChunk(player.getWorld(), player.getWorld().getChunkAt(player.getLocation()));
+                if (chunkStorage.isClaimed()) {
+                    String landOwner;
 
-                if (!chunkStorage.isClaimed() && playersInChunk.containsKey(player.getUniqueId())) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
-                            ChatColor.RED + "Leaving " + playersInChunk.get(player.getUniqueId()) + ChatColor.RED + "'s Land..."));
-                    playersInChunk.remove(player.getUniqueId());
-                    return;
+                    if (chunkStorage.isGuild()) {
+                        GuildStorage guildStorage = new GuildStorage(chunkStorage.getOwner());
+                        landOwner = guildStorage.getTag();
+                    } else {
+                        PlayerStorage playerStorage = new PlayerStorage(chunkStorage.getOwner());
+                        landOwner = playerStorage.getUsername();
+                    }
+
+                    if (playersInChunk.containsKey(player.getUniqueId())) {
+                        if (!playersInChunk.get(player.getUniqueId()).equalsIgnoreCase(landOwner)) {
+                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
+                                    ChatColor.GREEN + "Entering " + landOwner + ChatColor.GREEN + "'s Land..."));
+                            playersInChunk.put(player.getUniqueId(), landOwner);
+                        }
+                    } else {
+                        playersInChunk.put(player.getUniqueId(), landOwner);
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
+                                ChatColor.GREEN + "Entering " + landOwner + ChatColor.GREEN + "'s Land..."));
+                    }
+                } else {
+                    if (playersInChunk.containsKey(player.getUniqueId())) {
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
+                                ChatColor.RED + "Leaving " + playersInChunk.get(player.getUniqueId()) + ChatColor.RED + "'s Land..."));
+                        playersInChunk.remove(player.getUniqueId());
+                    }
                 }
-                String claimedTag = chunkStorage.isGuild() ? new GuildStorage(chunkStorage.getOwner()).getTag()
-                        : new PlayerStorage(chunkStorage.getOwner()).getUsername();
-
-                if (playersInChunk.containsKey(player.getUniqueId()) && !playersInChunk.get(player.getUniqueId())
-                        .equalsIgnoreCase(ChatColor.stripColor(claimedTag))) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
-                            ChatColor.GREEN + "Entering " + claimedTag + ChatColor.GREEN + "'s Land..."));
-                    playersInChunk.put(player.getUniqueId(), ChatColor.stripColor(claimedTag));
-                    return;
-                }
-
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
-                        ChatColor.GREEN + "Entering " + claimedTag + ChatColor.GREEN + "'s Land..."));
-                playersInChunk.put(player.getUniqueId(), ChatColor.stripColor(claimedTag));
             }
         });
     }
@@ -120,19 +128,22 @@ public class ChunkEvents implements Listener {
             if (AdminHandler.isOverride(damager.getUniqueId())) {
                 return;
             }
-            if (chunk.isClaimed()) {
+            if (!chunk.isClaimed()) {
                 return;
             }
             if (chunk.isGuild()) {
                 GuildStorage guild = new GuildStorage(chunk.getOwner());
                 if (!guild.getMembers().contains(damager.getUniqueId())) {
                     damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
+                    e.getDamager().remove();
                     e.setCancelled(true);
                     return;
                 }
+                return;
             }
             if (!chunk.getMembers().contains(damager.getUniqueId())) {
                 damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
+                e.getDamager().remove();
                 e.setCancelled(true);
                 return;
             }
@@ -143,7 +154,7 @@ public class ChunkEvents implements Listener {
             if (AdminHandler.isOverride(damager.getUniqueId())) {
                 return;
             }
-            if (chunk.isClaimed()) {
+            if (!chunk.isClaimed()) {
                 return;
             }
             if (chunk.isGuild()) {
@@ -153,6 +164,7 @@ public class ChunkEvents implements Listener {
                     e.setCancelled(true);
                     return;
                 }
+                return;
             }
             if (!chunk.getMembers().contains(damager.getUniqueId())) {
                 damager.sendMessage(Messages.NO_KILL_ANIMAL.getMessage());
@@ -164,10 +176,15 @@ public class ChunkEvents implements Listener {
 
     @EventHandler
     public void itemframeDestroy(HangingBreakEvent e) {
+        ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getEntity().getWorld(), e.getEntity().getLocation().getChunk());
+
+        if (!Main.allowedWorlds().contains(Objects.requireNonNull(e.getEntity().getLocation().getWorld()).getName())) {
+            return;
+        }
         if (e.getCause() != HangingBreakEvent.RemoveCause.EXPLOSION) {
             return;
         }
-        ChunkStorage chunkStorage = ChunkStorage.getChunk(e.getEntity().getWorld(), e.getEntity().getLocation().getChunk());
+
         if (!chunkStorage.isClaimed()) {
             return;
         }

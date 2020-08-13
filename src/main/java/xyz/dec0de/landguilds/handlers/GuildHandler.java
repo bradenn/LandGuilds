@@ -676,7 +676,7 @@ public class GuildHandler {
             if (guildStorage.getRole(player.getUniqueId()) == Role.OWNER || guildStorage.getRole(player.getUniqueId()) == Role.LEADER
                     && guildStorage.getRole(player.getUniqueId()) != null) {
                 if (!Main.allowedWorlds().contains(Objects.requireNonNull(player.getLocation().getWorld()).getName())) {
-                    player.sendMessage(Messages.SETHOME_ERROR.getMessage());
+                    player.sendMessage(Messages.INVALID_WORLD.getMessage());
                     return;
                 }
                 if (!chunk.isClaimed()) {
@@ -687,7 +687,7 @@ public class GuildHandler {
                     player.sendMessage(Messages.SETHOME_ERROR.getMessage());
                     return;
                 }
-                if (chunk.getOwner() != guildStorage.getUuid()) {
+                if (!guildStorage.getChunks().contains(player.getLocation().getChunk())) {
                     player.sendMessage(Messages.SETHOME_ERROR.getMessage());
                     return;
                 }
@@ -710,7 +710,7 @@ public class GuildHandler {
             GuildStorage guildStorage = playerStorage.getGuild();
 
             ChunkStorage chunk = ChunkStorage.getChunk(guildStorage.getHome().getWorld(), guildStorage.getHome().getChunk());
-            if (!chunk.isClaimed()) {
+            if (!chunk.isClaimed() && guildStorage.getHome() != null) {
                 player.sendMessage(Messages.HOME_ERROR.getMessage());
                 return;
             }
@@ -718,7 +718,7 @@ public class GuildHandler {
                 player.sendMessage(Messages.HOME_ERROR.getMessage());
                 return;
             }
-            if (chunk.getOwner() != guildStorage.getUuid()) {
+            if (!guildStorage.getChunks().contains(guildStorage.getHome().getChunk())) {
                 player.sendMessage(Messages.HOME_ERROR.getMessage());
                 return;
             }
