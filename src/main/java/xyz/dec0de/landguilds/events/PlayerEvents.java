@@ -20,19 +20,15 @@ public class PlayerEvents implements Listener {
 
         try {
             PlayerStorage playerStorage = new PlayerStorage(e.getPlayer());
-            if (e.getMessage().charAt(0) == '`') {
+            if (e.getMessage().charAt(0) == '!') {
                 e.setCancelled(true);
                 playerStorage.getGuild().getMembers().forEach(member -> {
                     Player target = e.getPlayer().getServer().getPlayer(member);
                     if (target != null) {
-                        target.sendMessage(e.getPlayer().getDisplayName() + " §c->§r " + playerStorage.getGuild().getColor() + playerStorage.getGuild().getName() + "§8:§r " + e.getMessage().substring(1));
+                        target.sendMessage(e.getPlayer().getDisplayName() + " §7->§r " + playerStorage.getGuild().getColor() + playerStorage.getGuild().getName() + "§8:§r " + e.getMessage().substring(1));
                     }
                 });
-            } else if (e.getMessage().charAt(0) == '+') {
-                e.setCancelled(true);
-                playerStorage.getGuild().getEnemies();
             } else if (playerStorage.getGuild() != null) {
-
                 e.setFormat(e.getFormat().replace("{GUILD}", playerStorage.getGuild().getTag()));
             } else {
                 e.setFormat(e.getFormat().replace("{GUILD}", ""));
