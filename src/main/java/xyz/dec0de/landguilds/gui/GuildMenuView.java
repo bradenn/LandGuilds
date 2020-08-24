@@ -41,7 +41,7 @@ public class GuildMenuView implements Listener {
     public static void showOptions(Player player, String target) {
         PlayerStorage ps = new PlayerStorage(player.getUniqueId());
         GuildStorage gs = ps.getGuild();
-        Inventory inv = Bukkit.createInventory(null, InventoryType.DROPPER, target);
+        Inventory inv = Bukkit.createInventory(null, InventoryType.DROPPER, "Member -> " + target);
         List<String> lore = new ArrayList<>();
 
         UUID guildMember = null;
@@ -65,9 +65,10 @@ public class GuildMenuView implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        String invTitle = e.getView().getTitle();
+        String invTitle = e.getView().getTitle().replace("Member -> ", "");
         InventoryType invType = e.getInventory().getType();
-        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser")) return;
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser") || invTitle.startsWith("Member -> "))
+            return;
         e.setCancelled(true);
         Player p = ((Player) e.getWhoClicked());
         switch(e.getCurrentItem().getType()){
@@ -98,7 +99,8 @@ public class GuildMenuView implements Listener {
     public void onInventoryDrag(InventoryDragEvent e) {
         String invTitle = e.getView().getTitle();
         InventoryType invType = e.getInventory().getType();
-        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser")) return;
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser") || invTitle.startsWith("Member -> "))
+            return;
         e.setCancelled(true);
     }
 
