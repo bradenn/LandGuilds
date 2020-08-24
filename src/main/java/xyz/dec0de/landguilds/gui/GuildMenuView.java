@@ -67,7 +67,7 @@ public class GuildMenuView implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         String invTitle = e.getView().getTitle().replace("Member -> ", "");
         InventoryType invType = e.getInventory().getType();
-        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser") || invTitle.startsWith("Member -> "))
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser") || !invTitle.startsWith("Member -> "))
             return;
         e.setCancelled(true);
         Player p = ((Player) e.getWhoClicked());
@@ -99,7 +99,7 @@ public class GuildMenuView implements Listener {
     public void onInventoryDrag(InventoryDragEvent e) {
         String invTitle = e.getView().getTitle();
         InventoryType invType = e.getInventory().getType();
-        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser") || invTitle.startsWith("Member -> "))
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser") || !invTitle.startsWith("Member -> "))
             return;
         e.setCancelled(true);
     }
