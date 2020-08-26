@@ -67,11 +67,11 @@ public class GuildMenuView implements Listener {
     public void onInventoryClick(InventoryClickEvent e) {
         String invTitle = e.getView().getTitle().replace("Member -> ", "");
         InventoryType invType = e.getInventory().getType();
-        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser") || !invTitle.startsWith("Member -> "))
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || e.getView().getTitle().equals("Dropper") || e.getView().getTitle().equals("Dispenser") || !e.getView().getTitle().contains("Member"))
             return;
         e.setCancelled(true);
         Player p = ((Player) e.getWhoClicked());
-        switch(e.getCurrentItem().getType()){
+        switch(e.getCurrentItem().getType()) {
             case BARRIER:
                 showView(p);
                 break;
@@ -80,15 +80,15 @@ public class GuildMenuView implements Listener {
                 showOptions(p, targetPlayer);
                 break;
             case DIAMOND:
-                GuildHandler.promote(p, e.getView().getTitle());
-                showOptions(p, e.getView().getTitle());
+                GuildHandler.promote(p, invTitle);
+                showOptions(p, invTitle);
                 break;
             case REDSTONE:
-                GuildHandler.demote(p, e.getView().getTitle());
-                showOptions(p, e.getView().getTitle());
+                GuildHandler.demote(p, invTitle);
+                showOptions(p, invTitle);
                 break;
             case OAK_DOOR:
-                GuildHandler.kick(p, e.getView().getTitle());
+                GuildHandler.kick(p, invTitle);
                 showView(p);
             default:
                 break;
@@ -99,7 +99,7 @@ public class GuildMenuView implements Listener {
     public void onInventoryDrag(InventoryDragEvent e) {
         String invTitle = e.getView().getTitle();
         InventoryType invType = e.getInventory().getType();
-        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || invTitle.equals("Dropper") || invTitle.equals("Dispenser") || !invTitle.startsWith("Member -> "))
+        if ((e.getInventory().getSize() != 9 && invType != InventoryType.DROPPER) || e.getView().getTitle().equals("Dropper") || e.getView().getTitle().equals("Dispenser") || !e.getView().getTitle().contains("Member"))
             return;
         e.setCancelled(true);
     }
