@@ -67,8 +67,8 @@ public class Main extends JavaPlugin {
             new PlaceholderAPI(this).register();
         }
 
-        if (Bukkit.getPluginManager().getPlugin("dynmap") != null) {
-            new DynmapHandler().reloadAllChunks();
-        }
+//        if (Bukkit.getPluginManager().getPlugin("dynmap") != null) {
+//            //new DynmapHandler().reloadAllChunks();
+//        }
     }
 }

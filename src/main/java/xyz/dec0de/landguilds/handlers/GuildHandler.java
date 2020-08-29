@@ -4,13 +4,11 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xyz.dec0de.landguilds.Main;
-import xyz.dec0de.landguilds.enums.Messages;
-import xyz.dec0de.landguilds.enums.Relationship;
-import xyz.dec0de.landguilds.enums.Role;
-import xyz.dec0de.landguilds.enums.Tags;
+import xyz.dec0de.landguilds.enums.*;
 import xyz.dec0de.landguilds.storage.ChunkStorage;
 import xyz.dec0de.landguilds.storage.GuildStorage;
 import xyz.dec0de.landguilds.storage.PlayerStorage;
+import xyz.dec0de.landguilds.utils.AuthorizationUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,6 +20,7 @@ import java.util.regex.Pattern;
 public class GuildHandler {
 
     private static final HashMap<UUID, String> pendingGuildInvites = new HashMap<>();
+    private static final HashMap<UUID, String> pendingGuildMerge = new HashMap<>();
 
     /**
      * Create a guild, and set player as the owner
@@ -208,7 +207,7 @@ public class GuildHandler {
                     player.sendMessage(Messages.CLAIMED_LAND_GUILD.getMessage());
                     guildStorage.addChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
                     chunkStorage.claim(guildStorage.getUuid(), true);
-                    new DynmapHandler().reloadChunk(chunkStorage.getChunk());
+                    //new DynmapHandler().reloadChunk(chunkStorage.getChunk());
                     return;
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -252,7 +251,7 @@ public class GuildHandler {
                     try {
                         guildStorage.removeChunk(chunkStorage.getWorld(), chunkStorage.getChunk());
                         chunkStorage.unclaim();
-                        new DynmapHandler().reloadChunk(chunkStorage.getChunk());
+                        //new DynmapHandler().reloadChunk(chunkStorage.getChunk());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -627,6 +626,25 @@ public class GuildHandler {
             guild.setRole(targetUUID, Role.MEMBER);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void merge(Player player, String target) {
+        Player targetPlayer = Bukkit.getPlayer(target);
+        if(targetPlayer != null) {
+            boolean primaryAuth = AuthorizationUtils.isAuthorized(AuthorizationType.DESTRUCTIVE, player, player.getLocation());
+            boolean targetAuth = AuthorizationUtils.isAuthorized(AuthorizationType.DESTRUCTIVE, targetPlayer, targetPlayer.getLocation());
+            if(primaryAuth){
+                if(targetAuth){
+                    // Merge
+                }else{
+                    player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+                }
+            }else{
+                player.sendMessage(Messages.NO_PERMISSIONS.getMessage());
+            }
+        }else{
+            player.sendMessage(Messages.UNABLE_FIND_PLAYER.getMessage());
         }
     }
 
